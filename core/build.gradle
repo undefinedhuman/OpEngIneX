@@ -1,9 +1,5 @@
 group 'de.undefinedhuman.core'
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     implementation project(':log')
 
