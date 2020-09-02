@@ -1,0 +1,3 @@
+include ":core", ":log", ":engine"
+rootProject.name = 'OpEngIneX'
+

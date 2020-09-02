@@ -1,0 +1,33 @@
+plugins {
+    id "application"
+}
+
+group 'de.undefinedhuman.engine'
+
+distributions {
+    macos {
+        applicationDefaultJvmArgs.push("-XstartOnFirstThread")
+    }
+}
+
+dependencies {
+    implementation project(':core')
+    implementation project(':log')
+
+    implementation platform('org.lwjgl:lwjgl-bom:3.2.3')
+
+    implementation "org.lwjgl:lwjgl"
+    implementation "org.lwjgl:lwjgl-glfw"
+    implementation "org.lwjgl:lwjgl-nanovg"
+    implementation "org.lwjgl:lwjgl-openal"
+    implementation "org.lwjgl:lwjgl-opengl"
+    implementation "org.lwjgl:lwjgl-stb"
+    runtimeOnly "org.lwjgl:lwjgl::natives-macos"
+    runtimeOnly "org.lwjgl:lwjgl-glfw::natives-macos"
+    runtimeOnly "org.lwjgl:lwjgl-nanovg::natives-macos"
+    runtimeOnly "org.lwjgl:lwjgl-openal::natives-macos"
+    runtimeOnly "org.lwjgl:lwjgl-opengl::natives-macos"
+    runtimeOnly "org.lwjgl:lwjgl-stb::natives-macos"
+
+    implementation "org.joml:joml:1.9.25"
+}
