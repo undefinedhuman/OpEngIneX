@@ -1,13 +1,13 @@
+version '0.0.1'
+
 allprojects {
-    version '0.0.1'
+    repositories {
+        jcenter()
+    }
 }
 
 subprojects {
     apply plugin: 'java'
-
-    repositories {
-        jcenter()
-    }
 
     sourceCompatibility = 1.8
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

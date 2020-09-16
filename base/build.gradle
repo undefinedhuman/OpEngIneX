@@ -1,0 +1,5 @@
+group 'de.undefinedhuman.base'
+
+dependencies {
+    implementation project(':log')
+}
