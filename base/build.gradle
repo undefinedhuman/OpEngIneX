@@ -2,4 +2,6 @@ group 'de.undefinedhuman.base'
 
 dependencies {
     implementation project(':log')
+
+    implementation "org.joml:joml:1.9.25"
 }
