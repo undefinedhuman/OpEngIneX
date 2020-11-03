@@ -12,7 +12,6 @@ distributions {
 
 dependencies {
     implementation project(':core')
-    implementation project(':log')
 
     implementation platform('org.lwjgl:lwjgl-bom:3.2.3')
 

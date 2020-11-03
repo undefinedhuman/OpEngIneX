@@ -1,8 +1,6 @@
 group 'de.undefinedhuman.core'
 
 dependencies {
-    implementation project(':log')
-
     implementation platform('org.lwjgl:lwjgl-bom:3.2.3')
 
     implementation "org.lwjgl:lwjgl"
@@ -19,4 +17,6 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-stb::natives-macos"
 
     implementation "org.joml:joml:1.9.25"
+
+    compile group: 'org.l33tlabs.twl', name: 'pngdecoder', version: '1.0'
 }
