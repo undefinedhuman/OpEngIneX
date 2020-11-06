@@ -3,7 +3,7 @@ package de.undefinedhuman.core.window;
 import de.undefinedhuman.core.Engine;
 import de.undefinedhuman.core.config.SettingsManager;
 import de.undefinedhuman.core.log.Log;
-import de.undefinedhuman.core.utils.OpenGLUtils;
+import de.undefinedhuman.core.opengl.OpenGLUtils;
 import de.undefinedhuman.core.utils.Variables;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.Callbacks;

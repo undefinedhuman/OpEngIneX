@@ -14,10 +14,11 @@ public abstract class ComponentBlueprint {
 
     protected SettingsList settings = new SettingsList();
 
-    private String componentName;
+    public ComponentType type;
 
-    public ComponentBlueprint(String componentName) {
-        this.componentName = componentName;
+    public ComponentBlueprint() { }
+    public ComponentBlueprint(ComponentType type) {
+        this.type = type;
     }
 
     public abstract Component createInstance(HashMap<ComponentType, ComponentParam> params);
@@ -28,13 +29,23 @@ public abstract class ComponentBlueprint {
     }
 
     public void save(FileWriter writer) {
-        writer.writeString("{:" + componentName).nextLine();
+        writer.writeString("{:" + type.name()).nextLine();
         Tools.saveSettings(writer, settings.getSettings());
         writer.writeString("}").nextLine();
     }
 
     public ArrayList<Setting> getSettings() {
         return settings.getSettings();
+    }
+
+    // DON'T USE
+    public ComponentBlueprint setType(ComponentType type) {
+        this.type = type;
+        return this;
+    }
+
+    public ComponentType getType() {
+        return type;
     }
 
     public void delete() {

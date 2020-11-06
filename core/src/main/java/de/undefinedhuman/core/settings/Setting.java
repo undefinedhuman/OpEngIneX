@@ -1,6 +1,10 @@
 package de.undefinedhuman.core.settings;
 
-import de.undefinedhuman.core.file.*;
+import de.undefinedhuman.core.entity.EntityType;
+import de.undefinedhuman.core.file.FileUtils;
+import de.undefinedhuman.core.file.FileWriter;
+import de.undefinedhuman.core.file.FsFile;
+import de.undefinedhuman.core.file.LineSplitter;
 import org.joml.Vector2f;
 
 import javax.swing.*;
@@ -36,9 +40,11 @@ public class Setting {
     public Vector2f getVector2() { return (Vector2f) value; }
 
     public String[] getStringArray() { return (String[]) value; }
+    public int[] getIntegerArray() { return (int[]) value; }
+    public float[] getFloatArray() { return (float[]) value; }
     public Vector2f[] getVector2Array() { return (Vector2f[]) value; }
 
-    // public EntityType getEntityType() { return EntityType.valueOf(getString()); }
+    public EntityType getEntityType() { return EntityType.valueOf(getString()); }
 
     public SettingType getType() { return type; }
 
@@ -67,20 +73,20 @@ public class Setting {
     }
 
     protected void addValueMenuComponents(JPanel panel, Vector2f position) {
-        valueField = createTextField(value, position, new Vector2f(200f, 25f), new KeyAdapter() {
+        valueField = createTextField(panel, value, position, new Vector2f(200f, 25f), new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 if(valueField.getText() == null || valueField.getText().equalsIgnoreCase("")) return;
                 setValue(valueField.getText());
             }
         });
-        panel.add(valueField);
     }
 
-    protected JTextField createTextField(Object value, Vector2f position, Vector2f size, KeyAdapter adapter) {
+    protected JTextField createTextField(JPanel panel, Object value, Vector2f position, Vector2f size, KeyAdapter adapter) {
         JTextField textField = new JTextField(String.valueOf(value));
         textField.setBounds((int) position.x, (int) position.y, (int) size.x, (int) size.y);
         textField.addKeyListener(adapter);
+        panel.add(textField);
         return textField;
     }
 
@@ -88,6 +94,6 @@ public class Setting {
         if(valueField != null) valueField.setText(value.toString());
     }
 
-    protected void delete() { value = null; }
+    public void delete() { value = null; }
 
 }

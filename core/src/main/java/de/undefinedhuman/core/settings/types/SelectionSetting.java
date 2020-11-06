@@ -18,7 +18,7 @@ public class SelectionSetting extends Setting {
     }
 
     @Override
-    protected void delete() {
+    public void delete() {
         super.delete();
         values = new String[0];
     }

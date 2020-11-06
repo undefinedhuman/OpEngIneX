@@ -8,6 +8,8 @@ public enum SettingType {
     Rarity,
     Vector2,
     StringArray,
+    IntArray,
+    FloatArray,
     Selection,
     Vector2Array,
     InputKey,

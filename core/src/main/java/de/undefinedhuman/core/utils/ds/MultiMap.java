@@ -1,4 +1,4 @@
-package de.undefinedhuman.core.utils;
+package de.undefinedhuman.core.utils.ds;
 
 import java.util.ArrayList;
 import java.util.Arrays;

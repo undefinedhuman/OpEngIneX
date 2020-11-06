@@ -1,14 +1,11 @@
 package de.undefinedhuman.core.entity.ecs.blueprint;
 
-import de.undefinedhuman.core.file.FileReader;
 import de.undefinedhuman.core.file.FsFile;
 import de.undefinedhuman.core.file.Paths;
 import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.manager.Manager;
-import de.undefinedhuman.core.settings.Setting;
-import de.undefinedhuman.core.settings.SettingsObject;
+import de.undefinedhuman.core.resources.ResourceManager;
 import de.undefinedhuman.core.utils.Tools;
-import de.undefinedhuman.core.entity.ecs.component.ComponentType;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,7 +30,7 @@ public class BlueprintManager extends Manager {
     public boolean loadBlueprints(Integer... ids) {
         boolean loaded = false;
         for (int id : ids) {
-            if (!hasBlueprint(id)) blueprints.put(id, loadBlueprint(new FsFile(Paths.ENTITY_PATH, id + "/settings.entity", false)));
+            if (!hasBlueprint(id)) blueprints.put(id, ResourceManager.loadBlueprint(new FsFile(Paths.ENTITY_PATH, id + "/settings.entity", false)));
             loaded |= hasBlueprint(id);
         }
         if (loaded)
@@ -66,25 +63,6 @@ public class BlueprintManager extends Manager {
     public Blueprint getBlueprint(int id) {
         if (hasBlueprint(id) || loadBlueprints(id)) return blueprints.get(id);
         return hasBlueprint(0) ? getBlueprint(0) : null;
-    }
-
-    public static Blueprint loadBlueprint(FsFile file) {
-        Blueprint blueprint = new Blueprint();
-        FileReader reader = file.getFileReader(true);
-        SettingsObject object = Tools.loadSettings(reader);
-
-        for(Setting setting : blueprint.settings.getSettings())
-            setting.loadSetting(reader.getParentDirectory(), object);
-
-        for(ComponentType type : ComponentType.values()) {
-            if(!object.containsKey(type.name())) continue;
-            Object componentObject = object.get(type.name());
-            if(!(componentObject instanceof SettingsObject)) continue;
-            blueprint.addComponentBlueprint(type.load(reader.getParentDirectory(), (SettingsObject) object.get(type.name())));
-        }
-
-        reader.close();
-        return blueprint;
     }
 
 }

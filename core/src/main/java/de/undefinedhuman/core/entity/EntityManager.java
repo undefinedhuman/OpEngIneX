@@ -1,5 +1,6 @@
 package de.undefinedhuman.core.entity;
 
+import de.undefinedhuman.core.entity.ecs.system.System;
 import de.undefinedhuman.core.manager.Manager;
 
 import java.util.ArrayList;

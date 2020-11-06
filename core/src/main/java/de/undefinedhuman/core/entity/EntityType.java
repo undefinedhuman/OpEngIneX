@@ -6,7 +6,9 @@ import de.undefinedhuman.core.entity.shader.StaticShader;
 
 public enum EntityType {
 
-    STATIC(new StaticShader()), DYNAMIC(new StaticShader()), GROWTHS(new GrowthShader());
+    STATIC(new StaticShader()),
+    DYNAMIC(new StaticShader()),
+    GROWTHS(new GrowthShader());
 
     private EntityShader shader;
 
@@ -29,7 +31,7 @@ public enum EntityType {
     }
 
     public void update(Entity entity) {
-        shader.loadUniforms(entity.getTransform());
+        shader.loadUniforms(entity);
     }
 
 }

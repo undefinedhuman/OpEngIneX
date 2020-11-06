@@ -1,6 +1,6 @@
 package de.undefinedhuman.core.resources.texture;
 
-import de.undefinedhuman.core.utils.OpenGLUtils;
+import de.undefinedhuman.core.opengl.OpenGLUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 

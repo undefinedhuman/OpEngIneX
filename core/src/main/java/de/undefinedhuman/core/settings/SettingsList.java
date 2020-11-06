@@ -7,7 +7,7 @@ public class SettingsList {
 
     private ArrayList<Setting> settings = new ArrayList<>();
 
-    public void addSettings(Setting... settings) {
+    public void add(Setting... settings) {
         this.settings.addAll(Arrays.asList(settings));
     }
 

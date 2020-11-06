@@ -10,8 +10,8 @@ public class StringPanel extends Panel {
 
     private JTextField objectName;
 
-    public StringPanel(String name, PanelObject panelObject) {
-        super(name, panelObject);
+    public StringPanel(String key, PanelObject panelObject) {
+        super(key, panelObject);
     }
 
     @Override

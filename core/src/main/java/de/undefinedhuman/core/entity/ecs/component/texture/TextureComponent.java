@@ -18,4 +18,8 @@ public class TextureComponent extends Component {
     @Override
     public void save(FileWriter writer) {}
 
+    public String getTextureName() {
+        return textureName;
+    }
+
 }

@@ -9,6 +9,7 @@ import org.joml.Vector2f;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class Panel extends Setting {
@@ -92,6 +93,10 @@ public abstract class Panel extends Setting {
 
     public HashMap<String, PanelObject> getPanelObjects() {
         return objects;
+    }
+
+    public ArrayList<PanelObject> values() {
+        return new ArrayList<>(objects.values());
     }
 
     public abstract void addObject();

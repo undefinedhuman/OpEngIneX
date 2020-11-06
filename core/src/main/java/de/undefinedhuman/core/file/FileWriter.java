@@ -30,26 +30,54 @@ public class FileWriter {
     public FileWriter writeString(String s) {
         return writeValue(s);
     }
+
     public FileWriter writeInt(int i) {
         return writeValue(i);
     }
+
     public FileWriter writeFloat(float f) {
         return writeValue(f);
     }
+
     public FileWriter writeLong(long l) {
         return writeValue(l);
     }
+
     public FileWriter writeBoolean(boolean b) {
         return writeValue(FileUtils.booleanToInt(b));
     }
+
     public FileWriter writeDouble(double d) {
         return writeValue(d);
     }
+
     public FileWriter writeVector2(Vector2f vector) {
         return writeFloat(vector.x).writeFloat(vector.y);
     }
+
     public FileWriter writeVector3(Vector3f vector) {
         return writeFloat(vector.x).writeFloat(vector.y).writeFloat(vector.z);
+    }
+
+    public FileWriter writeStringArray(String[] array) {
+        writeInt(array.length);
+        for(String s : array)
+            writeString(s);
+        return this;
+    }
+
+    public FileWriter writeFloatArray(float[] array) {
+        writeInt(array.length);
+        for(float f : array)
+            writeFloat(f);
+        return this;
+    }
+
+    public FileWriter writeIntegerArray(int[] array) {
+        writeInt(array.length);
+        for (int i : array)
+            writeInt(i);
+        return this;
     }
 
     public FsFile getParentDirectory() {

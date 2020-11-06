@@ -1,5 +1,6 @@
 package de.undefinedhuman.core.entity.ecs.blueprint;
 
+import de.undefinedhuman.core.entity.EntityType;
 import de.undefinedhuman.core.settings.Setting;
 import de.undefinedhuman.core.settings.SettingType;
 import de.undefinedhuman.core.settings.SettingsList;
@@ -7,6 +8,7 @@ import de.undefinedhuman.core.entity.Entity;
 import de.undefinedhuman.core.entity.ecs.component.ComponentBlueprint;
 import de.undefinedhuman.core.entity.ecs.component.ComponentParam;
 import de.undefinedhuman.core.entity.ecs.component.ComponentType;
+import de.undefinedhuman.core.settings.types.SelectionSetting;
 
 import java.util.HashMap;
 
@@ -15,12 +17,13 @@ public class Blueprint {
     public SettingsList settings = new SettingsList();
 
     public Setting
-            id = new Setting(SettingType.Int, "ID", 0);
+            id = new Setting(SettingType.Int, "ID", 0),
+            entityType = new SelectionSetting("Type", EntityType.values());
 
     private HashMap<ComponentType, ComponentBlueprint> componentBlueprints = new HashMap<>();
 
     public Blueprint() {
-        settings.addSettings(id);
+        settings.add(id);
     }
 
     public Entity createInstance(ComponentParam... param) {
@@ -37,12 +40,15 @@ public class Blueprint {
         return id.getInt();
     }
 
+    public EntityType getEntityType() {
+        return entityType.getEntityType();
+    }
+
     public void addComponentBlueprint(ComponentBlueprint blueprint) {
         componentBlueprints.putIfAbsent(blueprint.getType(), blueprint);
     }
 
     public ComponentBlueprint getComponentBlueprint(ComponentType type) {
-        if(!hasComponentBlueprints(type)) return null;
         return componentBlueprints.get(type);
     }
 

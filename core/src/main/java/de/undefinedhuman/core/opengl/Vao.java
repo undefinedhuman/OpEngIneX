@@ -65,11 +65,7 @@ public class Vao {
         buffer.flip();
         vbo.storeData(buffer);
         vbos.add(vbo);
-        return this;
-    }
-
-    public Vao storeVertexCount(int vertexCount) {
-        this.vertexCount = vertexCount;
+        vertexCount = indices.length;
         return this;
     }
 

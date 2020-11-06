@@ -18,7 +18,7 @@ public class TextureBlueprint extends ComponentBlueprint {
     private BooleanSetting culling = new BooleanSetting("Culling", true);
 
     public TextureBlueprint() {
-        super("Texture");
+        this.settings.add(texture, culling);
     }
 
     @Override

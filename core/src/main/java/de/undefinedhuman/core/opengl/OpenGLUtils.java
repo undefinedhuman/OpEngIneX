@@ -1,4 +1,4 @@
-package de.undefinedhuman.core.utils;
+package de.undefinedhuman.core.opengl;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;

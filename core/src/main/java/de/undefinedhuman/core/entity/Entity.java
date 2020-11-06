@@ -1,77 +1,63 @@
 package de.undefinedhuman.core.entity;
 
-import de.undefinedhuman.core.file.FileReader;
-import de.undefinedhuman.core.file.FileWriter;
-import de.undefinedhuman.core.file.Serializable;
 import de.undefinedhuman.core.entity.ecs.blueprint.Blueprint;
 import de.undefinedhuman.core.entity.ecs.component.Component;
 import de.undefinedhuman.core.entity.ecs.component.ComponentList;
 import de.undefinedhuman.core.entity.ecs.component.ComponentType;
-import de.undefinedhuman.core.transform.Transform;
+import de.undefinedhuman.core.game.GameObject;
 
-public class Entity implements Serializable {
+public class Entity extends GameObject {
 
     private int blueprintID, worldID;
-    private EntityType entityType;
-    private ComponentList componentList;
-
-    private Transform transform;
+    private EntityType type;
+    private ComponentList components;
 
     public Entity(Blueprint blueprint) {
-        this(blueprint.getID(), blueprint.getType());
-    }
-
-    public Entity(int blueprintID, EntityType entityType) {
-        this.blueprintID = blueprintID;
-        this.entityType = entityType;
-        this.transform = new Transform();
-        this.componentList = new ComponentList();
+        this.blueprintID = blueprint.getID();
+        this.type = blueprint.getEntityType();
+        components = new ComponentList();
     }
 
     @Override
-    public void load(FileReader reader) {
-        transform.load(reader);
-        int size = reader.getNextInt();
-        for(int i = 0; i < size; i++) { componentList.getComponent(ComponentType.valueOf(reader.getNextString())).load(reader);reader.nextLine(); }
+    public void init() {
+        for (Component component : components.getComponents()) component.init();
     }
 
     @Override
-    public void save(FileWriter writer) {
-        transform.save(writer);
-        writer.writeInt(componentList.getComponents().size()).nextLine();
-        for(Component component : componentList.getComponents()) { writer.writeString(component.getType().name()); component.save(writer); writer.nextLine(); }
+    public void delete() {
+        components.delete();
     }
 
-    // TODO entity saving
-    public void delete() {}
-
-    public Entity setWorldID(int worldID) {
-        this.worldID = worldID;
-        return this;
+    public void setComponents(ComponentList list) {
+        this.components = list;
     }
 
-    public ComponentList getComponents() {
-        return componentList;
+    public void addComponents(Component... components) {
+        for(Component component : components) this.components.addComponent(component);
     }
 
     public Component getComponent(ComponentType type) {
-        return componentList.getComponent(type);
+        if(!hasComponent(type)) return null;
+        return components.getComponent(type);
     }
 
-    public int getWorldID() {
-        return worldID;
+    public boolean hasComponent(ComponentType... types) {
+        boolean hasComponents = true;
+        for (ComponentType type : types) if (!components.hasComponent(type)) hasComponents = false;
+        return hasComponents;
     }
 
     public int getBlueprintID() {
         return blueprintID;
     }
 
-    public EntityType getEntityType() {
-        return entityType;
+    public int getWorldID() {
+        return worldID;
     }
 
-    public Transform getTransform() {
-        return transform;
+    public Entity setWorldID(int worldID) {
+        this.worldID = worldID;
+        return this;
     }
 
 }

@@ -60,6 +60,18 @@ public class FileReader {
         return splitter.getNextBoolean();
     }
 
+    public int[] getNextIntegerArray() {
+        int[] array = new int[getNextInt()];
+        for(int i = 0; i < array.length; i++) array[i] = getNextInt();
+        return array;
+    }
+
+    public float[] getNextFloatArray() {
+        float[] array = new float[getNextInt()];
+        for(int i = 0; i < array.length; i++) array[i] = getNextFloat();
+        return array;
+    }
+
     public String getData() {
         StringBuilder builder = new StringBuilder();
         while (!isEndOfLine()) builder.append(getNextString()).append(Variables.SEPARATOR);

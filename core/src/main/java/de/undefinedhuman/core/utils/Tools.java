@@ -2,9 +2,9 @@ package de.undefinedhuman.core.utils;
 
 import de.undefinedhuman.core.file.FileReader;
 import de.undefinedhuman.core.file.FileWriter;
+import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.settings.Setting;
 import de.undefinedhuman.core.settings.SettingsObject;
-import de.undefinedhuman.core.log.Log;
 import org.joml.Vector2f;
 
 import javax.swing.*;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Stream;
 
 public class Tools {
 
@@ -49,10 +50,34 @@ public class Tools {
         }
     }
 
+    public static float[] convertStringToFloatArray(String[] stringArray) {
+        float[] floatArray = new float[stringArray.length];
+        for(int i = 0; i < floatArray.length; i++) floatArray[i] = Float.parseFloat(stringArray[i]);
+        return floatArray;
+    }
+
+    public static int[] convertStringToIntArray(String[] stringArray) {
+        return Stream.of(stringArray).mapToInt(Integer::parseInt).toArray();
+    }
+
     public static String convertArrayToString(String[] array) {
         StringBuilder builder = new StringBuilder();
-        for (String s : array)
-            builder.append(s).append(Variables.SEPARATOR);
+        for (String object : array)
+            builder.append(object).append(Variables.SEPARATOR);
+        return builder.toString();
+    }
+
+    public static String convertArrayToString(int[] array) {
+        StringBuilder builder = new StringBuilder();
+        for (Integer object : array)
+            builder.append(object).append(Variables.SEPARATOR);
+        return builder.toString();
+    }
+
+    public static String convertArrayToString(float[] array) {
+        StringBuilder builder = new StringBuilder();
+        for (float object : array)
+            builder.append(object).append(Variables.SEPARATOR);
         return builder.toString();
     }
 

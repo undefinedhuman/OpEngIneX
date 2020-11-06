@@ -40,7 +40,7 @@ public class Vector2ArraySetting extends Setting {
     }
 
     protected void addValueMenuComponents(JPanel panel, Vector2f position) {
-        valueField = createTextField(Tools.convertArrayToString(getVector2Array()), position, new Vector2f(200, 25), new KeyAdapter() {
+        valueField = createTextField(panel, Tools.convertArrayToString(getVector2Array()), position, new Vector2f(200, 25), new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 if(valueField.getText() == null || valueField.getText().equalsIgnoreCase("")) return;
@@ -50,12 +50,16 @@ public class Vector2ArraySetting extends Setting {
                 setValue(vectorArray);
             }
         });
-        panel.add(valueField);
     }
 
     @Override
     protected void setValueInMenu(Object value) {
         if(valueField != null) valueField.setText(Tools.convertArrayToString(getVector2Array()));
+    }
+
+    public Vector2ArraySetting setEditable(boolean editable) {
+        this.valueField.setEditable(editable);
+        return this;
     }
 
 }
