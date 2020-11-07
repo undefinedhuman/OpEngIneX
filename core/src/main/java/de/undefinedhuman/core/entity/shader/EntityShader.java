@@ -1,22 +1,37 @@
 package de.undefinedhuman.core.entity.shader;
 
-import de.undefinedhuman.core.opengl.shader.uniforms.UniformFloat;
-import de.undefinedhuman.core.window.Time;
+import de.undefinedhuman.core.Engine;
+import de.undefinedhuman.core.entity.Entity;
+import de.undefinedhuman.core.opengl.shader.ShaderProgram;
+import de.undefinedhuman.core.opengl.shader.uniforms.UniformMatrix3;
+import de.undefinedhuman.core.opengl.shader.uniforms.UniformMatrix4;
 
-public class EntityShader extends LightShader {
+public class EntityShader extends ShaderProgram {
 
-    public UniformFloat
-            time = new UniformFloat("time");
+    public UniformMatrix4
+            transformMatrix = new UniformMatrix4("transformMatrix"),
+            projectionMatrix = new UniformMatrix4("projectionMatrix"),
+            viewMatrix = new UniformMatrix4("viewMatrix");
+
+    public UniformMatrix3 normalMatrix = new UniformMatrix3("normalMatrix");
 
     public EntityShader(String shaderPath, String... attributes) {
         super(shaderPath, attributes);
-        super.initUniforms(time);
+        addVertexShader().addFragmentShader().compileShader();
+        super.initUniforms(transformMatrix, projectionMatrix, viewMatrix, normalMatrix);
     }
 
-    @Override
+    public void resize(int width, int height) {
+        projectionMatrix.loadValue(Engine.camera.getProjectionMatrix());
+    }
+
     public void loadUniforms() {
-        super.loadUniforms();
-        time.loadValue(Time.getElapsedTime());
+        viewMatrix.loadValue(Engine.camera.getViewMatrix());
+    }
+
+    public void loadUniforms(Entity entity) {
+        transformMatrix.loadValue(entity.getTransformationMatrix());
+        normalMatrix.loadValue(entity.getNormalMatrix());
     }
 
 }

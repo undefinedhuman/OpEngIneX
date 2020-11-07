@@ -5,7 +5,7 @@ import de.undefinedhuman.core.file.FsFile;
 import de.undefinedhuman.core.file.Paths;
 import de.undefinedhuman.core.manager.Manager;
 import de.undefinedhuman.core.utils.Variables;
-import de.undefinedhuman.log.Log;
+import de.undefinedhuman.core.log.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

@@ -28,7 +28,7 @@ public abstract class MeshSetting extends Setting {
             @Override
             public void mouseClicked(MouseEvent arg0) {
                 JFileChooser chooser = new JFileChooser();
-                chooser.setCurrentDirectory(new FsFile(Paths.EDITOR_PATH, false).getFile());
+                chooser.setCurrentDirectory(new FsFile(Paths.EDITOR_PATH + "obj/", false).getFile());
                 chooser.setFileFilter(new FileNameExtensionFilter("OBJ Model", "obj"));
 
                 int returnVal = chooser.showOpenDialog(null);

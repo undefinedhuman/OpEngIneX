@@ -6,7 +6,7 @@ import de.undefinedhuman.core.file.FsFile;
 import de.undefinedhuman.core.file.Paths;
 import de.undefinedhuman.core.manager.Manager;
 import de.undefinedhuman.core.settings.Setting;
-import de.undefinedhuman.log.Log;
+import de.undefinedhuman.core.log.Log;
 
 public class ConfigManager extends Manager {
 

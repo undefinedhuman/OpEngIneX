@@ -16,7 +16,6 @@ public abstract class ComponentBlueprint {
 
     public ComponentType type;
 
-    public ComponentBlueprint() { }
     public ComponentBlueprint(ComponentType type) {
         this.type = type;
     }

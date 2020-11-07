@@ -51,6 +51,10 @@ public class Entity extends GameObject {
         return blueprintID;
     }
 
+    public EntityType getEntityType() {
+        return type;
+    }
+
     public int getWorldID() {
         return worldID;
     }

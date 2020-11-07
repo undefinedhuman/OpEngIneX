@@ -1,6 +1,7 @@
 package de.undefinedhuman.core.entity.ecs.component.mesh;
 
 import de.undefinedhuman.core.entity.ecs.component.Component;
+import de.undefinedhuman.core.entity.ecs.component.ComponentType;
 import de.undefinedhuman.core.file.FileReader;
 import de.undefinedhuman.core.file.FileWriter;
 import de.undefinedhuman.core.opengl.Vao;
@@ -8,9 +9,12 @@ import de.undefinedhuman.core.opengl.Vao;
 public class MeshComponent extends Component {
 
     private Vao[] vaos;
+    private String[] textures;
 
-    public MeshComponent(Vao[] vaos) {
+    public MeshComponent(Vao[] vaos, String[] textures) {
+        super(ComponentType.MESH);
         this.vaos = vaos;
+        this.textures = textures;
     }
 
     @Override
@@ -18,6 +22,10 @@ public class MeshComponent extends Component {
 
     @Override
     public void save(FileWriter writer) {}
+
+    public String[] getTextures() {
+        return textures;
+    }
 
     public Vao[] getVaos() {
         return vaos;

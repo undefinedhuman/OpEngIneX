@@ -8,8 +8,6 @@ import org.joml.Vector3f;
 
 public abstract class Camera extends Manager {
 
-    public static Camera instance;
-
     protected Vector3f position = new Vector3f(), rotation = new Vector3f();
     protected Matrix4f viewMatrix = new Matrix4f(), projectionMatrix = new Matrix4f();
 

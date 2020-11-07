@@ -21,13 +21,21 @@ public class FsFile {
     }
 
     public FsFile(String fileName, boolean isDirectory) {
+        this(fileName, isDirectory, true);
+    }
+
+    public FsFile(String path, String fileName, boolean isDirectory, boolean create) {
+        this(path + fileName, isDirectory, create);
+    }
+
+    public FsFile(String fileName, boolean isDirectory, boolean create) {
         this.path = fileName;
         this.isDirectory = isDirectory;
         String[] dirs = this.path.split(Variables.FILE_SEPARATOR);
         this.name = dirs[dirs.length - 1];
 
         file = new File(this.path);
-        createFile(isDirectory);
+        if(create) createFile(isDirectory);
     }
 
     public FsFile createFile(boolean isDirectory) {
@@ -82,6 +90,11 @@ public class FsFile {
 
     public File getFile() {
         return file;
+    }
+
+    public File[] list() {
+        if(!file.isDirectory()) return new File[0];
+        return file.listFiles();
     }
 
     public boolean isDirectory() {

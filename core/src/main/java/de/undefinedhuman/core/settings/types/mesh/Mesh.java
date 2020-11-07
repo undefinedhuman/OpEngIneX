@@ -3,8 +3,10 @@ package de.undefinedhuman.core.settings.types.mesh;
 import de.undefinedhuman.core.opengl.Vao;
 import de.undefinedhuman.core.settings.Setting;
 import de.undefinedhuman.core.settings.panels.PanelObject;
-import de.undefinedhuman.core.settings.types.FloatArraySetting;
-import de.undefinedhuman.core.settings.types.IntArraySetting;
+import de.undefinedhuman.core.settings.types.BooleanSetting;
+import de.undefinedhuman.core.settings.types.TextureSetting;
+import de.undefinedhuman.core.settings.types.array.FloatArraySetting;
+import de.undefinedhuman.core.settings.types.array.IntArraySetting;
 
 public class Mesh extends PanelObject {
 
@@ -21,10 +23,12 @@ public class Mesh extends PanelObject {
                     textureCoordsSetting.setValue(textureCoords);
                     normalsSetting.setValue(normals);
                 }
-            };
+            },
+            texture = new TextureSetting("Texture", "Unknown.png"),
+            culling = new BooleanSetting("Culling", true);
 
     public Mesh() {
-        settings.add(loadMesh, indiciesSetting, verticesSetting, textureCoordsSetting, normalsSetting);
+        settings.add(loadMesh, indiciesSetting, verticesSetting, textureCoordsSetting, normalsSetting, texture, culling);
     }
 
     public Vao generateVao() {

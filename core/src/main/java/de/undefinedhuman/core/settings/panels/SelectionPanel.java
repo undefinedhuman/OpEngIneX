@@ -20,7 +20,7 @@ public class SelectionPanel extends Panel {
     protected void addValueMenuComponents(JPanel panel, Vector2f position) {
         super.addValueMenuComponents(panel, position);
         selection = new JComboBox<>(itemsForSelection);
-        selection.setBounds((int) position.x - 175, (int) position.y + 30, 370, 25);
+        selection.setBounds((int) position.x - 175, (int) position.y + 30, 500, 25);
         panel.add(selection);
     }
 

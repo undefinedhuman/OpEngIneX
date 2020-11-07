@@ -18,7 +18,7 @@ public class StringPanel extends Panel {
     protected void addValueMenuComponents(JPanel panel, Vector2f position) {
         super.addValueMenuComponents(panel, position);
         objectName = new JTextField("");
-        objectName.setBounds((int) position.x - 175, (int) position.y + 30, 370, 25);
+        objectName.setBounds((int) position.x - 175, (int) position.y + 30, 500, 25);
         panel.add(objectName);
     }
 

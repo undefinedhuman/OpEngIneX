@@ -14,6 +14,7 @@ import org.joml.Vector2f;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -27,19 +28,30 @@ public class TextureSetting extends Setting {
 
     public TextureSetting(String key, Object value) {
         super(SettingType.Texture, key, value);
-        try { texture = ImageIO.read(new FsFile(Paths.ASSET_PATH, "Unknown.png", false).getFile());
-        } catch (IOException e) { e.printStackTrace(); }
         setValue("Unknown.png");
+        loadTexture(getString());
+        this.offset = 301;
     }
 
     @Override
     protected void addValueMenuComponents(JPanel panel, Vector2f position) {
-        textureLabel = new JLabel(new ImageIcon(texture));
-        textureLabel.setBounds((int) position.x, (int) position.y, 25, 25);
+        textureLabel = new JLabel();
+        textureLabel.setBounds((int) position.x, (int) position.y, 256, 256);
+        setTextureIcon();
         textureLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent event) {
-                mouseClickEvent(event);
+                JFileChooser chooser = new JFileChooser();
+                chooser.setCurrentDirectory(new FsFile(Paths.EDITOR_PATH + "texture/", false).getFile());
+                chooser.setFileFilter(new FileNameExtensionFilter("PNG Images", "png"));
+
+                int returnVal = chooser.showOpenDialog(null);
+                if(returnVal != JFileChooser.APPROVE_OPTION) return;
+                File textureFile = chooser.getSelectedFile();
+                if(textureFile == null) return;
+                loadTexture(textureFile.getPath());
+                setValue(textureFile.getName());
+                setTextureIcon();
             }
         });
         panel.add(textureLabel);
@@ -57,23 +69,23 @@ public class TextureSetting extends Setting {
     public void load(FsFile parentDir, Object value) {
         if(!(value instanceof LineSplitter)) return;
         setValue(((LineSplitter) value).getNextString());
+        String path = parentDir.getPath() + Variables.FILE_SEPARATOR + getString();
         try {
-            loadTexture(parentDir.getPath() + Variables.FILE_SEPARATOR + getString());
+            loadTexture(path);
             if(texture == null) loadTexture("Unknown.png");
         } catch (Exception e) { Log.instance.crash(e.getMessage()); }
         if(TextureManager.instance != null) {
-            setValue(parentDir.getPath() + Variables.FILE_SEPARATOR + getString());
+            setValue(path);
             TextureManager.instance.addTexture(getString());
         }
     }
 
-    private void loadTexture(String path) throws IOException {
-        texture = ImageIO.read(new FsFile(path, false).getFile());
-    }
-
     @Override
     protected void setValueInMenu(Object value) {
-        if(textureLabel != null) textureLabel.setIcon(new ImageIcon(texture));
+        if(textureLabel != null) {
+            Image scaledTexture = texture.getScaledInstance(textureLabel.getWidth(), textureLabel.getHeight(), Image.SCALE_FAST);
+            textureLabel.setIcon(new ImageIcon(scaledTexture));
+        }
     }
 
     @Override
@@ -81,23 +93,15 @@ public class TextureSetting extends Setting {
         if(TextureManager.instance != null) TextureManager.instance.removeTexture(getString());
     }
 
-    public void mouseClickEvent(MouseEvent event) {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setCurrentDirectory(new FsFile("editor/", false).getFile());
-        chooser.setFileFilter(new FileNameExtensionFilter("PNG Images", "png"));
-
-        int returnVal = chooser.showOpenDialog(null);
-        if(returnVal != JFileChooser.APPROVE_OPTION) return;
-        File textureFile = chooser.getSelectedFile();
-        if(textureFile == null) return;
-        loadTexture(textureFile);
+    private void loadTexture(String path) {
+        try { texture = ImageIO.read(new FsFile(path, false).getFile());
+        } catch (Exception ex) { Log.instance.crash(ex.getMessage()); }
+        if(texture == null && !path.equals("Unknown.png")) loadTexture("Unknown.png");
     }
 
-    public void loadTexture(File textureFile) {
-        try { texture = ImageIO.read(textureFile);
-        } catch (Exception e) { Log.instance.crash(e.getMessage()); }
-        textureLabel.setIcon(new ImageIcon(texture));
-        setValue(textureFile.getName());
+    private void setTextureIcon() {
+        if(textureLabel == null) return;
+        textureLabel.setIcon(new ImageIcon(texture.getScaledInstance(textureLabel.getWidth(), textureLabel.getHeight(), Image.SCALE_FAST)));
     }
 
 }

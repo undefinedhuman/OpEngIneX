@@ -1,10 +1,11 @@
 package de.undefinedhuman.core.entity;
 
+import de.undefinedhuman.core.entity.ecs.system.RenderSystem;
 import de.undefinedhuman.core.entity.ecs.system.System;
 import de.undefinedhuman.core.manager.Manager;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class EntityManager extends Manager {
@@ -12,72 +13,100 @@ public class EntityManager extends Manager {
     public static EntityManager instance;
 
     private HashMap<Integer, Entity> entities = new HashMap<>();
+    private HashMap<EntityType, HashMap<Integer, ArrayList<Entity>>> entitiesByTypeAndID = new HashMap<>();
     private ArrayList<Integer> entitiesToRemove = new ArrayList<>();
     private ArrayList<System> systems = new ArrayList<>();
 
     public EntityManager() {
-        if(instance == null) instance = this;
-        systems.add(new RenderSystem());
+        if (instance == null) instance = this;
+        addSystems(new RenderSystem());
     }
 
     @Override
     public void init() {
-        for(System system : systems) system.initSystem();
+        clearEntities();
+        for(System system : systems)
+            system.init();
+        for(EntityType type : EntityType.values())
+            entitiesByTypeAndID.put(type, new HashMap<>());
     }
 
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
-        for(System system : systems) system.resize(width, height);
+        for(System system : systems)
+            system.resize(width, height);
     }
 
     @Override
     public void update(float delta) {
-        for(System system : systems) for(Entity entity : entities.values()) system.update(entity, delta);
-        if(entitiesToRemove.size() > 0) for(Integer worldID : entitiesToRemove) { entities.get(worldID).delete(); entities.remove(worldID); }
+        for (System system : systems)
+            system.update(delta);
+        if (entitiesToRemove.size() == 0) return;
+        for (int worldID : entitiesToRemove) {
+            Entity entity = entities.get(worldID);
+            ArrayList<Entity> entitiesByID = entitiesByTypeAndID
+                    .get(entity.getEntityType())
+                    .get(entity.getBlueprintID());
+            entitiesByID.remove(entity);
+            if(entitiesByID.size() == 0)
+                entitiesByTypeAndID
+                        .get(entity.getEntityType())
+                        .remove(entity.getBlueprintID());
+            entities.remove(worldID);
+        }
         entitiesToRemove.clear();
-    }
-
-    @Override
-    public void render() {
-        for(Entity entity : entities.values()) entity.getTransform().update();
-        RenderSystem.instance.render(entities.values());
     }
 
     @Override
     public void delete() {
-        deleteEntities(entities.values());
-        clearEntityLists();
         systems.clear();
+        clearEntities();
     }
 
     public void addEntity(int worldID, Entity entity) {
-        this.entities.put(worldID, entity.setWorldID(worldID));
-        for(System system : systems) system.initEntity(entity);
-        RenderSystem.instance.sorted = false;
+        if(entity == null) return;
+        this.entities.put(worldID, entity);
+
+        HashMap<Integer, ArrayList<Entity>> entityTypeList = entitiesByTypeAndID.get(entity.getEntityType());
+        if(entityTypeList.containsKey(entity.getBlueprintID())) entityTypeList.get(entity.getBlueprintID()).add(entity);
+        else entityTypeList.put(entity.getBlueprintID(), addEntityArrayList(entity));
+    }
+
+    private ArrayList<Entity> addEntityArrayList(Entity entity) {
+        ArrayList<Entity> entityArrayList = new ArrayList<>();
+        entityArrayList.add(entity);
+        return entityArrayList;
     }
 
     public Entity getEntity(int worldID) {
-        if(!hasEntity(worldID)) return null;
+        if(!entities.containsKey(worldID)) return null;
         return entities.get(worldID);
     }
 
-    private void deleteEntities(Collection<Entity> entities) {
-        for(Entity entity : entities) entity.delete();
-    }
-
     public void removeEntity(int worldID) {
-        if(!hasEntity(worldID)) return;
+        if(!entities.containsKey(worldID)) return;
         this.entitiesToRemove.add(worldID);
-        RenderSystem.instance.sorted = false;
     }
 
-    public boolean hasEntity(int worldID) {
-        return entities.containsKey(worldID);
+    private void addSystems(System... systems) {
+        this.systems.addAll(Arrays.asList(systems));
     }
 
-    private void clearEntityLists() {
+    public HashMap<EntityType, HashMap<Integer, ArrayList<Entity>>> getEntitiesByTypeAndID() {
+        return entitiesByTypeAndID;
+    }
+
+    private void clearEntities() {
         entitiesToRemove.clear();
+        for(HashMap<Integer, ArrayList<Entity>> entitiesByType : entitiesByTypeAndID.values()) {
+            for(ArrayList<Entity> entitiesByBlueprintID : entitiesByType.values())
+                entitiesByBlueprintID.clear();
+            entitiesByType.clear();
+        }
+        entitiesByTypeAndID.clear();
+        for(Entity entity : entities.values())
+            entity.delete();
         entities.clear();
     }
 

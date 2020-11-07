@@ -4,7 +4,7 @@ import de.undefinedhuman.core.camera.Camera;
 import de.undefinedhuman.core.game.Game;
 import de.undefinedhuman.core.window.Time;
 import de.undefinedhuman.core.window.Window;
-import de.undefinedhuman.log.Log;
+import de.undefinedhuman.core.log.Log;
 import org.lwjgl.glfw.GLFW;
 
 public class Application {

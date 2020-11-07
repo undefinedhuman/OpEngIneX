@@ -35,8 +35,12 @@ public abstract class Panel extends Setting {
 
     @Override
     protected void addValueMenuComponents(JPanel panel, Vector2f position) {
+        int panelObjectOffset = 0;
+        for(Setting setting : panelObject.getSettings())
+            panelObjectOffset += setting.offset;
+
         objectPanel = new JPanel(null);
-        objectPanel.setBounds((int) position.x - 175, (int) position.y + 190, 370, panelObject.getSettings().size() * 25);
+        objectPanel.setBounds((int) position.x - 175, (int) position.y + 190, 500, panelObjectOffset);
         objectPanel.setOpaque(true);
 
         objectList = new DefaultListModel<>();
@@ -50,19 +54,19 @@ public abstract class Panel extends Setting {
         });
 
         JScrollPane objectScrollPane = new JScrollPane(objectSelectionList);
-        objectScrollPane.setBounds((int) position.x - 175, (int) position.y + 90, 370, 90);
+        objectScrollPane.setBounds((int) position.x - 175, (int) position.y + 90, 500, 90);
 
-        this.offset = 190 + panelObject.getSettings().size() * 30;
+        this.offset = 190 + panelObjectOffset;
 
         panel.add(objectScrollPane);
         panel.add(objectPanel);
         panel.add(addButton("Add", (int) position.x - 175, (int) position.y + 60, e -> addObject()));
-        panel.add(addButton("Remove", (int) position.x + 15, (int) position.y + 60, e -> removeObject()));
+        panel.add(addButton("Remove", (int) position.x + 80, (int) position.y + 60, e -> removeObject()));
     }
 
     private JButton addButton(String text, int x, int y, ActionListener listener) {
         JButton button = new JButton(text);
-        button.setBounds(x, y, 180, 25);
+        button.setBounds(x, y, 245, 25);
         button.addActionListener(listener);
         return button;
     }

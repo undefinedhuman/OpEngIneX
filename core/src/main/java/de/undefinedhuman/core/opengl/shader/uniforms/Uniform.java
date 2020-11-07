@@ -1,6 +1,6 @@
 package de.undefinedhuman.core.opengl.shader.uniforms;
 
-import de.undefinedhuman.log.Log;
+import de.undefinedhuman.core.log.Log;
 import org.lwjgl.opengl.GL20;
 
 public abstract class Uniform {

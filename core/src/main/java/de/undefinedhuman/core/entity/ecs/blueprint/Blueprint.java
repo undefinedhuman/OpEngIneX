@@ -18,12 +18,13 @@ public class Blueprint {
 
     public Setting
             id = new Setting(SettingType.Int, "ID", 0),
+            name = new Setting(SettingType.String, "Name", "Temp Name"),
             entityType = new SelectionSetting("Type", EntityType.values());
 
     private HashMap<ComponentType, ComponentBlueprint> componentBlueprints = new HashMap<>();
 
     public Blueprint() {
-        settings.add(id);
+        settings.add(id, name, entityType);
     }
 
     public Entity createInstance(ComponentParam... param) {

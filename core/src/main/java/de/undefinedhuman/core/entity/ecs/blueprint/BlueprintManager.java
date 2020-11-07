@@ -24,7 +24,6 @@ public class BlueprintManager extends Manager {
     @Override
     public void init() {
         super.init();
-        loadBlueprints(0, 1);
     }
 
     public boolean loadBlueprints(Integer... ids) {

@@ -8,12 +8,13 @@ import de.undefinedhuman.core.file.LineSplitter;
 import org.joml.Vector2f;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class Setting {
 
-    public float offset = 25;
+    public float offset = 30;
 
     protected String key;
     protected Object value;
@@ -29,7 +30,10 @@ public class Setting {
 
     public String getKey() { return key; }
     public Object getValue() { return value; }
-    public void setValue(Object value) { this.value = value; }
+    public void setValue(Object value) {
+        this.value = value;
+        setValueInMenu(value);
+    }
 
     public String getString() { return String.valueOf(value); }
     public float getFloat() { return Float.parseFloat(getString()); }
@@ -65,28 +69,30 @@ public class Setting {
     }
 
     public void addMenuComponents(JPanel panel, Vector2f position) {
-        JLabel keyLabel = new JLabel(key + ": (" + type.name() + ")", SwingConstants.CENTER);
-        keyLabel.setBounds((int) position.x, (int) position.y, 170, 25);
+        JLabel keyLabel = new JLabel("  " + key + ": (" + type.name() + ")", SwingConstants.LEFT);
+        keyLabel.setBounds((int) position.x + 5, (int) position.y, 165, 25);
+        keyLabel.setBackground(new Color(55, 58, 60));
         keyLabel.setOpaque(true);
         panel.add(keyLabel);
         addValueMenuComponents(panel, new Vector2f(position).add(180, 0));
     }
 
     protected void addValueMenuComponents(JPanel panel, Vector2f position) {
-        valueField = createTextField(panel, value, position, new Vector2f(200f, 25f), new KeyAdapter() {
+        valueField = createTextField(value, position, new Vector2f(200f, 25f), new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 if(valueField.getText() == null || valueField.getText().equalsIgnoreCase("")) return;
                 setValue(valueField.getText());
             }
         });
+        panel.add(valueField);
+        valueField.requestFocus();
     }
 
-    protected JTextField createTextField(JPanel panel, Object value, Vector2f position, Vector2f size, KeyAdapter adapter) {
+    protected JTextField createTextField(Object value, Vector2f position, Vector2f size, KeyAdapter adapter) {
         JTextField textField = new JTextField(String.valueOf(value));
         textField.setBounds((int) position.x, (int) position.y, (int) size.x, (int) size.y);
         textField.addKeyListener(adapter);
-        panel.add(textField);
         return textField;
     }
 

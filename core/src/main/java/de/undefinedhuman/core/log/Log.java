@@ -1,12 +1,11 @@
 package de.undefinedhuman.core.log;
 
+import de.undefinedhuman.core.file.FileWriter;
+import de.undefinedhuman.core.file.FsFile;
 import de.undefinedhuman.core.file.Paths;
 import de.undefinedhuman.core.utils.Variables;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,11 +21,11 @@ public class Log {
     private static List<String> logMessages;
 
     private String fileName;
-    private File file;
+    private FsFile file;
 
     public Log() {
-        logMessages = new ArrayList<>();
         if (instance == null) instance = this;
+        logMessages = new ArrayList<>();
     }
 
     public void init() {
@@ -40,25 +39,17 @@ public class Log {
 
     public void save() {
         if(file == null || !file.exists()) return;
-        FileWriter fileWriter = null;
-        try {
-            fileWriter = new FileWriter(new File(file.getPath()));
-        } catch (IOException ex) {
-            System.out.println("Can't save log file as FileWriter can't be created: \n" + ex.getMessage());
-            crash();
-        }
-        if(fileWriter == null) return;
-        BufferedWriter writer = new BufferedWriter(fileWriter);
+        FileWriter writer = file.getFileWriter(false, "");
         info("Log file successfully saved!");
         for (String message : logMessages)
-            writeValue(writer, message).nextLine(writer);
+            writer.writeString(message).nextLine();
         logMessages.clear();
-        try { writer.close(); } catch (IOException ex) { System.out.println("BufferedWriter can't be closed: \n" + ex.getMessage()); }
+        writer.close();
     }
 
     public void load() {
         checkLogs();
-        file = new File(Paths.LOG_PATH + fileName);
+        file = new FsFile(Paths.LOG_PATH + fileName, false);
         if (file.exists()) info("Log file successfully created!");
     }
 
@@ -114,24 +105,6 @@ public class Log {
 
     public static String getTime() {
         return DATE_FORMAT.format(Calendar.getInstance().getTime());
-    }
-
-    public Log writeValue(BufferedWriter writer, Object message) {
-        try { writer.write(String.valueOf(message));
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-            crash();
-        }
-        return this;
-    }
-
-    private Log nextLine(BufferedWriter writer) {
-        try { writer.newLine();
-        } catch (IOException ex) {
-            System.out.println(ex.getMessage());
-            crash();
-        }
-        return this;
     }
 
     public void displayMessage(String msg) {}

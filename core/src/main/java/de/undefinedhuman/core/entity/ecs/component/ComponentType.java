@@ -1,14 +1,12 @@
 package de.undefinedhuman.core.entity.ecs.component;
 
 import de.undefinedhuman.core.entity.ecs.component.mesh.MeshBlueprint;
-import de.undefinedhuman.core.entity.ecs.component.texture.TextureBlueprint;
 import de.undefinedhuman.core.file.FsFile;
 import de.undefinedhuman.core.settings.SettingsObject;
 
 public enum ComponentType {
 
-    MESH(MeshBlueprint.class),
-    TEXTURE(TextureBlueprint.class);
+    MESH(MeshBlueprint.class);
 
     private Class<? extends ComponentBlueprint> componentBlueprint;
 
@@ -18,7 +16,7 @@ public enum ComponentType {
 
     public ComponentBlueprint createInstance(FsFile parentDir, SettingsObject settingsObject) {
         ComponentBlueprint componentBlueprint = null;
-        try { componentBlueprint = this.componentBlueprint.newInstance().setType(this);
+        try { componentBlueprint = this.componentBlueprint.newInstance();
         } catch (InstantiationException | IllegalAccessException e) { e.printStackTrace(); }
         if (componentBlueprint != null) componentBlueprint.load(parentDir, settingsObject);
         return componentBlueprint;

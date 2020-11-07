@@ -32,21 +32,23 @@ public class Vector2Setting extends Setting {
 
     @Override
     protected void addValueMenuComponents(JPanel panel, Vector2f position) {
-        xTextField = createTextField(panel, getVector2().x, position, new Vector2f(95, 25), new KeyAdapter() {
+        xTextField = createTextField(getVector2().x, position, new Vector2f(95, 25), new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 if(xTextField.getText() == null || xTextField.getText().equalsIgnoreCase("")) return;
                 setValue(new Vector2f(Float.parseFloat(xTextField.getText()), getVector2().y));
             }
         });
+        panel.add(xTextField);
 
-        yTextField = createTextField(panel, getVector2().y, new Vector2f(position).add(105, 0), new Vector2f(95, 25), new KeyAdapter() {
+        yTextField = createTextField(getVector2().y, new Vector2f(position).add(105, 0), new Vector2f(95, 25), new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 if(yTextField.getText() == null || yTextField.getText().equalsIgnoreCase("")) return;
                 setValue(new Vector2f(getVector2().x, Float.parseFloat(yTextField.getText())));
             }
         });
+        panel.add(yTextField);
     }
 
     @Override

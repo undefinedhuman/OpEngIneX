@@ -6,32 +6,22 @@ import de.undefinedhuman.core.entity.shader.StaticShader;
 
 public enum EntityType {
 
-    STATIC(new StaticShader()),
-    DYNAMIC(new StaticShader()),
-    GROWTHS(new GrowthShader());
+    STATIC(StaticShader.class),
+    GROWTHS(GrowthShader.class);
 
-    private EntityShader shader;
+    private Class<? extends EntityShader> shaderType;
 
-    EntityType(EntityShader shader) {
-        this.shader = shader;
+    EntityType(Class<? extends EntityShader> shaderType) {
+        this.shaderType = shaderType;
     }
 
-    public EntityShader getShader() {
-        return shader;
-    }
-
-    public void resize() {
-        shader.bind();
-        shader.resizeUniforms();
-        shader.unbind();
-    }
-
-    public void update() {
-        shader.loadUniforms();
-    }
-
-    public void update(Entity entity) {
-        shader.loadUniforms(entity);
+    public EntityShader createNewInstance() {
+        try {
+            return this.shaderType.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

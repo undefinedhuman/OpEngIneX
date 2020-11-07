@@ -6,7 +6,9 @@ public abstract class Component implements Serializable {
 
     protected ComponentType type;
 
-    public Component() {}
+    public Component(ComponentType type) {
+        this.type = type;
+    }
 
     public ComponentType getType() {
         return type;

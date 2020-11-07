@@ -1,13 +1,16 @@
 package de.undefinedhuman.core;
 
+import de.undefinedhuman.core.camera.Camera;
 import de.undefinedhuman.core.config.ConfigManager;
 import de.undefinedhuman.core.config.SettingsManager;
-import de.undefinedhuman.core.language.LanguageManager;
-import de.undefinedhuman.core.log.Log;
-import de.undefinedhuman.core.manager.ManagerList;
-import de.undefinedhuman.core.camera.Camera;
+import de.undefinedhuman.core.entity.EntityManager;
+import de.undefinedhuman.core.entity.ecs.blueprint.BlueprintManager;
 import de.undefinedhuman.core.game.Game;
 import de.undefinedhuman.core.input.InputManager;
+import de.undefinedhuman.core.language.LanguageManager;
+import de.undefinedhuman.core.light.LightManager;
+import de.undefinedhuman.core.log.Log;
+import de.undefinedhuman.core.manager.ManagerList;
 import de.undefinedhuman.core.resources.texture.TextureManager;
 import de.undefinedhuman.core.window.Window;
 import org.lwjgl.Version;
@@ -19,7 +22,7 @@ public class Engine {
 
     public static Engine instance;
 
-    public Camera camera;
+    public static Camera camera;
 
     private ManagerList managerList, glManagerList;
     private boolean init = false;
@@ -28,7 +31,7 @@ public class Engine {
 
     public Engine(Camera camera) {
         if (instance == null) instance = this;
-        this.camera = camera;
+        Engine.camera = camera;
         Log.instance = new Log() {
             @Override
             public void close() {
@@ -36,8 +39,8 @@ public class Engine {
                     glfwSetWindowShouldClose(Window.instance.getID(), true);
             }
         };
-        managerList = new ManagerList().addManager(new SettingsManager(), new ConfigManager(), new LanguageManager(), new TextureManager());
-        glManagerList = new ManagerList().addManager(new InputManager(), camera);
+        managerList = new ManagerList().addManager(new SettingsManager(), new ConfigManager(), new LanguageManager());
+        glManagerList = new ManagerList().addManager(new InputManager(), Engine.camera, new TextureManager(), new LightManager(), new BlueprintManager(), new EntityManager());
         Window.instance = new Window();
     }
 

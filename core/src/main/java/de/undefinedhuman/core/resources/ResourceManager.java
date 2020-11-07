@@ -38,7 +38,7 @@ public class ResourceManager {
             if(!object.containsKey(type.name())) continue;
             Object componentObject = object.get(type.name());
             if(!(componentObject instanceof SettingsObject)) continue;
-            blueprint.addComponentBlueprint(type.load(reader.getParentDirectory(), (SettingsObject) object.get(type.name())));
+            blueprint.addComponentBlueprint(type.createInstance(reader.getParentDirectory(), (SettingsObject) object.get(type.name())));
         }
 
         reader.close();
@@ -132,7 +132,7 @@ public class ResourceManager {
         reader.close();
 
         float[] vertices = new float[verticesList.size()*3];
-        for(int i = 0; i < vertices.length; i++) {
+        for(int i = 0; i < verticesList.size(); i++) {
             Vector3f vertex = verticesList.get(i);
             vertices[i * 3] = vertex.x;
             vertices[i * 3 + 1] = vertex.y;
