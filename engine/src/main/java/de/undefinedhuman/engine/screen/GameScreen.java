@@ -1,5 +1,6 @@
 package de.undefinedhuman.engine.screen;
 
+import de.undefinedhuman.core.entity.ecs.blueprint.BlueprintManager;
 import de.undefinedhuman.core.screen.Screen;
 
 public class GameScreen implements Screen {
@@ -12,7 +13,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void init() {
-
+        BlueprintManager.instance.loadBlueprints(0);
     }
 
     @Override
