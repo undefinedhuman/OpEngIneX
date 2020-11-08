@@ -16,9 +16,7 @@ public abstract class ComponentBlueprint {
 
     public ComponentType type;
 
-    public ComponentBlueprint(ComponentType type) {
-        this.type = type;
-    }
+    public ComponentBlueprint() {}
 
     public abstract Component createInstance(HashMap<ComponentType, ComponentParam> params);
 
@@ -35,12 +33,6 @@ public abstract class ComponentBlueprint {
 
     public ArrayList<Setting> getSettings() {
         return settings.getSettings();
-    }
-
-    // DON'T USE
-    public ComponentBlueprint setType(ComponentType type) {
-        this.type = type;
-        return this;
     }
 
     public ComponentType getType() {

@@ -11,7 +11,6 @@ buildscript {
 }
 
 allprojects {
-    apply plugin: "eclipse"
     apply plugin: "idea"
 
     version = '0.0.1'
@@ -49,8 +48,6 @@ project(":core") {
     apply plugin: "java"
 
     dependencies {
-        testCompile group: 'junit', name: 'junit', version: '4.12'
-
         implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
         implementation "org.lwjgl:lwjgl"
         implementation "org.lwjgl:lwjgl-assimp"
@@ -77,6 +74,7 @@ project(":core") {
         if (lwjglNatives == "natives-macos") runtimeOnly "org.lwjgl:lwjgl-vulkan::$lwjglNatives"
         implementation "org.joml:joml:${jomlVersion}"
 
+        compile group: 'com.github.kerner1000', name: 'javapng', version: '2.1.2'
         compile group: 'org.l33tlabs.twl', name: 'pngdecoder', version: '1.0'
         compile group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
     }
@@ -85,13 +83,8 @@ project(":core") {
 
 project(":engine") {
     apply plugin: "java"
-    apply plugin: "application"
-
-    applicationDefaultJvmArgs = ["-XstartOnFirstThread"]
 
     dependencies {
-        testCompile group: 'junit', name: 'junit', version: '4.12'
-
         compile project(":core")
 
         implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
@@ -118,7 +111,6 @@ project(":engine") {
         runtimeOnly "org.lwjgl:lwjgl-par::$lwjglNatives"
         runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
         if (lwjglNatives == "natives-macos") runtimeOnly "org.lwjgl:lwjgl-vulkan::$lwjglNatives"
-
         implementation "org.joml:joml:${jomlVersion}"
     }
 

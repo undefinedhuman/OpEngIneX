@@ -18,7 +18,7 @@ public enum ComponentType {
         ComponentBlueprint componentBlueprint = null;
         try { componentBlueprint = this.componentBlueprint.newInstance();
         } catch (InstantiationException | IllegalAccessException e) { e.printStackTrace(); }
-        if (componentBlueprint != null) componentBlueprint.load(parentDir, settingsObject);
+        if(componentBlueprint != null) componentBlueprint.load(parentDir, settingsObject);
         return componentBlueprint;
     }
 

@@ -38,7 +38,7 @@ public class ResourceManager {
             if(!object.containsKey(type.name())) continue;
             Object componentObject = object.get(type.name());
             if(!(componentObject instanceof SettingsObject)) continue;
-            blueprint.addComponentBlueprint(type.createInstance(reader.getParentDirectory(), (SettingsObject) object.get(type.name())));
+            blueprint.addComponentBlueprint(type.createInstance(reader.getParentDirectory(), (SettingsObject) componentObject));
         }
 
         reader.close();

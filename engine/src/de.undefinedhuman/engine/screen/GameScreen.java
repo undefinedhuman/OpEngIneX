@@ -14,6 +14,7 @@ public class GameScreen implements Screen {
     @Override
     public void init() {
         BlueprintManager.instance.loadBlueprints(0);
+        // EntityManager.instance.addEntity(0, BlueprintManager.instance.getBlueprint(0).createInstance());
     }
 
     @Override

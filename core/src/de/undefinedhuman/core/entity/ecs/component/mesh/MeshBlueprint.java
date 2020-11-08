@@ -25,8 +25,8 @@ public class MeshBlueprint extends ComponentBlueprint {
     private String[] textures = new String[0];
 
     public MeshBlueprint() {
-        super(ComponentType.MESH);
         settings.add(meshes);
+        this.type = ComponentType.MESH;
     }
 
     @Override
@@ -41,6 +41,7 @@ public class MeshBlueprint extends ComponentBlueprint {
         if(Engine.instance == null) return;
         ArrayList<PanelObject> objects = meshes.values();
         vaos = new Vao[meshes.getPanelObjects().size()];
+        textures = new String[meshes.getPanelObjects().size()];
         for(int i = 0; i < vaos.length; i++) {
             Mesh mesh = (Mesh) objects.get(i);
             vaos[i] = mesh.generateVao();

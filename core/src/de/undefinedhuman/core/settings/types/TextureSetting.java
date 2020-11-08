@@ -1,5 +1,6 @@
 package de.undefinedhuman.core.settings.types;
 
+import com.sixlegs.png.PngImage;
 import de.undefinedhuman.core.file.FileWriter;
 import de.undefinedhuman.core.file.FsFile;
 import de.undefinedhuman.core.file.LineSplitter;
@@ -28,8 +29,8 @@ public class TextureSetting extends Setting {
 
     public TextureSetting(String key, Object value) {
         super(SettingType.Texture, key, value);
+        loadTexture("Unknown.png");
         setValue("Unknown.png");
-        loadTexture(getString());
         this.offset = 301;
     }
 
@@ -94,8 +95,9 @@ public class TextureSetting extends Setting {
     }
 
     private void loadTexture(String path) {
-        try { texture = ImageIO.read(new FsFile(path, false).getFile());
-        } catch (Exception ex) { Log.instance.crash(ex.getMessage()); }
+        try {
+            texture = new PngImage().read(new FsFile(path, false).getFile());
+        } catch (IOException ex) { Log.instance.crash(ex.getMessage()); }
         if(texture == null && !path.equals("Unknown.png")) loadTexture("Unknown.png");
     }
 

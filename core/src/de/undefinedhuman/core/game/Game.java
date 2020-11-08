@@ -1,11 +1,10 @@
 package de.undefinedhuman.core.game;
 
+import de.undefinedhuman.core.input.Input;
+import de.undefinedhuman.core.input.InputManager;
 import de.undefinedhuman.core.manager.Manager;
 import de.undefinedhuman.core.manager.ManagerList;
 import de.undefinedhuman.core.screen.Screen;
-import de.undefinedhuman.core.input.Input;
-import de.undefinedhuman.core.input.InputManager;
-import org.lwjgl.opengl.GL;
 
 public abstract class Game {
 
@@ -17,7 +16,6 @@ public abstract class Game {
     }
 
     public void init() {
-        GL.createCapabilities();
         manager.init();
     }
 
