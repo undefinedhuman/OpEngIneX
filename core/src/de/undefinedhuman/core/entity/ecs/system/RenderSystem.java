@@ -6,6 +6,7 @@ import de.undefinedhuman.core.entity.EntityType;
 import de.undefinedhuman.core.entity.ecs.component.ComponentType;
 import de.undefinedhuman.core.entity.ecs.component.mesh.MeshComponent;
 import de.undefinedhuman.core.entity.shader.EntityShader;
+import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.opengl.OpenGLUtils;
 import de.undefinedhuman.core.opengl.Vao;
 import de.undefinedhuman.core.resources.texture.Texture;
@@ -20,12 +21,14 @@ public class RenderSystem implements System {
 
     @Override
     public void init() {
+        Log.info("Init");
         for(EntityType type : EntityType.values())
             entityShader.put(type, type.createNewInstance());
     }
 
     @Override
     public void resize(int width, int height) {
+        Log.info("Resize");
         for(EntityShader shader : entityShader.values()) {
             shader.bind();
             shader.resize(width, height);

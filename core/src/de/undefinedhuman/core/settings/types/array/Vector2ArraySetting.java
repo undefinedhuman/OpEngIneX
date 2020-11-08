@@ -24,7 +24,8 @@ public class Vector2ArraySetting extends ArraySetting {
 
     @Override
     public void save(FileWriter writer) {
-        writer.writeString(key).writeInt(getVector2Array().length);
+        super.save(writer);
+        writer.writeInt(getVector2Array().length);
         for(Vector2f vector : getVector2Array()) writer.writeVector2(vector);
     }
 

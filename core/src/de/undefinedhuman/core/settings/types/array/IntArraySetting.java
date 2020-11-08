@@ -21,6 +21,7 @@ public class IntArraySetting extends ArraySetting {
 
     @Override
     public void save(FileWriter writer) {
+        super.save(writer);
         writer.writeIntegerArray(getIntegerArray());
     }
 

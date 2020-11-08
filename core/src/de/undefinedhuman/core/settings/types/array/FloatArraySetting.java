@@ -21,6 +21,7 @@ public class FloatArraySetting extends ArraySetting {
 
     @Override
     public void save(FileWriter writer) {
+        super.save(writer);
         writer.writeFloatArray(getFloatArray());
     }
 

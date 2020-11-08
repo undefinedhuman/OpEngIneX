@@ -22,7 +22,8 @@ public class PanelObject {
     }
 
     public PanelObject load(FsFile parentDir, SettingsObject settingsObject) {
-        for(Setting setting : this.settings.getSettings()) setting.loadSetting(parentDir, settingsObject);
+        for(Setting setting : this.settings.getSettings())
+            setting.loadSetting(parentDir, settingsObject);
         return this;
     }
 

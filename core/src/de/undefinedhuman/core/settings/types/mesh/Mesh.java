@@ -1,7 +1,9 @@
 package de.undefinedhuman.core.settings.types.mesh;
 
+import de.undefinedhuman.core.file.FsFile;
 import de.undefinedhuman.core.opengl.Vao;
 import de.undefinedhuman.core.settings.Setting;
+import de.undefinedhuman.core.settings.SettingsObject;
 import de.undefinedhuman.core.settings.panels.PanelObject;
 import de.undefinedhuman.core.settings.types.BooleanSetting;
 import de.undefinedhuman.core.settings.types.TextureSetting;
@@ -29,6 +31,11 @@ public class Mesh extends PanelObject {
 
     public Mesh() {
         settings.add(loadMesh, indiciesSetting, verticesSetting, textureCoordsSetting, normalsSetting, texture, culling);
+    }
+
+    @Override
+    public PanelObject load(FsFile parentDir, SettingsObject settingsObject) {
+        return super.load(parentDir, settingsObject);
     }
 
     public Vao generateVao() {

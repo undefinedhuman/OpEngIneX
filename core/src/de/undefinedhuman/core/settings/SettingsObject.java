@@ -3,6 +3,7 @@ package de.undefinedhuman.core.settings;
 import de.undefinedhuman.core.log.Log;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class SettingsObject {
 
@@ -28,6 +29,10 @@ public class SettingsObject {
             else Log.info(settingsObject.getSettings().get(key).toString());
             Log.info("===");
         }
+    }
+
+    public Set<String> keySet() {
+        return settings.keySet();
     }
 
     public HashMap<String, Object> getSettings() {

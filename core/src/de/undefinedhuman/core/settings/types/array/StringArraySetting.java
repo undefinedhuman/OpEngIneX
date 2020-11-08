@@ -21,6 +21,7 @@ public class StringArraySetting extends ArraySetting {
 
     @Override
     public void save(FileWriter writer) {
+        super.save(writer);
         writer.writeStringArray(getStringArray());
     }
 

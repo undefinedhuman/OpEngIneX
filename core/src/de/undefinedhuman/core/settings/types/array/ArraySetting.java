@@ -1,5 +1,6 @@
 package de.undefinedhuman.core.settings.types.array;
 
+import de.undefinedhuman.core.file.FileWriter;
 import de.undefinedhuman.core.settings.Setting;
 import de.undefinedhuman.core.settings.SettingType;
 import org.joml.Vector2f;
@@ -37,6 +38,11 @@ public abstract class ArraySetting extends Setting {
     @Override
     protected void setValueInMenu(Object value) {
         if(valueField != null) valueField.setText(generateString());
+    }
+
+    @Override
+    public void save(FileWriter writer) {
+        writer.writeString(key);
     }
 
     public ArraySetting setEditable(boolean editable) {

@@ -37,7 +37,6 @@ public class MeshBlueprint extends ComponentBlueprint {
     @Override
     public void load(FsFile parentDir, SettingsObject settingsObject) {
         super.load(parentDir, settingsObject);
-        // TODO Maybe Refactor
         if(Engine.instance == null) return;
         ArrayList<PanelObject> objects = meshes.values();
         vaos = new Vao[meshes.getPanelObjects().size()];

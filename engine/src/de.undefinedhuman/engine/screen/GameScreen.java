@@ -1,5 +1,7 @@
 package de.undefinedhuman.engine.screen;
 
+import de.undefinedhuman.core.entity.Entity;
+import de.undefinedhuman.core.entity.EntityManager;
 import de.undefinedhuman.core.entity.ecs.blueprint.BlueprintManager;
 import de.undefinedhuman.core.screen.Screen;
 
@@ -14,7 +16,11 @@ public class GameScreen implements Screen {
     @Override
     public void init() {
         BlueprintManager.instance.loadBlueprints(0);
-        // EntityManager.instance.addEntity(0, BlueprintManager.instance.getBlueprint(0).createInstance());
+        EntityManager.instance.addEntity(0, BlueprintManager.instance.getBlueprint(0).createInstance());
+
+        Entity entity =  BlueprintManager.instance.getBlueprint(0).createInstance();
+        entity.setPosition(0, 0, -10);
+        EntityManager.instance.addEntity(1, entity);
     }
 
     @Override
