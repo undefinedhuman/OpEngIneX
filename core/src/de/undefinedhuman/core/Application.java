@@ -1,16 +1,15 @@
 package de.undefinedhuman.core;
 
-import de.undefinedhuman.core.camera.Camera;
 import de.undefinedhuman.core.game.Game;
+import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.window.Time;
 import de.undefinedhuman.core.window.Window;
-import de.undefinedhuman.core.log.Log;
 import org.lwjgl.glfw.GLFW;
 
 public class Application {
 
-    public Application(Game game, Camera camera) {
-        Engine.instance = new Engine(camera);
+    public Application(Game game) {
+        Engine.instance = new Engine();
         Time.instance = new Time();
         Engine.instance.init();
         if (!Engine.instance.isInitialized()) Log.instance.crash("Engine could not be initialized!");

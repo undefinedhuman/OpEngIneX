@@ -16,36 +16,23 @@ import de.undefinedhuman.core.window.Window;
 import org.lwjgl.Version;
 import org.lwjgl.opengl.GL;
 
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
-
 public class Engine {
 
     public static Engine instance;
-
-    public static Camera camera;
 
     private ManagerList managerList, glManagerList;
     private boolean init = false;
 
     private Game game;
 
-    public Engine(Camera camera) {
+    public Engine() {
         if (instance == null) instance = this;
-        Engine.camera = camera;
-        Log.instance = new Log() {
-            @Override
-            public void close() {
-                if (Window.instance != null && Engine.instance.isInitialized())
-                    glfwSetWindowShouldClose(Window.instance.getID(), true);
-            }
-        };
-        managerList = new ManagerList().addManager(new SettingsManager(), new ConfigManager(), new LanguageManager());
-        glManagerList = new ManagerList().addManager(new InputManager(), Engine.camera, new TextureManager(), new LightManager(), new BlueprintManager(), new EntityManager());
+        managerList = new ManagerList().addManager(new Log(), new SettingsManager(), new ConfigManager(), new LanguageManager());
+        glManagerList = new ManagerList().addManager(new InputManager(), new Camera(), new TextureManager(), new LightManager(), new BlueprintManager(), new EntityManager());
         Window.instance = new Window();
     }
 
     public void init() {
-        Log.instance.init();
         managerList.init();
         Window.instance.init();
         Log.info("Engine initialized and running on LWJGL Version " + Version.getVersion());
@@ -79,7 +66,6 @@ public class Engine {
         game.delete();
         glManagerList.delete();
         managerList.delete();
-        Log.instance.delete();
         Window.instance.delete();
         System.exit(0);
     }

@@ -31,8 +31,8 @@ public abstract class ShaderProgram {
     public void compileShader() {
         GL20.glLinkProgram(programID);
         if(GL20.glGetProgrami(programID, GL20.GL_LINK_STATUS) == GL11.GL_FALSE) Log.instance.crash("Can't link " + shaderPath + ":\n" + GL20.glGetProgramInfoLog(programID, 1024));
-        // GL20.glValidateProgram(programID);
-        // if(GL20.glGetProgrami(programID, GL20.GL_VALIDATE_STATUS) == GL11.GL_FALSE) Log.instance.crash("Can't validate " + shaderPath + ":\n" + GL20.glGetProgramInfoLog(programID, 1024));
+        //GL20.glValidateProgram(programID);
+        //if(GL20.glGetProgrami(programID, GL20.GL_VALIDATE_STATUS) == GL11.GL_FALSE) Log.instance.crash("Can't validate " + shaderPath + ":\n" + GL20.glGetProgramInfoLog(programID, 1024));
     }
 
     public ShaderProgram addVertexShader() {
@@ -80,7 +80,8 @@ public abstract class ShaderProgram {
     }
 
     protected void initUniforms(Uniform... uniforms) {
-        for (Uniform uniform : uniforms) uniform.storeUniformLocation(programID);
+        for (Uniform uniform : uniforms)
+            uniform.storeUniformLocation(programID);
     }
 
     public void bind() { GL20.glUseProgram(programID); }

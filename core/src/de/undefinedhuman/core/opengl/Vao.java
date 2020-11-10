@@ -1,5 +1,6 @@
 package de.undefinedhuman.core.opengl;
 
+import de.undefinedhuman.core.log.Log;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
@@ -59,13 +60,13 @@ public class Vao {
     }
 
     public Vao storeIndexData(int[] indices) {
+        vertexCount = indices.length;
         Vbo vbo = new Vbo(GL15.GL_ELEMENT_ARRAY_BUFFER, GL15.GL_STATIC_DRAW);
         IntBuffer buffer = BufferUtils.createIntBuffer(indices.length);
         buffer.put(indices);
         buffer.flip();
         vbo.storeData(buffer);
         vbos.add(vbo);
-        vertexCount = indices.length;
         return this;
     }
 

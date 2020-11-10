@@ -59,6 +59,14 @@ public class EntityManager extends Manager {
     }
 
     @Override
+    public void render() {
+        for(Entity entity : entities.values())
+            entity.updateMatrices();
+        for(System system : systems)
+            system.render();
+    }
+
+    @Override
     public void delete() {
         systems.clear();
         clearEntities();
@@ -66,7 +74,7 @@ public class EntityManager extends Manager {
 
     public void addEntity(int worldID, Entity entity) {
         if(entity == null) return;
-        this.entities.put(worldID, entity);
+        this.entities.put(worldID, entity.setWorldID(worldID));
 
         HashMap<Integer, ArrayList<Entity>> entityTypeList = entitiesByTypeAndID.get(entity.getEntityType());
         if(entityTypeList.containsKey(entity.getBlueprintID())) entityTypeList.get(entity.getBlueprintID()).add(entity);

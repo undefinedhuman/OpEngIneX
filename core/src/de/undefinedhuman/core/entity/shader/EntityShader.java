@@ -1,6 +1,6 @@
 package de.undefinedhuman.core.entity.shader;
 
-import de.undefinedhuman.core.Engine;
+import de.undefinedhuman.core.camera.Camera;
 import de.undefinedhuman.core.entity.Entity;
 import de.undefinedhuman.core.opengl.shader.ShaderProgram;
 import de.undefinedhuman.core.opengl.shader.uniforms.UniformMatrix3;
@@ -22,11 +22,11 @@ public class EntityShader extends ShaderProgram {
     }
 
     public void resize(int width, int height) {
-        projectionMatrix.loadValue(Engine.camera.getProjectionMatrix());
+        projectionMatrix.loadValue(Camera.instance.getProjectionMatrix());
     }
 
     public void loadUniforms() {
-        viewMatrix.loadValue(Engine.camera.getViewMatrix());
+        viewMatrix.loadValue(Camera.instance.getViewMatrix());
     }
 
     public void loadUniforms(Entity entity) {

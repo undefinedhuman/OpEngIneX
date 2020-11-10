@@ -1,6 +1,6 @@
 package de.undefinedhuman.core.entity.shader;
 
-import de.undefinedhuman.core.Engine;
+import de.undefinedhuman.core.camera.Camera;
 import de.undefinedhuman.core.light.LightManager;
 import de.undefinedhuman.core.opengl.shader.uniforms.UniformFloat;
 import de.undefinedhuman.core.opengl.shader.uniforms.UniformVector3;
@@ -38,7 +38,7 @@ public class LightShader extends EntityShader {
     @Override
     public void loadUniforms() {
         super.loadUniforms();
-        cameraPosition.loadValue(Engine.camera.getPosition());
+        cameraPosition.loadValue(Camera.instance.getPosition());
         time.loadValue(Time.getElapsedTime());
     }
 

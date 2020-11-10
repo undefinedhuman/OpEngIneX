@@ -6,9 +6,9 @@ import de.undefinedhuman.core.entity.EntityType;
 import de.undefinedhuman.core.entity.ecs.component.ComponentType;
 import de.undefinedhuman.core.entity.ecs.component.mesh.MeshComponent;
 import de.undefinedhuman.core.entity.shader.EntityShader;
-import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.opengl.OpenGLUtils;
 import de.undefinedhuman.core.opengl.Vao;
+import de.undefinedhuman.core.opengl.shader.ShaderProgram;
 import de.undefinedhuman.core.resources.texture.Texture;
 import de.undefinedhuman.core.resources.texture.TextureManager;
 
@@ -21,14 +21,12 @@ public class RenderSystem implements System {
 
     @Override
     public void init() {
-        Log.info("Init");
         for(EntityType type : EntityType.values())
             entityShader.put(type, type.createNewInstance());
     }
 
     @Override
     public void resize(int width, int height) {
-        Log.info("Resize");
         for(EntityShader shader : entityShader.values()) {
             shader.bind();
             shader.resize(width, height);
@@ -37,7 +35,10 @@ public class RenderSystem implements System {
     }
 
     @Override
-    public void update(float delta) {
+    public void update(float delta) {}
+
+    @Override
+    public void render() {
         for(EntityType entityType : EntityManager.instance.getEntitiesByTypeAndID().keySet()) {
             EntityShader shader = entityShader.get(entityType);
             shader.bind();
@@ -55,6 +56,7 @@ public class RenderSystem implements System {
                     vao.start();
                     texture.bind();
                     for(Entity entity : entitiesWithID) {
+                        entity.updateMatrices();
                         shader.loadUniforms(entity);
                         OpenGLUtils.renderVao(vao.getVertexCount());
                     }
@@ -67,6 +69,9 @@ public class RenderSystem implements System {
     }
 
     @Override
-    public void delete() {}
+    public void delete() {
+        for(ShaderProgram shader : entityShader.values())
+            shader.delete();
+    }
 
 }

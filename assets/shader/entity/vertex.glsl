@@ -1,4 +1,4 @@
-#version 410 core
+#version 400 core
 
 in vec3 position;
 in vec2 textureCoords;
@@ -23,7 +23,7 @@ const float PI = 3.1415926535897932384626433832795;
 
 void main() {
     vec4 newPos = vec4(position.x, position.y, position.z, 1);
-    newPos.x += sin(time) * 0.1 * position.y;
+    newPos.x += sin(time) * 0 * position.y;
     vec4 worldPosition = transformMatrix * newPos;
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
     passTextureCoords = textureCoords;

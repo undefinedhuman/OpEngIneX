@@ -5,6 +5,8 @@ import de.undefinedhuman.core.entity.EntityManager;
 import de.undefinedhuman.core.entity.ecs.blueprint.BlueprintManager;
 import de.undefinedhuman.core.screen.Screen;
 
+import java.util.Random;
+
 public class GameScreen implements Screen {
 
     public static GameScreen instance;
@@ -15,12 +17,13 @@ public class GameScreen implements Screen {
 
     @Override
     public void init() {
-        BlueprintManager.instance.loadBlueprints(0);
-        EntityManager.instance.addEntity(0, BlueprintManager.instance.getBlueprint(0).createInstance());
+        BlueprintManager.instance.loadBlueprints(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-        Entity entity =  BlueprintManager.instance.getBlueprint(0).createInstance();
-        entity.setPosition(0, 0, -10);
-        EntityManager.instance.addEntity(1, entity);
+        for(int i = 0; i < 1000; i++) {
+            Entity entity = BlueprintManager.instance.getBlueprint(4).createInstance();
+            entity.setPosition(new Random().nextInt(200) - 100, 0, new Random().nextInt(200) - 100);
+            EntityManager.instance.addEntity(i, entity);
+        }
     }
 
     @Override

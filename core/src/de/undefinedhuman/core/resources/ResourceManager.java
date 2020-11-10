@@ -14,6 +14,7 @@ import de.undefinedhuman.core.utils.Tools;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -68,6 +69,7 @@ public class ResourceManager {
             image = ByteBuffer.allocateDirect(4*decoder.getWidth()*decoder.getHeight());
             decoder.decode(image, decoder.getWidth()*4, PNGDecoder.Format.RGBA);
             image.flip();
+            stream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,12 +77,15 @@ public class ResourceManager {
         if(decoder == null) return 0;
 
         textureID = glGenTextures();
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureID);
+        GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, decoder.getWidth(), decoder.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_REPEAT);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_REPEAT);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, decoder.getWidth(), decoder.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
         return textureID;
     }
 
@@ -119,7 +124,7 @@ public class ResourceManager {
                         indicies.add(currentVertexPointer);
                         Vector2f texture = texturesList.get(splitter.getNextInt() - 1);
                         textureCoords[currentVertexPointer * 2] = texture.x;
-                        textureCoords[currentVertexPointer * 2 + 1] = 1 - texture.y;
+                        textureCoords[currentVertexPointer * 2 + 1] = texture.y;
                         Vector3f normal = normalsList.get(splitter.getNextInt() - 1);
                         normals[currentVertexPointer * 3] = normal.x;
                         normals[currentVertexPointer * 3 + 1] = normal.y;
@@ -131,6 +136,10 @@ public class ResourceManager {
         }
         reader.close();
 
+        int[] indiciesArray = new int[indicies.size()];
+        for(int i = 0; i < indiciesArray.length; i++)
+            indiciesArray[i] = indicies.get(i);
+
         float[] vertices = new float[verticesList.size()*3];
         for(int i = 0; i < verticesList.size(); i++) {
             Vector3f vertex = verticesList.get(i);
@@ -139,7 +148,7 @@ public class ResourceManager {
             vertices[i * 3 + 2] = vertex.z;
         }
 
-        return new MeshData(indicies.stream().mapToInt(Integer::intValue).toArray(), vertices, textureCoords, normals);
+        return new MeshData(indiciesArray, vertices, textureCoords, normals);
     }
 
 }

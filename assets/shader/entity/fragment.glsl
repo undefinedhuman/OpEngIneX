@@ -1,4 +1,4 @@
-#version 410 core
+#version 400 core
 
 in vec2 passTextureCoords;
 in vec3 surfaceNormal;
@@ -15,6 +15,8 @@ uniform float specularStrength;
 uniform float shineDamper;
 
 void main() {
+    vec4 fragmentColor = texture(textureSampler, passTextureCoords);
+    if(fragmentColor.a < 0.5) discard;
 
     vec3 unitNormal = normalize(surfaceNormal);
     vec3 unitLight = normalize(lightRay);
@@ -28,6 +30,5 @@ void main() {
     float dotCamera = pow(max(dot(unitCamera, reflectedLight), 0.0), shineDamper);
     vec3 specular = specularStrength * dotCamera * lightColor;
 
-    out_Color = vec4((diffuse + specular), 1)  * texture(textureSampler, passTextureCoords);
-
+    out_Color = vec4((diffuse + specular), 1)  * fragmentColor;
 }
