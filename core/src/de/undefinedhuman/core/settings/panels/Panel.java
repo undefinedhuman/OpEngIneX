@@ -14,8 +14,7 @@ import java.util.HashMap;
 
 public abstract class Panel extends Setting {
 
-    private JList<String> objectSelectionList;
-
+    protected JList<String> objectSelectionList;
     protected HashMap<String, PanelObject> objects = new HashMap<>();
     protected DefaultListModel<String> objectList;
     protected PanelObject panelObject;

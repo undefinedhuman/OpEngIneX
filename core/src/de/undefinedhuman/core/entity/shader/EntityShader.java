@@ -22,10 +22,11 @@ public class EntityShader extends ShaderProgram {
     }
 
     public void resize(int width, int height) {
-        projectionMatrix.loadValue(Camera.instance.getProjectionMatrix());
+
     }
 
     public void loadUniforms() {
+        projectionMatrix.loadValue(Camera.instance.updateProjectionMatrix());
         viewMatrix.loadValue(Camera.instance.getViewMatrix());
     }
 

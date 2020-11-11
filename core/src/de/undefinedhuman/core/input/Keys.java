@@ -31,4 +31,7 @@ public class Keys {
     public static final int KEY_N = GLFW.GLFW_KEY_N;
     public static final int KEY_M = GLFW.GLFW_KEY_M;
 
+    public static final int KEY_SPACE = GLFW.GLFW_KEY_SPACE;
+    public static final int KEY_SHIFT = GLFW.GLFW_KEY_LEFT_SHIFT;
+
 }

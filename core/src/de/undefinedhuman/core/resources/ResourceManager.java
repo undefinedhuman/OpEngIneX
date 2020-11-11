@@ -124,7 +124,7 @@ public class ResourceManager {
                         indicies.add(currentVertexPointer);
                         Vector2f texture = texturesList.get(splitter.getNextInt() - 1);
                         textureCoords[currentVertexPointer * 2] = texture.x;
-                        textureCoords[currentVertexPointer * 2 + 1] = texture.y;
+                        textureCoords[currentVertexPointer * 2 + 1] = 1 - texture.y;
                         Vector3f normal = normalsList.get(splitter.getNextInt() - 1);
                         normals[currentVertexPointer * 3] = normal.x;
                         normals[currentVertexPointer * 3 + 1] = normal.y;

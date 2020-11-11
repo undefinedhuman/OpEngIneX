@@ -29,7 +29,8 @@ public class BlueprintManager extends Manager {
     public boolean loadBlueprints(Integer... ids) {
         boolean loaded = false;
         for (int id : ids) {
-            if (!hasBlueprint(id)) blueprints.put(id, ResourceManager.loadBlueprint(new FsFile(Paths.ENTITY_PATH, id + "/settings.entity", false)));
+            FsFile blueprintFile = new FsFile(Paths.ENTITY_PATH, id + "/settings.entity", false, false);
+            if(blueprintFile.exists() && !hasBlueprint(id)) blueprints.put(id, ResourceManager.loadBlueprint(blueprintFile));
             loaded |= hasBlueprint(id);
         }
         if (loaded)

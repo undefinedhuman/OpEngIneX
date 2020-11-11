@@ -17,10 +17,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void init() {
-        BlueprintManager.instance.loadBlueprints(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        BlueprintManager.instance.loadBlueprints(0, 1, 2, 3);
 
         for(int i = 0; i < 1000; i++) {
-            Entity entity = BlueprintManager.instance.getBlueprint(4).createInstance();
+            Entity entity = BlueprintManager.instance.getBlueprint(new Random().nextInt(4)).createInstance();
             entity.setPosition(new Random().nextInt(200) - 100, 0, new Random().nextInt(200) - 100);
             EntityManager.instance.addEntity(i, entity);
         }

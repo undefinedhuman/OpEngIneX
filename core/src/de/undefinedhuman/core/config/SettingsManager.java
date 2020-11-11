@@ -22,12 +22,12 @@ public class SettingsManager extends Manager {
     @Override
     public void init() {
         settings.add(
-                displayHeight = new Setting(SettingType.Int, "displayHeight", 720),
-                displayWidth = new Setting(SettingType.Int, "displayWidth", 1280),
+                displayHeight = new Setting(SettingType.Int, "displayHeight", 1080),
+                displayWidth = new Setting(SettingType.Int, "displayWidth", 1920),
                 fullScreen = new BooleanSetting("fullScreen", false),
                 language = new Setting(SettingType.String, "language", "eu_DE"),
                 vsync = new BooleanSetting("vsync", false),
-                samples = new Setting(SettingType.Int, "samples", 4),
+                samples = new Setting(SettingType.Int, "samples", 8),
                 closeKey = new Setting(SettingType.Int, "closeKey", 256),
                 fps = new Setting(SettingType.Int, "fps", 60));
     }

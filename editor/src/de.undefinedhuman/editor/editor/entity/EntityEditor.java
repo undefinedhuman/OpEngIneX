@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class EntityEditor extends Editor {
@@ -116,7 +117,9 @@ public class EntityEditor extends Editor {
         JButton button = new JButton("Load Entity");
         button.setBounds(90, 70, 300, 25);
 
-        JComboBox<String> comboBox = new JComboBox<>(ids.toArray(new String[0]));
+        String[] stringID = ids.toArray(new String[0]);
+        Arrays.sort(stringID);
+        JComboBox<String> comboBox = new JComboBox<>(stringID);
         comboBox.setBounds(90, 35, 300, 25);
 
         button.addActionListener(a -> {

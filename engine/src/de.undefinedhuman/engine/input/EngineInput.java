@@ -27,12 +27,12 @@ public class EngineInput implements Input {
     @Override
     public void mouseMoved(float x, float y) {
         if(InputManager.instance.isButtonDown(Mouse.LEFT))
-            Camera.instance.getRotation().add(y * Variables.MOUSE_SENSITIVITY * Time.delta, x * Variables.MOUSE_SENSITIVITY * Time.delta, 0);
+            Camera.instance.getRotation().add(y * Variables.MOUSE_SENSITIVITY * (Camera.instance.getFOV()/Variables.FOV_ANGLE) * Time.delta, x * Variables.MOUSE_SENSITIVITY * (Camera.instance.getFOV()/Variables.FOV_ANGLE) * Time.delta, 0);
     }
 
     @Override
     public void scrolled(int amount) {
-
+        Camera.instance.addFOV(amount);
     }
 
 }

@@ -45,6 +45,7 @@ public class StringPanel extends Panel {
         }
         objectList.removeElement(objectName.getText());
         objects.remove(objectName.getText());
+        Tools.removeSettings(objectPanel);
     }
 
     @Override
