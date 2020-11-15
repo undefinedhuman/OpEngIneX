@@ -1,10 +1,10 @@
 package de.undefinedhuman.core.entity.shader;
 
 import de.undefinedhuman.core.camera.Camera;
-import de.undefinedhuman.core.entity.Entity;
 import de.undefinedhuman.core.opengl.shader.ShaderProgram;
 import de.undefinedhuman.core.opengl.shader.uniforms.UniformMatrix3;
 import de.undefinedhuman.core.opengl.shader.uniforms.UniformMatrix4;
+import de.undefinedhuman.core.transform.Transform;
 
 public class EntityShader extends ShaderProgram {
 
@@ -21,18 +21,16 @@ public class EntityShader extends ShaderProgram {
         super.initUniforms(transformMatrix, projectionMatrix, viewMatrix, normalMatrix);
     }
 
-    public void resize(int width, int height) {
-
-    }
+    public void resize(int width, int height) {}
 
     public void loadUniforms() {
         projectionMatrix.loadValue(Camera.instance.updateProjectionMatrix());
         viewMatrix.loadValue(Camera.instance.getViewMatrix());
     }
 
-    public void loadUniforms(Entity entity) {
-        transformMatrix.loadValue(entity.getTransformationMatrix());
-        normalMatrix.loadValue(entity.getNormalMatrix());
+    public void loadUniforms(Transform transform) {
+        transformMatrix.loadValue(transform.getTransformationMatrix());
+        normalMatrix.loadValue(transform.getNormalMatrix());
     }
 
 }

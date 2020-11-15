@@ -13,6 +13,7 @@ import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.manager.ManagerList;
 import de.undefinedhuman.core.resources.texture.TextureManager;
 import de.undefinedhuman.core.window.Window;
+import de.undefinedhuman.core.world.TerrainManager;
 import org.lwjgl.Version;
 import org.lwjgl.opengl.GL;
 
@@ -28,7 +29,7 @@ public class Engine {
     public Engine() {
         if (instance == null) instance = this;
         managerList = new ManagerList().addManager(new Log(), new SettingsManager(), new ConfigManager(), new LanguageManager());
-        glManagerList = new ManagerList().addManager(new InputManager(), new Camera(), new TextureManager(), new LightManager(), new BlueprintManager(), new EntityManager());
+        glManagerList = new ManagerList().addManager(new InputManager(), new Camera(), new TextureManager(), new LightManager(), new BlueprintManager(), new EntityManager(), new TerrainManager());
         Window.instance = new Window();
     }
 

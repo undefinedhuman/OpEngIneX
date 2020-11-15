@@ -1,6 +1,7 @@
 package de.undefinedhuman.core.opengl;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL30;
 
 public class OpenGLUtils {
@@ -25,6 +26,14 @@ public class OpenGLUtils {
 
     public static void disableCulling() {
         GL11.glDisable(GL11.GL_CULL_FACE);
+    }
+
+    public static void enableMSAA() {
+        GL11.glEnable(GL13.GL_MULTISAMPLE);
+    }
+
+    public static void disableMSAA() {
+        GL11.glDisable(GL13.GL_MULTISAMPLE);
     }
 
     public static void enableSRGB() {

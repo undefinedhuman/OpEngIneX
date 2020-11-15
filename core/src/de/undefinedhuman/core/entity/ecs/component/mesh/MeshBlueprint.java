@@ -45,7 +45,8 @@ public class MeshBlueprint extends ComponentBlueprint {
             Mesh mesh = (Mesh) objects.get(i);
             vaos[i] = mesh.generateVao();
             textures[i] = mesh.texture.getString();
-            if(TextureManager.instance != null) TextureManager.instance.getTexture(textures[i]).setCulling(mesh.culling.getBoolean());
+            if(TextureManager.instance != null)
+                TextureManager.instance.getTexture(textures[i]).setCulling(mesh.culling.getBoolean());
         }
     }
 

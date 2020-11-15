@@ -70,6 +70,7 @@ public class Window {
     }
 
     public void render() {
+        OpenGLUtils.enableMSAA();
         OpenGLUtils.enableCulling();
         OpenGLUtils.enableDepth();
         OpenGLUtils.enableSRGB();

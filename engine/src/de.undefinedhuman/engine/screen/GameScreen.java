@@ -4,6 +4,9 @@ import de.undefinedhuman.core.entity.Entity;
 import de.undefinedhuman.core.entity.EntityManager;
 import de.undefinedhuman.core.entity.ecs.blueprint.BlueprintManager;
 import de.undefinedhuman.core.screen.Screen;
+import de.undefinedhuman.core.world.TerrainManager;
+import de.undefinedhuman.core.world.TerrainTexture;
+import de.undefinedhuman.core.world.shader.TerrainShader;
 
 import java.util.Random;
 
@@ -24,6 +27,10 @@ public class GameScreen implements Screen {
             entity.setPosition(new Random().nextInt(200) - 100, 0, new Random().nextInt(200) - 100);
             EntityManager.instance.addEntity(i, entity);
         }
+
+        TerrainManager.instance.setShader(new TerrainShader());
+        TerrainManager.instance.addTerrain(TerrainTexture.GRASS, 0, 0, (x, z) -> 0);
+
     }
 
     @Override

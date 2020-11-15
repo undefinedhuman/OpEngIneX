@@ -1,11 +1,11 @@
 package de.undefinedhuman.core.entity.shader;
 
 import de.undefinedhuman.core.camera.Camera;
-import de.undefinedhuman.core.entity.Entity;
 import de.undefinedhuman.core.light.LightManager;
 import de.undefinedhuman.core.opengl.shader.uniforms.UniformFloat;
 import de.undefinedhuman.core.opengl.shader.uniforms.UniformVector2;
 import de.undefinedhuman.core.opengl.shader.uniforms.UniformVector3;
+import de.undefinedhuman.core.transform.Transform;
 import de.undefinedhuman.core.utils.Variables;
 import de.undefinedhuman.core.window.Time;
 import org.joml.Vector2f;
@@ -57,8 +57,8 @@ public class LightShader extends EntityShader {
     }
 
     @Override
-    public void loadUniforms(Entity entity) {
-        super.loadUniforms(entity);
+    public void loadUniforms(Transform transform) {
+        super.loadUniforms(transform);
         windFactor.loadValue(0.2f);
     }
 

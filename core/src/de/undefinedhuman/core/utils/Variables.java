@@ -37,7 +37,7 @@ public class Variables {
     public static final float CAMERA_MOVE_SPEED = 10;
 
     // Light
-    public static final float AMBIENT_VALUE = 0.2f;
+    public static final float AMBIENT_VALUE = 0.15f;
 
     // Entity
     public static final int DEFAULT_BLUEPRINT_ID = 0;

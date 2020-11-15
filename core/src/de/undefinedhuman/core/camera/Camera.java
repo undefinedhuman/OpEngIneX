@@ -45,7 +45,7 @@ public class Camera extends Manager {
         if (InputManager.instance.isKeyDown(Keys.KEY_S)) position.sub(cameraDirection.x * cameraSpeed, cameraDirection.y * cameraSpeed, cameraDirection.z * cameraSpeed);
         if (InputManager.instance.isKeyDown(Keys.KEY_A)) position.sub(cameraRight.x * cameraSpeed, cameraRight.y * cameraSpeed, cameraRight.z * cameraSpeed);
         if (InputManager.instance.isKeyDown(Keys.KEY_D)) position.add(cameraRight.x * cameraSpeed, cameraRight.y * cameraSpeed, cameraRight.z * cameraSpeed);
-        position.y = Math.max(position.y, 0);
+        position.y = Math.max(position.y, 0.1f);
         rotation.x = Maths.clamp(rotation.x, -89f, 89f);
         rotation.y %= 360f;
         float cosPitch = (float) Math.cos(Math.toRadians(rotation.x));

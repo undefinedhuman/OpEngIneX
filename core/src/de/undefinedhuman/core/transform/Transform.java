@@ -83,8 +83,8 @@ public class Transform {
                 .scale(scale);
         normalMatrix
                 .set(transformationMatrix)
-                .transpose()
-                .invert();
+                .invert()
+                .transpose();
     }
 
     public Matrix4f getTransformationMatrix() {
