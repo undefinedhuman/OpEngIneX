@@ -16,7 +16,7 @@ public class LightManager extends Manager {
     @Override
     public void init() {
         super.init();
-        this.sun = new Light(new Vector3f(0, 10000, 10000), new Vector3f(1, 1, 1));
+        this.sun = new Light(new Vector3f(10000, 10000, 10000), new Vector3f(1, 1, 1));
     }
 
     @Override

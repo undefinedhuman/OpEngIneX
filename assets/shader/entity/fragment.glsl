@@ -22,13 +22,12 @@ void main() {
     vec3 unitLight = normalize(lightRay);
     vec3 unitCamera = normalize(cameraRay);
 
-    float dot = dot(unitNormal, unitLight);
-    float brightness = max(dot, ambientValue);
+    float brightness = max(dot(unitNormal, unitLight), ambientValue);
     vec3 diffuse = brightness * lightColor;
 
     vec3 reflectedLight = reflect(-unitLight, unitNormal);
     float dotCamera = pow(max(dot(unitCamera, reflectedLight), 0.0), shineDamper);
     vec3 specular = specularStrength * dotCamera * lightColor;
 
-    out_Color = vec4((diffuse + specular), 1)  * fragmentColor;
+    out_Color = vec4(diffuse, 1) * fragmentColor + vec4(specular, 1.0);
 }

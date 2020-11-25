@@ -39,7 +39,7 @@ void main() {
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
     passTextureCoords = textureCoords;
 
-    surfaceNormal = normalMatrix * normal;
+    surfaceNormal = (transformMatrix * vec4(normal,0.0)).xyz;
     lightRay = lightPosition - worldPosition.xyz;
-    cameraRay = cameraPosition - worldPosition.xyz;
+    cameraRay = (inverse(viewMatrix) * vec4(0.0,0.0,0.0,1.0)).xyz - worldPosition.xyz;
 }
