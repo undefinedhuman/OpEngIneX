@@ -42,7 +42,7 @@ public class LightShader extends EntityShader {
         lightColor.loadValue(LightManager.instance.getSun().getColor());
         ambientValue.loadValue(Variables.AMBIENT_VALUE);
         specularStrength.loadValue(0.1f);
-        shineDamper.loadValue(2);
+        shineDamper.loadValue(1000);
         windDirection.loadValue(new Vector2f(1, 1));
         windFrequency.loadValue(1);
         windGustsDistance.loadValue(0.25f);

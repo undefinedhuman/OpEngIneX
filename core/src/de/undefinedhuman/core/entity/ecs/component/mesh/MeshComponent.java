@@ -4,6 +4,8 @@ import de.undefinedhuman.core.entity.ecs.component.Component;
 import de.undefinedhuman.core.entity.ecs.component.ComponentType;
 import de.undefinedhuman.core.file.FileReader;
 import de.undefinedhuman.core.file.FileWriter;
+import de.undefinedhuman.core.file.LineSplitter;
+import de.undefinedhuman.core.file.LineWriter;
 import de.undefinedhuman.core.opengl.Vao;
 
 public class MeshComponent extends Component {
@@ -30,5 +32,11 @@ public class MeshComponent extends Component {
     public Vao[] getVaos() {
         return vaos;
     }
+
+    @Override
+    public void send(LineWriter writer) { }
+
+    @Override
+    public void read(LineSplitter splitter) { }
 
 }

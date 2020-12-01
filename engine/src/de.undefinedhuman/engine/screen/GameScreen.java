@@ -6,6 +6,7 @@ import de.undefinedhuman.core.entity.ecs.blueprint.BlueprintManager;
 import de.undefinedhuman.core.screen.Screen;
 import de.undefinedhuman.core.world.TerrainManager;
 import de.undefinedhuman.core.world.TerrainTexture;
+import de.undefinedhuman.core.world.generation.noise.Noise;
 import de.undefinedhuman.core.world.shader.TerrainShader;
 
 import java.util.Random;
@@ -29,8 +30,8 @@ public class GameScreen implements Screen {
         }
 
         TerrainManager.instance.setShader(new TerrainShader());
-        TerrainManager.instance.addTerrain(TerrainTexture.GRASS, 0, 0, (x, z) -> 0);
-
+        Noise noise = new Noise(6, 1.7f, 0.1f);
+        TerrainManager.instance.addTerrain(TerrainTexture.GRASS, 0, 0, (x, z) -> noise.fractal(x, z) * 100f - 50f);
     }
 
     @Override

@@ -46,7 +46,7 @@ public class Blueprint {
     }
 
     public void addComponentBlueprint(ComponentBlueprint blueprint) {
-        componentBlueprints.putIfAbsent(blueprint.getType(), blueprint);
+        componentBlueprints.putIfAbsent(blueprint.type, blueprint);
     }
 
     public ComponentBlueprint getComponentBlueprint(ComponentType type) {

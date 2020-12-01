@@ -1,12 +1,15 @@
 package de.undefinedhuman.core.entity;
 
+import de.undefinedhuman.core.entity.ecs.component.ComponentType;
 import de.undefinedhuman.core.entity.ecs.system.RenderSystem;
 import de.undefinedhuman.core.entity.ecs.system.System;
 import de.undefinedhuman.core.manager.Manager;
+import de.undefinedhuman.core.transform.Transform;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 public class EntityManager extends Manager {
 
@@ -34,8 +37,7 @@ public class EntityManager extends Manager {
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
-        for(System system : systems)
-            system.resize(width, height);
+        systems.forEach(system -> system.resize(width, height));
     }
 
     @Override
@@ -60,10 +62,10 @@ public class EntityManager extends Manager {
 
     @Override
     public void render() {
-        for(Entity entity : entities.values())
-            entity.updateMatrices();
-        for(System system : systems)
-            system.render();
+        entities.values()
+                .forEach(Transform::updateMatrices);
+
+        systems.forEach(System::render);
     }
 
     @Override
@@ -105,16 +107,23 @@ public class EntityManager extends Manager {
         return entitiesByTypeAndID;
     }
 
+    public Stream<Entity> getEntitiesWithComponent(ComponentType type) {
+        return entities
+                .values()
+                .stream()
+                .filter(entity -> entity.hasComponent(type));
+    }
+
     private void clearEntities() {
         entitiesToRemove.clear();
-        for(HashMap<Integer, ArrayList<Entity>> entitiesByType : entitiesByTypeAndID.values()) {
-            for(ArrayList<Entity> entitiesByBlueprintID : entitiesByType.values())
-                entitiesByBlueprintID.clear();
+        entitiesByTypeAndID.values().forEach(entitiesByType -> {
+            entitiesByType.values().forEach(ArrayList::clear);
             entitiesByType.clear();
-        }
+        });
         entitiesByTypeAndID.clear();
-        for(Entity entity : entities.values())
-            entity.delete();
+        entities
+                .values()
+                .forEach(Entity::delete);
         entities.clear();
     }
 

@@ -51,7 +51,8 @@ public class MultiMap<K, V> {
     }
 
     public void clearMap() {
-        for(ArrayList<V> list : map.values()) list.clear();
+        for(ArrayList<V> list : map.values())
+            list.clear();
         map.clear();
     }
 

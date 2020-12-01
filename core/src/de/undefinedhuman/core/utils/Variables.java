@@ -33,8 +33,8 @@ public class Variables {
     public static final float NEAR_PLANE = 0.1f;
     public static final float FAR_PLANE = 1000f;
     public static final float FRUSTUM_LENGTH = FAR_PLANE - NEAR_PLANE;
-    public static final float MOUSE_SENSITIVITY = 10;
-    public static final float CAMERA_MOVE_SPEED = 10;
+    public static final float MOUSE_SENSITIVITY = 10f;
+    public static final float CAMERA_MOVE_SPEED = 10f;
 
     // Light
     public static final float AMBIENT_VALUE = 0.15f;
@@ -43,6 +43,6 @@ public class Variables {
     public static final int DEFAULT_BLUEPRINT_ID = 0;
 
     // Terrain
-    public static final float TERRAIN_SIZE = 800;
+    public static final float TERRAIN_SIZE = 800f;
     public static final int TERRAIN_VERTEX_COUNT = 128;
 }

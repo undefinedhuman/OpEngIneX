@@ -40,8 +40,9 @@ public class TerrainManager extends Manager {
     @Override
     public void update(float delta) {
         super.update(delta);
-        for(Terrain terrain : terrains.values())
-            terrain.update(delta);
+        terrains
+                .values()
+                .forEach(terrain -> terrain.update(delta));
     }
 
     @Override
@@ -49,16 +50,18 @@ public class TerrainManager extends Manager {
         super.render();
         shader.bind();
         shader.loadUniforms();
-        for(Terrain terrain : terrains.values())
-            terrain.render(shader);
+        terrains
+                .values()
+                .forEach(terrain -> terrain.render(shader));
         shader.unbind();
     }
 
     @Override
     public void delete() {
         super.delete();
-        for(Terrain terrain : terrains.values())
-            terrain.delete();
+        terrains
+                .values()
+                .forEach(Terrain::delete);
         TerrainTexture.delete();
         terrains.clear();
         shader.delete();

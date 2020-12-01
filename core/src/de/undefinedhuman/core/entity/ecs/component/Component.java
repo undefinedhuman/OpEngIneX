@@ -1,8 +1,9 @@
 package de.undefinedhuman.core.entity.ecs.component;
 
 import de.undefinedhuman.core.file.Serializable;
+import de.undefinedhuman.core.network.NetworkComponent;
 
-public abstract class Component implements Serializable {
+public abstract class Component implements Serializable, NetworkComponent {
 
     protected ComponentType type;
 

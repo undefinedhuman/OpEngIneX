@@ -60,6 +60,8 @@ public class Tools {
         return Stream.of(stringArray).mapToInt(Integer::parseInt).toArray();
     }
 
+    // Polymorphism
+
     public static String convertArrayToString(String[] array) {
         StringBuilder builder = new StringBuilder();
         for (String object : array)

@@ -13,7 +13,6 @@ import java.util.HashMap;
 public abstract class ComponentBlueprint {
 
     protected SettingsList settings = new SettingsList();
-
     public ComponentType type;
 
     public ComponentBlueprint() {}
@@ -21,8 +20,9 @@ public abstract class ComponentBlueprint {
     public abstract Component createInstance(HashMap<ComponentType, ComponentParam> params);
 
     public void load(FsFile parentDir, SettingsObject settingsObject) {
-        for(Setting setting : this.settings.getSettings())
+        for(Setting setting : settings.getSettings()) {
             setting.loadSetting(parentDir, settingsObject);
+        }
     }
 
     public void save(FileWriter writer) {
@@ -33,10 +33,6 @@ public abstract class ComponentBlueprint {
 
     public ArrayList<Setting> getSettings() {
         return settings.getSettings();
-    }
-
-    public ComponentType getType() {
-        return type;
     }
 
     public void delete() {

@@ -1,13 +1,13 @@
 package de.undefinedhuman.core.transform;
 
-import de.undefinedhuman.core.file.FileReader;
-import de.undefinedhuman.core.file.FileWriter;
+import de.undefinedhuman.core.file.*;
+import de.undefinedhuman.core.network.NetworkComponent;
 import de.undefinedhuman.core.utils.VectorUtils;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-public class Transform {
+public class Transform implements Serializable, NetworkComponent {
 
     private Matrix4f transformationMatrix = new Matrix4f();
     private Matrix3f normalMatrix = new Matrix3f();
@@ -95,17 +95,33 @@ public class Transform {
         return normalMatrix;
     }
 
+    @Override
     public void load(FileReader reader) {
         this.position = reader.getNextVector3();
         this.rotation = reader.getNextVector3();
         this.scale = reader.getNextVector3();
     }
 
+    @Override
     public void save(FileWriter writer) {
         writer
                 .writeVector3(position)
                 .writeVector3(rotation)
                 .writeVector3(scale);
+    }
+
+    @Override
+    public void send(LineWriter writer) {
+        writer.writeVector3(position);
+        writer.writeVector3(rotation);
+        writer.writeVector3(scale);
+    }
+
+    @Override
+    public void read(LineSplitter splitter) {
+        position = splitter.getNextVector3();
+        rotation = splitter.getNextVector3();
+        scale = splitter.getNextVector3();
     }
 
 }
