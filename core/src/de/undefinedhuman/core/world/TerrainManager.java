@@ -2,6 +2,7 @@ package de.undefinedhuman.core.world;
 
 import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.manager.Manager;
+import de.undefinedhuman.core.utils.Variables;
 import de.undefinedhuman.core.world.generation.HeightGenerator;
 import de.undefinedhuman.core.world.shader.TerrainShader;
 import org.joml.Vector2i;
@@ -65,6 +66,12 @@ public class TerrainManager extends Manager {
         TerrainTexture.delete();
         terrains.clear();
         shader.delete();
+    }
+
+    public float getHeightAtPosition(float x, float z) {
+        Terrain terrain = getTerrain((int) (x / Variables.TERRAIN_SIZE), (int) (z / Variables.TERRAIN_SIZE));
+        if(terrain == null) return 0;
+        return terrain.getHeightAtPosition(x, z);
     }
 
     public void addTerrain(TerrainTexture texture, int x, int z, HeightGenerator heightGenerator) {

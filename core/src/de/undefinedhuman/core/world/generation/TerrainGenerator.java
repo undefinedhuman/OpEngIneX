@@ -1,12 +1,13 @@
 package de.undefinedhuman.core.world.generation;
 
 import de.undefinedhuman.core.opengl.Vao;
+import de.undefinedhuman.core.utils.Maths;
 import de.undefinedhuman.core.utils.Variables;
 import org.joml.Vector3f;
 
 public class TerrainGenerator {
 
-    public static Vao generateTerrain(HeightGenerator heightGenerator) {
+    public static Vao generateTerrain(float[][] heights) {
         int verticesCount = Variables.TERRAIN_VERTEX_COUNT * Variables.TERRAIN_VERTEX_COUNT;
         float[] vertices = new float[verticesCount * 3], textureCoords = new float[verticesCount * 2], normals = new float[verticesCount * 3];
         int[] indices = new int[6 * (Variables.TERRAIN_VERTEX_COUNT - 1) * (Variables.TERRAIN_VERTEX_COUNT - 1)];
@@ -16,8 +17,8 @@ public class TerrainGenerator {
                 pointer = i * Variables.TERRAIN_VERTEX_COUNT + j;
                 float x = (float) j / ((float) Variables.TERRAIN_VERTEX_COUNT - 1) * Variables.TERRAIN_SIZE,
                         z = (float) i / ((float) Variables.TERRAIN_VERTEX_COUNT - 1) * Variables.TERRAIN_SIZE;
-                addValues(vertices, pointer, x, heightGenerator.generateHeight(j, i), z);
-                Vector3f normal = generateNormal(j, i, 16, heightGenerator);
+                addValues(vertices, pointer, x, heights[j][i], z);
+                Vector3f normal = generateNormal(j, i, heights);
                 addValues(normals, pointer, normal.x, normal.y, normal.z);
                 addValues(textureCoords, pointer, x/Variables.TERRAIN_SIZE, z/Variables.TERRAIN_SIZE);
             }
@@ -48,9 +49,14 @@ public class TerrainGenerator {
         return pointer;
     }
 
-    private static Vector3f generateNormal(int x, int z, float strength, HeightGenerator heightGenerator) {
-        Vector3f normal = new Vector3f((heightGenerator.generateHeight(x-1, z) - 50f) - (heightGenerator.generateHeight(x+1, z) - 50f), 2f, (heightGenerator.generateHeight(x, z-1) - 50f) - (heightGenerator.generateHeight(x, z+1) - 50f));
-        return normal.normalize();
+    private static Vector3f generateNormal(int x, int z, float[][] heights) {
+        return new Vector3f(getHeight(x-1, z, heights) - getHeight(x+1, z, heights), 2f, getHeight(x, z-1, heights) - getHeight(x, z+1, heights)).normalize();
+    }
+
+    private static float getHeight(int x, int z, float[][] heights) {
+        x = Maths.clamp(x, 0, heights.length-1);
+        z = Maths.clamp(z, 0, heights.length-1);
+        return heights[x][z];
     }
 
 }

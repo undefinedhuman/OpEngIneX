@@ -1,6 +1,7 @@
 package de.undefinedhuman.core.utils;
 
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 
 public class Maths {
 
@@ -8,6 +9,14 @@ public class Maths {
         double ft = blend * 3.141592653589793D;
         float f = (float) ((1.0D - Math.cos(ft)) * 0.5D);
         return a * (1.0F - f) + b * f;
+    }
+
+    public static float baryCentricInterpolation(Vector3f a, Vector3f b, Vector3f c, Vector2f p) {
+        float det = 1.0f / ((b.z - c.z) * (a.x - c.x) + (c.x - b.x) * (a.z - c.z));
+        float v = (b.z - c.z) * (p.x - c.x) + (c.x - b.x) * (p.y - c.z) * det;
+        float w = (c.z - a.z) * (p.x - c.x) + (a.x - c.x) * (p.y - c.z) * det;
+        float u = 1 - v - w;
+        return v * a.y + w * b.y + u * c.y;
     }
 
     public static Vector2f rotateVector2(Vector2f point, Vector2f center, float angle) {

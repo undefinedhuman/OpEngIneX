@@ -7,6 +7,7 @@ import de.undefinedhuman.core.utils.Maths;
 import de.undefinedhuman.core.utils.Variables;
 import de.undefinedhuman.core.utils.VectorUtils;
 import de.undefinedhuman.core.window.Window;
+import de.undefinedhuman.core.world.TerrainManager;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -45,7 +46,7 @@ public class Camera extends Manager {
         if (InputManager.instance.isKeyDown(Keys.KEY_S)) position.sub(cameraDirection.x * cameraSpeed, cameraDirection.y * cameraSpeed, cameraDirection.z * cameraSpeed);
         if (InputManager.instance.isKeyDown(Keys.KEY_A)) position.sub(cameraRight.x * cameraSpeed, cameraRight.y * cameraSpeed, cameraRight.z * cameraSpeed);
         if (InputManager.instance.isKeyDown(Keys.KEY_D)) position.add(cameraRight.x * cameraSpeed, cameraRight.y * cameraSpeed, cameraRight.z * cameraSpeed);
-        position.y = Math.max(position.y, 0.1f);
+        position.y = Math.max(position.y, TerrainManager.instance.getHeightAtPosition(position.x, position.z) + 0.5f);
         rotation.x = Maths.clamp(rotation.x, -89f, 89f);
         rotation.y %= 360f;
         float cosPitch = (float) Math.cos(Math.toRadians(rotation.x));
@@ -90,6 +91,14 @@ public class Camera extends Manager {
 
     private void setViewMatrix() {
         viewMatrix.identity().lookAt(position, cameraTarget.set(position).add(cameraDirection), VectorUtils.Y_AXIS);
+    }
+
+    public void setPosition(Vector3f position) {
+        this.setPosition(position.x, position.y, position.z);
+    }
+
+    public void setPosition(float x, float y, float z) {
+        this.position.set(x, y, z);
     }
 
 }

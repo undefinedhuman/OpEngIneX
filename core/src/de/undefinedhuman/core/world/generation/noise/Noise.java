@@ -20,43 +20,44 @@ public class Noise {
         this.roughness = roughness;
     }
 
-    public float fractal(float x, float y) {
-        return this.fractal(x, y, seed, octaves, amplitude, roughness);
-    }
-
-    public float fractal(float x, float y, int seed, int octaves, float amplitude, float roughness) {
+    public float calculateFractalNoise(float x, float y) {
         float value = 0;
         float d = (float) Math.pow(2, octaves - 1);
         for (int i = 0; i < octaves; i++) {
             float freq = (float) (Math.pow(2, i) / d), amp = (float) Math.pow(roughness, i) * amplitude;
-            value += getInterpolatedNoise(x * freq, y * freq, seed) * amp;
+            value += calculateInterpolatedNoise(x * freq, y * freq) * amp;
         }
-        return Math.abs(value);
+        return value;
     }
 
-    public float getInterpolatedNoise(float x, float y, int seed) {
+    public float calculateInterpolatedNoise(float x, float y) {
         int intX = (int) x, intY = (int) y;
         float fracX = x - intX, fracY = y - intY;
-        float v1 = getSmoothNoise(intX, intY, seed), v2 = getSmoothNoise(intX + 1, intY, seed), v3 = getSmoothNoise(intX, intY + 1, seed), v4 = getSmoothNoise(intX + 1, intY + 1, seed);
-        float i1 = cosInterpolation(v1, v2, fracX), i2 = cosInterpolation(v3, v4, fracX);
-        return cosInterpolation(i1, i2, fracY);
+        float   i1 = calculateCosInterpolation(calculateSmoothNoise(intX, intY), calculateSmoothNoise(intX + 1, intY), fracX),
+                i2 = calculateCosInterpolation(calculateSmoothNoise(intX, intY + 1), calculateSmoothNoise(intX + 1, intY + 1), fracX);
+        return calculateCosInterpolation(i1, i2, fracY);
     }
 
-    private float getSmoothNoise(int x, int y, int seed) {
-        float corners = (getNoise(x - 1, y - 1, seed) + getNoise(x + 1, y - 1, seed) + getNoise(x - 1, y + 1, seed) + getNoise(x + 1, y + 1, seed)) / 16f;
-        float sides = (getNoise(x - 1, y, seed) + getNoise(x + 1, y, seed) + getNoise(x, y - 1, seed) + getNoise(x, y + 1, seed)) / 8f;
-        float center = getNoise(x, y, seed) / 4f;
+    private float calculateCosInterpolation(float a, float b, float blend) {
+        float c = (float) ((1f - Math.cos((blend * Math.PI))) * 0.5f);
+        return a * (1 - c) + b * c;
+    }
+
+    private float calculateSmoothNoise(int x, int y) {
+        float corners = (calculateNoise(x - 1, y - 1) + calculateNoise(x + 1, y - 1) + calculateNoise(x - 1, y + 1) + calculateNoise(x + 1, y + 1)) / 16f;
+        float sides = (calculateNoise(x - 1, y) + calculateNoise(x + 1, y) + calculateNoise(x, y - 1) + calculateNoise(x, y + 1)) / 8f;
+        float center = calculateNoise(x, y) / 4f;
         return corners + sides + center;
     }
 
-    private float getNoise(int x, int y, int seed) {
-        random.setSeed(x * 49632 + y * 325176 + seed);
+    private float calculateNoise(int x, int y) {
+        random.setSeed(x * 49632L + y * 325176L + seed);
         return random.nextFloat() * 2f - 1f;
     }
 
     public float gradient(float x, float y, float maxY) {
         float value = y / maxY;
-        value += scale(0.5f, 0, fractal(x, y));
+        value += scale(0.5f, 0, calculateFractalNoise(x, y));
         return linInterpolation(0,1, value);
     }
 

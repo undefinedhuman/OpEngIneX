@@ -29,7 +29,7 @@ public class Variables {
     public static final int NANOS_IN_SECOND = 1000 * 1000 * 1000;
 
     // Camera
-    public static final float FOV_ANGLE = 70f;
+    public static final float FOV_ANGLE = 45f;
     public static final float NEAR_PLANE = 0.1f;
     public static final float FAR_PLANE = 1000f;
     public static final float FRUSTUM_LENGTH = FAR_PLANE - NEAR_PLANE;
@@ -44,5 +44,6 @@ public class Variables {
 
     // Terrain
     public static final float TERRAIN_SIZE = 800f;
-    public static final int TERRAIN_VERTEX_COUNT = 128;
+    public static final int TERRAIN_VERTEX_COUNT = 256;
+    public static final float TERRAIN_GRID_SIZE = TERRAIN_SIZE / (TERRAIN_VERTEX_COUNT - 1);
 }

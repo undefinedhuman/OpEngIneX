@@ -23,7 +23,7 @@ public class Tools {
     public static boolean isWindows = System.getProperty("os.name").contains("Windows");
     public static boolean isLinux = System.getProperty("os.name").contains("Linux");
 
-    private static Random random = new Random();
+    public static Random random = new Random();
 
     public static SettingsObject loadSettings(FileReader reader) {
         SettingsObject settingsObject = new SettingsObject();
