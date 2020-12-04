@@ -25,16 +25,18 @@ public class GameScreen implements Screen {
         BlueprintManager.instance.loadBlueprints(0, 1, 2, 3);
 
         TerrainManager.instance.setShader(new TerrainShader());
-        final Noise noise = new Noise(6, 1f, 0.1f);
+        final Noise noise = new Noise(5, 1f, 0.1f);
         TerrainManager.instance.addTerrain(TerrainTexture.GRASS, 0, 0, ((x, z) -> (noise.calculateFractalNoise(x, z) * 2f * 0.5f + 0.5f) * 70f - 35f));
 
-        Camera.instance.setPosition(Variables.TERRAIN_SIZE/2f, 35f, Variables.TERRAIN_SIZE/2f);
+        Camera.instance.setPosition(Variables.TERRAIN_SIZE / 2f, 35f, Variables.TERRAIN_SIZE / 2f);
 
         Noise treeNoise = new Noise(7, 6, 0.1f);
-        for(int i = 0; i < 10000; i++) {
-            int x = Tools.random.nextInt(800), z = Tools.random.nextInt(800);
-            if(treeNoise.select(0.5f, treeNoise.calculateFractalNoise(x, z))) continue;
+        for (int i = 0; i < 2000; i++) {
+            int x = Tools.random.nextInt((int) Variables.TERRAIN_SIZE), z = Tools.random.nextInt((int) Variables.TERRAIN_SIZE);
+            if (treeNoise.select(0.5f, treeNoise.calculateFractalNoise(x, z)))
+                continue;
             Entity entity = BlueprintManager.instance.getBlueprint(Tools.random.nextInt(4)).createInstance();
+            entity.setScale(2);
             entity.setPosition(x, TerrainManager.instance.getHeightAtPosition(x, z) - 0.1f, z);
             EntityManager.instance.addEntity(i, entity);
         }
