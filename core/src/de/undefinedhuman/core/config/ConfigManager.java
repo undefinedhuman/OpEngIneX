@@ -8,7 +8,7 @@ import de.undefinedhuman.core.manager.Manager;
 import de.undefinedhuman.core.settings.Setting;
 import de.undefinedhuman.core.log.Log;
 
-public class ConfigManager extends Manager {
+public class ConfigManager implements Manager {
 
     public static ConfigManager instance;
     private FsFile file;

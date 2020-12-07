@@ -139,21 +139,21 @@ public class Base64Coder {
 
     /**
      * Decodes a string from Base64 format.
-     * No blanks or line breaks are allowed within the Base64 encoded input data.
+     * No blanks or line breaks are allowed within the Base64 encoded de.undefinedhuman.engine.input data.
      * @param s  A Base64 String to be decoded.
      * @return   A String containing the decoded data.
-     * @throws   IllegalArgumentException If the input is not valid Base64 encoded data.
+     * @throws   IllegalArgumentException If the de.undefinedhuman.engine.input is not valid Base64 encoded data.
      */
     public static String decodeString (String s) {
         return new String(decode(s)); }
 
     /**
      * Decodes a byte array from Base64 format and ignores line separators, tabs and blanks.
-     * CR, LF, Tab and Space characters are ignored in the input data.
+     * CR, LF, Tab and Space characters are ignored in the de.undefinedhuman.engine.input data.
      * This method is compatible with <code>sun.misc.BASE64Decoder.decodeBuffer(String)</code>.
      * @param s  A Base64 String to be decoded.
      * @return   An array containing the decoded data bytes.
-     * @throws   IllegalArgumentException If the input is not valid Base64 encoded data.
+     * @throws   IllegalArgumentException If the de.undefinedhuman.engine.input is not valid Base64 encoded data.
      */
     public static byte[] decodeLines (String s) {
         char[] buf = new char[s.length()];
@@ -166,35 +166,35 @@ public class Base64Coder {
 
     /**
      * Decodes a byte array from Base64 format.
-     * No blanks or line breaks are allowed within the Base64 encoded input data.
+     * No blanks or line breaks are allowed within the Base64 encoded de.undefinedhuman.engine.input data.
      * @param s  A Base64 String to be decoded.
      * @return   An array containing the decoded data bytes.
-     * @throws   IllegalArgumentException If the input is not valid Base64 encoded data.
+     * @throws   IllegalArgumentException If the de.undefinedhuman.engine.input is not valid Base64 encoded data.
      */
     public static byte[] decode (String s) {
         return decode(s.toCharArray()); }
 
     /**
      * Decodes a byte array from Base64 format.
-     * No blanks or line breaks are allowed within the Base64 encoded input data.
+     * No blanks or line breaks are allowed within the Base64 encoded de.undefinedhuman.engine.input data.
      * @param in  A character array containing the Base64 encoded data.
      * @return    An array containing the decoded data bytes.
-     * @throws    IllegalArgumentException If the input is not valid Base64 encoded data.
+     * @throws    IllegalArgumentException If the de.undefinedhuman.engine.input is not valid Base64 encoded data.
      */
     public static byte[] decode (char[] in) {
         return decode(in, 0, in.length); }
 
     /**
      * Decodes a byte array from Base64 format.
-     * No blanks or line breaks are allowed within the Base64 encoded input data.
+     * No blanks or line breaks are allowed within the Base64 encoded de.undefinedhuman.engine.input data.
      * @param in    A character array containing the Base64 encoded data.
      * @param iOff  Offset of the first character in <code>in</code> to be processed.
      * @param iLen  Number of characters to process in <code>in</code>, starting at <code>iOff</code>.
      * @return      An array containing the decoded data bytes.
-     * @throws      IllegalArgumentException If the input is not valid Base64 encoded data.
+     * @throws      IllegalArgumentException If the de.undefinedhuman.engine.input is not valid Base64 encoded data.
      */
     public static byte[] decode (char[] in, int iOff, int iLen) {
-        if (iLen%4 != 0) throw new IllegalArgumentException("Length of Base64 encoded input string is not a multiple of 4.");
+        if (iLen%4 != 0) throw new IllegalArgumentException("Length of Base64 encoded de.undefinedhuman.engine.input string is not a multiple of 4.");
         while (iLen > 0 && in[iOff+iLen-1] == '=') iLen--;
         int oLen = (iLen*3) / 4;
         byte[] out = new byte[oLen];

@@ -7,7 +7,7 @@ import de.undefinedhuman.core.entity.shader.StaticShader;
 public enum EntityType {
 
     STATIC(StaticShader.class),
-    GROWTHS(GrowthShader.class);
+    GROWTH(GrowthShader.class);
 
     private Class<? extends EntityShader> shaderType;
 

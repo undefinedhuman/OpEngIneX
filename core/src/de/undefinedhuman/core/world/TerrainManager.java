@@ -4,12 +4,13 @@ import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.manager.Manager;
 import de.undefinedhuman.core.utils.Variables;
 import de.undefinedhuman.core.world.generation.HeightGenerator;
+import de.undefinedhuman.core.world.generation.TerrainGenerator;
 import de.undefinedhuman.core.world.shader.TerrainShader;
 import org.joml.Vector2i;
 
 import java.util.HashMap;
 
-public class TerrainManager extends Manager {
+public class TerrainManager implements Manager {
 
     public static TerrainManager instance;
 
@@ -24,15 +25,13 @@ public class TerrainManager extends Manager {
 
     @Override
     public void init() {
-        super.init();
         TerrainTexture.load();
     }
 
     @Override
     public void resize(int width, int height) {
-        super.resize(width, height);
         if(shader == null)
-            Log.instance.crash("Can't find terrain shader! You have to call TerrainManager.instance.setShader(INSERT YOUR SHADER INSTANCE); during your game initialization!");
+            Log.instance.crash("Can't find terrain shader! Call TerrainManager.instance.setShader(SHADER); before rendering!");
         shader.bind();
         shader.resize(width, height);
         shader.unbind();
@@ -40,7 +39,6 @@ public class TerrainManager extends Manager {
 
     @Override
     public void update(float delta) {
-        super.update(delta);
         terrains
                 .values()
                 .forEach(terrain -> terrain.update(delta));
@@ -48,7 +46,6 @@ public class TerrainManager extends Manager {
 
     @Override
     public void render() {
-        super.render();
         shader.bind();
         shader.loadUniforms();
         terrains
@@ -59,7 +56,6 @@ public class TerrainManager extends Manager {
 
     @Override
     public void delete() {
-        super.delete();
         terrains
                 .values()
                 .forEach(Terrain::delete);
@@ -76,7 +72,7 @@ public class TerrainManager extends Manager {
 
     public void addTerrain(TerrainTexture texture, int x, int z, HeightGenerator heightGenerator) {
         if(!hasTerrain(x, z))
-            this.terrains.put(new Vector2i(x, z), new Terrain(texture, x, z, heightGenerator));
+            this.terrains.put(new Vector2i(x, z), TerrainGenerator.generateTerrain(texture, x, z, heightGenerator));
     }
 
     public Terrain getTerrain(int x, int z) {
@@ -95,6 +91,10 @@ public class TerrainManager extends Manager {
 
     public void setShader(TerrainShader shader) {
         this.shader = shader;
+    }
+
+    public HashMap<Vector2i, Terrain> getTerrains() {
+        return terrains;
     }
 
 }

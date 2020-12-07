@@ -8,7 +8,7 @@ import de.undefinedhuman.core.utils.Tools;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class TextureManager extends Manager {
+public class TextureManager implements Manager {
 
     public static TextureManager instance;
 

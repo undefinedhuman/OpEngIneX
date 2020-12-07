@@ -6,17 +6,21 @@ import de.undefinedhuman.core.file.FileReader;
 import de.undefinedhuman.core.file.FileWriter;
 import de.undefinedhuman.core.file.LineSplitter;
 import de.undefinedhuman.core.file.LineWriter;
-import de.undefinedhuman.core.opengl.Vao;
+import de.undefinedhuman.core.settings.panels.PanelObject;
+
+import java.util.Collection;
 
 public class MeshComponent extends Component {
 
-    private Vao[] vaos;
-    private String[] textures;
+    private MeshBlueprint meshBlueprint;
 
-    public MeshComponent(Vao[] vaos, String[] textures) {
+    public MeshComponent(MeshBlueprint blueprint) {
         super(ComponentType.MESH);
-        this.vaos = vaos;
-        this.textures = textures;
+        this.meshBlueprint = blueprint;
+    }
+
+    public Collection<PanelObject> getMeshes() {
+        return meshBlueprint.getMeshes();
     }
 
     @Override
@@ -24,14 +28,6 @@ public class MeshComponent extends Component {
 
     @Override
     public void save(FileWriter writer) {}
-
-    public String[] getTextures() {
-        return textures;
-    }
-
-    public Vao[] getVaos() {
-        return vaos;
-    }
 
     @Override
     public void send(LineWriter writer) { }

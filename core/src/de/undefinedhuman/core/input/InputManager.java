@@ -12,7 +12,7 @@ import java.util.HashSet;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
-public class InputManager extends Manager {
+public class InputManager implements Manager {
 
     public static InputManager instance;
 
@@ -64,7 +64,10 @@ public class InputManager extends Manager {
         }
         this.mouseVelocity.set(mousePosition.x - oldMousePosition.x, oldMousePosition.y - mousePosition.y);
         oldMousePosition.set(mousePosition);
-        if(input != null) input.mouseMoved(mouseVelocity.x, mouseVelocity.y);
+        if(input != null) {
+            input.mousePosition(mousePosition.x, Window.instance.getHeight() - mousePosition.y);
+            input.mouseMoved(mouseVelocity.x, mouseVelocity.y);
+        }
     }
 
     private void inputText(char c) {
@@ -114,12 +117,13 @@ public class InputManager extends Manager {
     private void pressButton(int button) {
         buttonsDown.add(button);
         buttonsPressed.add(button);
+        if(input != null) input.mouseButtonPressed(button);
     }
 
     private void releaseButton(int button) {
         buttonsDown.remove(button);
         buttonsReleased.add(button);
-        if (input != null) input.keyReleased(button);
+        if (input != null) input.mouseButtonReleased(button);
     }
 
     public void clear() {

@@ -1,9 +1,9 @@
 package de.undefinedhuman.core.entity.shader;
 
-public class GrowthShader extends LightShader {
+public class GrowthShader extends WindShader {
 
     public GrowthShader() {
-        super("growth", "position", "textureCoords", "normal");
+        super("entity/growth", "position", "textureCoords", "normal");
     }
 
 }

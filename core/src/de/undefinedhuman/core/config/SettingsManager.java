@@ -8,7 +8,7 @@ import de.undefinedhuman.core.settings.types.BooleanSetting;
 
 import java.util.ArrayList;
 
-public class SettingsManager extends Manager {
+public class SettingsManager implements Manager {
 
     public static SettingsManager instance;
     public Setting displayHeight, displayWidth, fullScreen, language, vsync, samples, fps, closeKey;

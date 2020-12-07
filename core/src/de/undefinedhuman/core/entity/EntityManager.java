@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Stream;
 
-public class EntityManager extends Manager {
+public class EntityManager implements Manager {
 
     public static EntityManager instance;
 
@@ -19,6 +19,8 @@ public class EntityManager extends Manager {
     private HashMap<EntityType, HashMap<Integer, ArrayList<Entity>>> entitiesByTypeAndID = new HashMap<>();
     private ArrayList<Integer> entitiesToRemove = new ArrayList<>();
     private ArrayList<System> systems = new ArrayList<>();
+
+    private int maxWorldID = 0;
 
     public EntityManager() {
         if (instance == null) instance = this;
@@ -36,7 +38,6 @@ public class EntityManager extends Manager {
 
     @Override
     public void resize(int width, int height) {
-        super.resize(width, height);
         systems.forEach(system -> system.resize(width, height));
     }
 
@@ -76,17 +77,17 @@ public class EntityManager extends Manager {
 
     public void addEntity(int worldID, Entity entity) {
         if(entity == null) return;
+        if(worldID > maxWorldID) maxWorldID = worldID;
         this.entities.put(worldID, entity.setWorldID(worldID));
-
-        HashMap<Integer, ArrayList<Entity>> entityTypeList = entitiesByTypeAndID.get(entity.getEntityType());
-        if(entityTypeList.containsKey(entity.getBlueprintID())) entityTypeList.get(entity.getBlueprintID()).add(entity);
-        else entityTypeList.put(entity.getBlueprintID(), addEntityArrayList(entity));
+        ArrayList<Entity> entityArrayList = entitiesByTypeAndID.get(entity.getEntityType()).computeIfAbsent(entity.getBlueprintID(), k -> new ArrayList<>());
+        entityArrayList.add(entity);
     }
 
-    private ArrayList<Entity> addEntityArrayList(Entity entity) {
-        ArrayList<Entity> entityArrayList = new ArrayList<>();
+    public void addEntity(Entity entity) {
+        if(entity == null) return;
+        this.entities.put(++maxWorldID, entity.setWorldID(maxWorldID));
+        ArrayList<Entity> entityArrayList = entitiesByTypeAndID.get(entity.getEntityType()).computeIfAbsent(entity.getBlueprintID(), k -> new ArrayList<>());
         entityArrayList.add(entity);
-        return entityArrayList;
     }
 
     public Entity getEntity(int worldID) {

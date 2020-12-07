@@ -111,7 +111,9 @@ public class NoiseGUI extends JFrame {
             for (int j = 0; j < width/2; j++) {
 
                 int y = i*2, x = j*2;
-                float k = noise.select(threshold, (1f - noise.calculateFractalNoise(x, y))) ? 1 : 0;
+                float k = 0;
+                if(threshold < 0) k = Maths.clamp(noise.calculateFractalNoise(x, y), 0, 1);
+                else k = noise.select(threshold, (1f - noise.calculateFractalNoise(x, y))) ? 1 : 0;
                 int a = 255, r = (int) (k * 255f), g = (int) (k * 255f), b = (int) (k * 255f);
                 int p = (a << 24) | (r << 16) | (g << 8) | b;
                 img.setRGB(x, y, p);

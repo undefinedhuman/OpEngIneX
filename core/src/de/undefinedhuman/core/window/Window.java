@@ -24,6 +24,8 @@ public class Window {
     private Vector2f pixelSize = new Vector2f(), screenSize = new Vector2f();
     private Sync sync;
 
+    private float updateTime = 0;
+
     public Window() {
         if (instance == null) instance = this;
         this.sync = new Sync();
@@ -52,6 +54,7 @@ public class Window {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL11.GL_TRUE);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+        glfwWindowHint(GLFW_DEPTH_BITS, 24);
 
         glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
 
@@ -62,6 +65,8 @@ public class Window {
     public void update() {
         GLFW.glfwSwapBuffers(id);
         GLFW.glfwPollEvents();
+        if((updateTime += Time.delta) > 1)
+            GLFW.glfwSetWindowTitle(id, Variables.NAME + " " + Variables.VERSION + " " + (int) (1f/Time.delta + (updateTime = 0)) + "FPS");
         sync.sync(SettingsManager.instance.fps.getInt());
     }
 
@@ -71,6 +76,7 @@ public class Window {
 
     public void render() {
         OpenGLUtils.enableMSAA();
+        OpenGLUtils.enableClipDistance();
         OpenGLUtils.enableCulling();
         OpenGLUtils.enableDepth();
         OpenGLUtils.enableSRGB();

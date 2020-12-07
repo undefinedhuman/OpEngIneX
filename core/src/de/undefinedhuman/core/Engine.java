@@ -6,12 +6,15 @@ import de.undefinedhuman.core.config.SettingsManager;
 import de.undefinedhuman.core.entity.EntityManager;
 import de.undefinedhuman.core.entity.ecs.blueprint.BlueprintManager;
 import de.undefinedhuman.core.game.Game;
+import de.undefinedhuman.core.gui.GuiManager;
 import de.undefinedhuman.core.input.InputManager;
 import de.undefinedhuman.core.language.LanguageManager;
 import de.undefinedhuman.core.light.LightManager;
 import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.manager.ManagerList;
+import de.undefinedhuman.core.opengl.OpenGLUtils;
 import de.undefinedhuman.core.resources.texture.TextureManager;
+import de.undefinedhuman.core.water.WaterManager;
 import de.undefinedhuman.core.window.Window;
 import de.undefinedhuman.core.world.TerrainManager;
 import org.lwjgl.Version;
@@ -29,7 +32,7 @@ public class Engine {
     public Engine() {
         if (instance == null) instance = this;
         managerList = new ManagerList().addManager(new Log(), new SettingsManager(), new ConfigManager(), new LanguageManager());
-        glManagerList = new ManagerList().addManager(new InputManager(), new Camera(), new TextureManager(), new LightManager(), new BlueprintManager(), new EntityManager(), new TerrainManager());
+        glManagerList = new ManagerList().addManager(new InputManager(), new Camera(), new TextureManager(), new LightManager(), new BlueprintManager(), new TerrainManager(), new EntityManager(), new WaterManager(), new GuiManager());
         Window.instance = new Window();
     }
 
@@ -57,9 +60,14 @@ public class Engine {
 
     public void render() {
         Window.instance.render();
+        OpenGLUtils.clipPlane.set(0, -1, 0, 10000000);
+        OpenGLUtils.disableClipDistance();
         managerList.render();
         glManagerList.render();
         game.render();
+    }
+
+    public void clear() {
         InputManager.instance.clear();
     }
 

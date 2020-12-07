@@ -15,6 +15,8 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL14;
+import org.lwjgl.opengl.GL30;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -80,11 +82,13 @@ public class ResourceManager {
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureID);
         GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, decoder.getWidth(), decoder.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL30.GL_SRGB_ALPHA, decoder.getWidth(), decoder.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        GL30.glGenerateMipmap(GL_TEXTURE_2D);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL_REPEAT);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL_REPEAT);
+        GL11.glTexParameterf(GL_TEXTURE_2D, GL14.GL_TEXTURE_LOD_BIAS, -0.56f);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
         return textureID;
     }
@@ -93,62 +97,132 @@ public class ResourceManager {
         FsFile file = new FsFile(objFile.getPath(), false);
         if (!file.exists()) return new MeshData();
         FileReader reader = file.getFileReader(false, " ");
-        ArrayList<Vector3f> verticesList = new ArrayList<>(), normalsList = new ArrayList<>();
-        ArrayList<Vector2f> texturesList = new ArrayList<>();
+        ArrayList<Vertex> vertices = new ArrayList<>();
+        ArrayList<Vector2f> textureCoords = new ArrayList<>();
+        ArrayList<Vector3f> normals = new ArrayList<>();
         ArrayList<Integer> indicies = new ArrayList<>();
-
-        boolean setup = false;
-
-        float[] textureCoords = new float[0], normals = new float[0];
 
         while (reader.nextLine() != null) {
             switch (reader.getNextString()) {
                 case "v":
-                    verticesList.add(reader.getNextVector3());
+                    vertices.add(new Vertex(vertices.size(), reader.getNextVector3()));
                     break;
                 case "vt":
-                    texturesList.add(reader.getNextVector2());
+                    textureCoords.add(reader.getNextVector2());
                     break;
                 case "vn":
-                    normalsList.add(reader.getNextVector3());
+                    normals.add(reader.getNextVector3());
                     break;
                 case "f":
-                    if (!setup) {
-                        textureCoords = new float[verticesList.size() * 2];
-                        normals = new float[verticesList.size() * 3];
-                        setup = true;
-                    }
-                    for (int i = 0; i < 3; i++) {
-                        LineSplitter splitter = new LineSplitter(reader.getNextString(), false, "/");
-                        int currentVertexPointer = splitter.getNextInt() - 1;
-                        indicies.add(currentVertexPointer);
-                        Vector2f texture = texturesList.get(splitter.getNextInt() - 1);
-                        textureCoords[currentVertexPointer * 2] = texture.x;
-                        textureCoords[currentVertexPointer * 2 + 1] = 1 - texture.y;
-                        Vector3f normal = normalsList.get(splitter.getNextInt() - 1);
-                        normals[currentVertexPointer * 3] = normal.x;
-                        normals[currentVertexPointer * 3 + 1] = normal.y;
-                        normals[currentVertexPointer * 3 + 2] = normal.z;
-                    }
+                    for (int i = 0; i < 3; i++)
+                        processVertex(new LineSplitter(reader.getNextString(), false, "/"), vertices, indicies);
                     break;
             }
 
         }
         reader.close();
 
-        int[] indiciesArray = new int[indicies.size()];
-        for(int i = 0; i < indiciesArray.length; i++)
-            indiciesArray[i] = indicies.get(i);
+        for(Vertex vertex : vertices)
+            if(!vertex.isProcessed()) vertex.setTextureIndex(0).setNormalIndex(0);
 
-        float[] vertices = new float[verticesList.size()*3];
-        for(int i = 0; i < verticesList.size(); i++) {
-            Vector3f vertex = verticesList.get(i);
-            vertices[i * 3] = vertex.x;
-            vertices[i * 3 + 1] = vertex.y;
-            vertices[i * 3 + 2] = vertex.z;
+        return generateMeshData(indicies, vertices, textureCoords, normals);
+    }
+
+    private static MeshData generateMeshData(ArrayList<Integer> indicies, ArrayList<Vertex> vertices, ArrayList<Vector2f> textureCoords, ArrayList<Vector3f> normals) {
+        float[] verticesArray = new float[vertices.size() * 3], textureCoordsArray = new float[vertices.size() * 2], normalsArray = new float[vertices.size() * 3];
+        int[] indicesArray = new int[indicies.size()];
+        float maxDistance = 0;
+
+        for(int i = 0; i < vertices.size(); i++) {
+            Vertex vertex = vertices.get(i);
+            float vertexMaxDistance = vertex.position.length();
+            if (vertexMaxDistance > maxDistance)
+                maxDistance = vertexMaxDistance;
+            Vector2f textureCoord = textureCoords.get(vertex.textureIndex);
+            Vector3f normal = normals.get(vertex.normalIndex);
+            verticesArray[i * 3] = vertex.position.x;
+            verticesArray[i * 3 + 1] = vertex.position.y;
+            verticesArray[i * 3 + 2] = vertex.position.z;
+            textureCoordsArray[i * 2] = textureCoord.x;
+            textureCoordsArray[i * 2 + 1] = 1 - textureCoord.y;
+            normalsArray[i * 3] = normal.x;
+            normalsArray[i * 3 + 1] = normal.y;
+            normalsArray[i * 3 + 2] = normal.z;
         }
 
-        return new MeshData(indiciesArray, vertices, textureCoords, normals);
+        for(int i = 0; i < indicesArray.length; i++)
+            indicesArray[i] = indicies.get(i);
+
+        return new MeshData(maxDistance, indicesArray, verticesArray, textureCoordsArray, normalsArray);
+    }
+
+    private static void processVertex(LineSplitter splitter, ArrayList<Vertex> vertices, ArrayList<Integer> indices) {
+        int index = splitter.getNextInt() - 1;
+        Vertex vertex = vertices.get(index);
+        int textureIndex = splitter.getNextInt() - 1;
+        int normalIndex = splitter.getNextInt() - 1;
+        if (!vertex.isProcessed()) {
+            vertex.setTextureIndex(textureIndex).setNormalIndex(normalIndex);
+            indices.add(index);
+        } else processDuplicatedVertex(vertex, textureIndex, normalIndex, vertices, indices);
+    }
+
+    private static void processDuplicatedVertex(Vertex previousVertex, int newTextureIndex, int newNormalIndex, ArrayList<Vertex> vertices, ArrayList<Integer> indices) {
+        if (previousVertex.compare(newTextureIndex, newNormalIndex))
+            indices.add(previousVertex.index);
+        else {
+            if (previousVertex.duplicatedVertex != null) processDuplicatedVertex(previousVertex.duplicatedVertex, newTextureIndex, newNormalIndex, vertices, indices);
+            else {
+                Vertex newVertex = new Vertex(vertices.size(), previousVertex.position, newTextureIndex, newNormalIndex);
+                previousVertex.setDuplicatedVertex(newVertex);
+                vertices.add(newVertex);
+                indices.add(newVertex.index);
+            }
+        }
+    }
+
+}
+
+class Vertex {
+
+    public int index;
+    public Vector3f position = new Vector3f();
+    public int textureIndex;
+    public int normalIndex;
+    public Vertex duplicatedVertex = null;
+
+    public Vertex(int index, Vector3f position) {
+        this(index, position, -1, -1);
+    }
+
+    public Vertex(int index, Vector3f position, int textureIndex, int normalIndex) {
+        this.index = index;
+        this.position.set(position);
+        this.textureIndex = textureIndex;
+        this.normalIndex = normalIndex;
+    }
+
+    public boolean compare(int textureIndex, int normalIndex) {
+        return this.textureIndex == textureIndex && this.normalIndex == normalIndex;
+    }
+
+    public boolean isProcessed() {
+        return textureIndex != -1 && normalIndex != -1;
+    }
+
+    public Vertex setNormalIndex(int normalIndex) {
+        this.normalIndex = normalIndex;
+        return this;
+    }
+
+    public Vertex setTextureIndex(int textureIndex) {
+        this.textureIndex = textureIndex;
+        return this;
+    }
+
+    public Vertex setDuplicatedVertex(Vertex duplicatedVertex) {
+        this.duplicatedVertex = duplicatedVertex;
+        return this;
     }
 
 }

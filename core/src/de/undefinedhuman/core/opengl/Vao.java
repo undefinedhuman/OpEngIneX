@@ -1,6 +1,5 @@
 package de.undefinedhuman.core.opengl;
 
-import de.undefinedhuman.core.log.Log;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL30;
@@ -30,11 +29,13 @@ public class Vao {
     }
 
     public void enableAttributes() {
-        for (Attribute attribute : attributes) attribute.enable();
+        for (Attribute attribute : attributes)
+            attribute.enable();
     }
 
     public void disableAttributes() {
-        for (Attribute attribute : attributes) attribute.disable();
+        for (Attribute attribute : attributes)
+            attribute.disable();
     }
 
     public void start() {
@@ -67,6 +68,11 @@ public class Vao {
         buffer.flip();
         vbo.storeData(buffer);
         vbos.add(vbo);
+        return this;
+    }
+
+    public Vao setVertexCount(int vertexCount) {
+        this.vertexCount = vertexCount;
         return this;
     }
 

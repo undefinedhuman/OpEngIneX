@@ -1,9 +1,12 @@
 package de.undefinedhuman.core.entity.shader;
 
 import de.undefinedhuman.core.camera.Camera;
+import de.undefinedhuman.core.opengl.OpenGLUtils;
 import de.undefinedhuman.core.opengl.shader.ShaderProgram;
 import de.undefinedhuman.core.opengl.shader.uniforms.UniformMatrix3;
 import de.undefinedhuman.core.opengl.shader.uniforms.UniformMatrix4;
+import de.undefinedhuman.core.opengl.shader.uniforms.UniformVector4;
+import de.undefinedhuman.core.settings.types.mesh.Mesh;
 import de.undefinedhuman.core.transform.Transform;
 
 public class EntityShader extends ShaderProgram {
@@ -15,10 +18,12 @@ public class EntityShader extends ShaderProgram {
 
     public UniformMatrix3 normalMatrix = new UniformMatrix3("normalMatrix");
 
+    public UniformVector4 clipPlane = new UniformVector4("clipPlane");
+
     public EntityShader(String shaderPath, String... attributes) {
         super(shaderPath, attributes);
         addVertexShader().addFragmentShader().compileShader();
-        super.initUniforms(transformMatrix, projectionMatrix, viewMatrix, normalMatrix);
+        super.initUniforms(transformMatrix, projectionMatrix, viewMatrix, normalMatrix, clipPlane);
     }
 
     public void resize(int width, int height) {}
@@ -26,11 +31,14 @@ public class EntityShader extends ShaderProgram {
     public void loadUniforms() {
         projectionMatrix.loadValue(Camera.instance.updateProjectionMatrix());
         viewMatrix.loadValue(Camera.instance.getViewMatrix());
+        clipPlane.loadValue(OpenGLUtils.clipPlane);
     }
 
     public void loadUniforms(Transform transform) {
         transformMatrix.loadValue(transform.getTransformationMatrix());
         normalMatrix.loadValue(transform.getNormalMatrix());
     }
+
+    public void loadUniforms(Mesh mesh) {}
 
 }

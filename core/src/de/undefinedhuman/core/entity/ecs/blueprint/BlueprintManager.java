@@ -10,7 +10,7 @@ import de.undefinedhuman.core.utils.Tools;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class BlueprintManager extends Manager {
+public class BlueprintManager implements Manager {
 
     public static BlueprintManager instance;
 
@@ -19,11 +19,6 @@ public class BlueprintManager extends Manager {
     public BlueprintManager() {
         if (instance == null) instance = this;
         blueprints = new HashMap<>();
-    }
-
-    @Override
-    public void init() {
-        super.init();
     }
 
     public boolean loadBlueprints(Integer... ids) {

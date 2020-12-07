@@ -1,6 +1,7 @@
 package de.undefinedhuman.core.opengl.shader;
 
 import de.undefinedhuman.core.opengl.shader.uniforms.Uniform;
+import de.undefinedhuman.core.opengl.shader.uniforms.UniformArray;
 import de.undefinedhuman.core.resources.ResourceManager;
 import de.undefinedhuman.core.log.Log;
 import org.lwjgl.opengl.GL11;
@@ -70,13 +71,18 @@ public abstract class ShaderProgram {
         GL20.glShaderSource(shaderID, ResourceManager.loadShader(shaderPath + "/" + shaderName + ".glsl"));
         GL20.glCompileShader(shaderID);
         if (GL20.glGetShaderi(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE)
-            Log.instance.crash("Could not compile shader! \n" + GL20.glGetShaderInfoLog(shaderID, 500));
+            Log.instance.crash("Could not compile shader! " + shaderPath + "/" + shaderName + "\n" + GL20.glGetShaderInfoLog(shaderID, 500));
         GL20.glAttachShader(programID, shaderID);
         shaderIDs.add(shaderID);
     }
 
     public void bindAttributes(String[] attributes) {
         for (int i = 0; i < attributes.length; i++) GL20.glBindAttribLocation(programID, i, attributes[i]);
+    }
+
+    protected void initUniforms(UniformArray... uniformArrays) {
+        for (UniformArray uniformArray : uniformArrays)
+            initUniforms(uniformArray.getUniforms());
     }
 
     protected void initUniforms(Uniform... uniforms) {

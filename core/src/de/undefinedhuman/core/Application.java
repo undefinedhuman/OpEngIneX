@@ -19,6 +19,7 @@ public class Application {
             Time.instance.update();
             Engine.instance.update(Time.getDelta());
             Engine.instance.render();
+            Engine.instance.clear();
         }
         Engine.instance.delete();
     }

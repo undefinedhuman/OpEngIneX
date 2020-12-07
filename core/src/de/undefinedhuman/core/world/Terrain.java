@@ -7,8 +7,6 @@ import de.undefinedhuman.core.resources.texture.TextureManager;
 import de.undefinedhuman.core.transform.Transform;
 import de.undefinedhuman.core.utils.Maths;
 import de.undefinedhuman.core.utils.Variables;
-import de.undefinedhuman.core.world.generation.HeightGenerator;
-import de.undefinedhuman.core.world.generation.TerrainGenerator;
 import de.undefinedhuman.core.world.shader.TerrainShader;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
@@ -22,14 +20,11 @@ public class Terrain extends Transform {
 
     private Vector3f a = new Vector3f(), b = new Vector3f(), c = new Vector3f();
 
-    public Terrain(TerrainTexture terrainTexture, int x, int z, HeightGenerator heightGenerator) {
+    public Terrain(TerrainTexture terrainTexture, Vao vao, int x, int z, float[][] heights) {
         this.terrainTexture = terrainTexture;
-        heights = new float[Variables.TERRAIN_VERTEX_COUNT][Variables.TERRAIN_VERTEX_COUNT];
-        for(int i = 0; i < Variables.TERRAIN_VERTEX_COUNT; i++)
-            for(int j = 0; j < Variables.TERRAIN_VERTEX_COUNT; j++)
-                heights[j][i] = heightGenerator.generateHeight(j, i);
-        this.vao = TerrainGenerator.generateTerrain(heights);
-        setPosition(x, 0, z);
+        this.vao = vao;
+        this.heights = heights;
+        setPosition(x * Variables.TERRAIN_SIZE, 0, z * Variables.TERRAIN_SIZE);
     }
 
     public void update(float delta) {

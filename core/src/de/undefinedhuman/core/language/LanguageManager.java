@@ -18,7 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class LanguageManager extends Manager {
+public class LanguageManager implements Manager {
 
     public static LanguageManager instance;
 

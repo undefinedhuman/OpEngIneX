@@ -38,13 +38,13 @@ public abstract class MeshSetting extends Setting {
 
                 MeshData meshData = ResourceManager.generateMeshFromOBJ(objFile);
 
-                updateMesh(meshData.indicies, meshData.vertices, meshData.textureCoords, meshData.normals);
+                updateMesh(meshData.maxDistance, meshData.indicies, meshData.vertices, meshData.textureCoords, meshData.normals);
             }
 
         });
         panel.add(loadOBJLabel);
     }
 
-    public abstract void updateMesh(int[] indicies, float[] vertices, float[] textureCoords, float[] normals);
+    public abstract void updateMesh(float maxDistance, int[] indicies, float[] vertices, float[] textureCoords, float[] normals);
 
 }

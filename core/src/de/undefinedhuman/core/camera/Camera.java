@@ -10,15 +10,17 @@ import de.undefinedhuman.core.window.Window;
 import de.undefinedhuman.core.world.TerrainManager;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.glfw.GLFW;
 
-public class Camera extends Manager {
+public class Camera implements Manager {
 
     public static Camera instance;
 
     private Vector3f position = new Vector3f(), rotation = new Vector3f();
-    private Matrix4f viewMatrix = new Matrix4f(), projectionMatrix = new Matrix4f();
+    private Matrix4f viewMatrix = new Matrix4f(), reflectedViewMatrix = new Matrix4f(), projectionMatrix = new Matrix4f();
     private Vector3f cameraDirection = new Vector3f(0, 0, -1f), cameraTarget = new Vector3f(), cameraRight = new Vector3f();
     private float FOV_ANGLE = Variables.FOV_ANGLE;
+    private boolean reflected = false;
 
     public Camera() {
         if(instance == null) instance = this;
@@ -39,7 +41,7 @@ public class Camera extends Manager {
     @Override
     public void update(float delta) {
         cameraRight.set(cameraDirection).cross(VectorUtils.Y_AXIS).normalize();
-        float cameraSpeed = Variables.CAMERA_MOVE_SPEED * delta;
+        float cameraSpeed = (Variables.CAMERA_MOVE_SPEED * (InputManager.instance.isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL) ? 10 : 1)) * delta;
         if (InputManager.instance.isKeyDown(Keys.KEY_SPACE)) position.add(0, cameraSpeed, 0);
         if (InputManager.instance.isKeyDown(Keys.KEY_SHIFT)) position.add(0, -cameraSpeed, 0);
         if (InputManager.instance.isKeyDown(Keys.KEY_W)) position.add(cameraDirection.x * cameraSpeed, cameraDirection.y * cameraSpeed, cameraDirection.z * cameraSpeed);
@@ -55,7 +57,7 @@ public class Camera extends Manager {
     }
 
     public Matrix4f getViewMatrix() {
-        return viewMatrix;
+        return reflected ? reflectedViewMatrix : viewMatrix;
     }
 
     public Matrix4f getProjectionMatrix() {
@@ -89,8 +91,18 @@ public class Camera extends Manager {
         return FOV_ANGLE;
     }
 
-    private void setViewMatrix() {
-        viewMatrix.identity().lookAt(position, cameraTarget.set(position).add(cameraDirection), VectorUtils.Y_AXIS);
+    private Vector3f reflectedPosition = new Vector3f(), reflectedDirection = new Vector3f();
+
+    public void setViewMatrix() {
+        viewMatrix
+                .identity()
+                .lookAt(position, cameraTarget.set(position).add(cameraDirection), VectorUtils.Y_AXIS);
+        reflectedPosition.set(position.x, position.y - (2 * (position.y - Variables.WATER_HEIGHT)), position.z);
+        float cosPitch = (float) Math.cos(Math.toRadians(-rotation.x));
+        reflectedDirection.set(Math.cos(Math.toRadians(rotation.y)) * cosPitch, Math.sin(Math.toRadians(-rotation.x)), Math.sin(Math.toRadians(rotation.y)) * cosPitch).normalize();
+        reflectedViewMatrix
+                .identity()
+                .lookAt(reflectedPosition, cameraTarget.set(reflectedPosition).add(reflectedDirection), VectorUtils.Y_AXIS);
     }
 
     public void setPosition(Vector3f position) {
@@ -99,6 +111,10 @@ public class Camera extends Manager {
 
     public void setPosition(float x, float y, float z) {
         this.position.set(x, y, z);
+    }
+
+    public void setReflected(boolean reflected) {
+        this.reflected = reflected;
     }
 
 }

@@ -4,7 +4,9 @@ import de.undefinedhuman.core.resources.texture.TextureManager;
 
 public enum TerrainTexture {
 
-    GRASS;
+    GRASS,
+    DIRT,
+    STONE;
 
     public static void load() {
         for(TerrainTexture texture : values())

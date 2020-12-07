@@ -18,7 +18,7 @@ import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
-public class Log extends Manager {
+public class Log implements Manager {
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat(Variables.LOG_DATE_FORMAT);
 

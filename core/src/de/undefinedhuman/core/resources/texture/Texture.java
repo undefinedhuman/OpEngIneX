@@ -2,7 +2,6 @@ package de.undefinedhuman.core.resources.texture;
 
 import de.undefinedhuman.core.opengl.OpenGLUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 
 public class Texture {
 
@@ -14,8 +13,7 @@ public class Texture {
     }
 
     public void bind() {
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, id);
+        OpenGLUtils.bindTexture(0, id);
         if(!enableCulling) OpenGLUtils.disableCulling();
     }
 

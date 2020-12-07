@@ -4,13 +4,16 @@ import org.joml.Vector3f;
 
 public class Light {
 
-    private Vector3f color = new Vector3f(), position = new Vector3f();
+    private float intensity;
+    private Vector3f color;
 
-    public Light() { }
+    public Light(float intensity, Vector3f color) {
+        this.intensity = intensity;
+        this.color = color;
+    }
 
-    public Light(Vector3f position, Vector3f color) {
-        this.position.set(position);
-        this.color.set(color);
+    public Light setColor(Vector3f color) {
+        return this.setColor(color.x, color.y, color.z);
     }
 
     public Light setColor(float x, float y, float z) {
@@ -18,8 +21,8 @@ public class Light {
         return this;
     }
 
-    public Light setPosition(float x, float y, float z) {
-        this.position.set(x, y, z);
+    public Light setIntensity(float intensity) {
+        this.intensity = intensity;
         return this;
     }
 
@@ -27,8 +30,8 @@ public class Light {
         return color;
     }
 
-    public Vector3f getPosition() {
-        return position;
+    public float getIntensity() {
+        return intensity;
     }
 
 }

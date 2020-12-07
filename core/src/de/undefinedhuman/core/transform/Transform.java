@@ -11,7 +11,8 @@ public class Transform implements Serializable, NetworkComponent {
 
     private Matrix4f transformationMatrix = new Matrix4f();
     private Matrix3f normalMatrix = new Matrix3f();
-    private Vector3f position = new Vector3f(), rotation = new Vector3f(), scale = new Vector3f(1, 1, 1);
+    private Vector3f position = new Vector3f(), rotation = new Vector3f();
+    private float scale = 1;
 
     public void setPosition(float x, float y, float z) {
         this.position.set(x, y, z);
@@ -50,15 +51,7 @@ public class Transform implements Serializable, NetworkComponent {
     }
 
     public void setScale(float scale) {
-        setScale(scale, scale, scale);
-    }
-
-    public void setScale(Vector3f scale) {
-        setScale(scale.x, scale.y, scale.z);
-    }
-
-    public void setScale(float x, float y, float z) {
-        this.scale.set(x, y, z);
+        this.scale = scale;
     }
 
     public Vector3f getPosition() {
@@ -69,7 +62,7 @@ public class Transform implements Serializable, NetworkComponent {
         return rotation;
     }
 
-    public Vector3f getScale() {
+    public float getScale() {
         return scale;
     }
 
@@ -99,7 +92,7 @@ public class Transform implements Serializable, NetworkComponent {
     public void load(FileReader reader) {
         this.position = reader.getNextVector3();
         this.rotation = reader.getNextVector3();
-        this.scale = reader.getNextVector3();
+        this.scale = reader.getNextFloat();
     }
 
     @Override
@@ -107,21 +100,21 @@ public class Transform implements Serializable, NetworkComponent {
         writer
                 .writeVector3(position)
                 .writeVector3(rotation)
-                .writeVector3(scale);
+                .writeFloat(scale);
     }
 
     @Override
     public void send(LineWriter writer) {
         writer.writeVector3(position);
         writer.writeVector3(rotation);
-        writer.writeVector3(scale);
+        writer.writeFloat(scale);
     }
 
     @Override
     public void read(LineSplitter splitter) {
         position = splitter.getNextVector3();
         rotation = splitter.getNextVector3();
-        scale = splitter.getNextVector3();
+        scale = splitter.getNextFloat();
     }
 
 }
