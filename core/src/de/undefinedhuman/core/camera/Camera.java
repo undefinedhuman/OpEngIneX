@@ -73,7 +73,7 @@ public class Camera implements Manager {
     }
 
     public Matrix4f updateProjectionMatrix() {
-        float xScale = (float) (1f / Math.tan(Math.toRadians(FOV_ANGLE / 2f))), yScale = xScale * Window.instance.getAspectRatio();
+        float yScale = (float) (1f / Math.tan(Math.toRadians(FOV_ANGLE / 2f))) * Window.instance.getAspectRatio(), xScale = yScale / Window.instance.getAspectRatio();
         return projectionMatrix
                 .m00(xScale)
                 .m11(yScale)

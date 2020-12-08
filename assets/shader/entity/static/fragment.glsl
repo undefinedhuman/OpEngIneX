@@ -35,30 +35,30 @@ uniform float ambientValue;
 uniform float specularStrength;
 uniform float shineDamper;
 
-vec3 calcLightColor(float lightIntensity, vec3 lightColor, vec3 unitLight, vec3 unitCamera, vec3 unitNormal) {
+vec4 calcLightColor(vec4 textureColor, float lightIntensity, vec3 lightColor, vec3 unitLight, vec3 unitCamera, vec3 unitNormal) {
     // Diffuse
     float brightness = max(dot(unitNormal, unitLight), 0.0);
-    vec3 diffuse = brightness * lightColor * lightIntensity;
+    vec4 diffuse = textureColor * brightness * vec4(lightColor, 1) * lightIntensity;
 
     // Specular
-    vec3 reflectedLight = normalize(reflect(-unitLight, unitNormal));
-    float specularFactor = pow(max(dot(unitCamera, reflectedLight), 0.0), shineDamper);
-    vec3 specular = specularStrength * lightIntensity * specularFactor * lightColor;
+    vec3 halfwayDir = normalize(unitLight + unitCamera);
+    float specularFactor = pow(max(dot(unitNormal, halfwayDir), 0.0), shineDamper);
+    vec4 specular = specularStrength * lightIntensity * specularFactor * vec4(lightColor, 1);
 
     return (diffuse + specular);
 }
 
-vec3 calcPointLight(PointLight light, vec3 unitCamera, vec3 unitNormal) {
+vec4 calcPointLight(vec4 textureColor, PointLight light, vec3 unitCamera, vec3 unitNormal) {
     vec3 lightDirection = light.position - positionInWorldSpace.xyz;
-    vec3 ligthColor = calcLightColor(light.intensity, light.color, normalize(lightDirection), unitCamera, unitNormal);
+    vec4 ligthColor = calcLightColor(textureColor, light.intensity, light.color, normalize(lightDirection), unitCamera, unitNormal);
 
     float distance = length(lightDirection);
     float attentuation = light.attenuation.x + light.attenuation.y * distance + light.attenuation.z * distance * distance;
     return ligthColor / attentuation;
 }
 
-vec3 calcDirectionalLight(DirectionalLight light, vec3 unitCamera, vec3 unitNormal) {
-    return calcLightColor(light.intensity, light.color, normalize(light.direction), unitCamera, unitNormal);
+vec4 calcDirectionalLight(vec4 textureColor, DirectionalLight light, vec3 unitCamera, vec3 unitNormal) {
+    return calcLightColor(textureColor, light.intensity, light.color, normalize(light.direction), unitCamera, unitNormal);
 }
 
 void main() {
@@ -68,14 +68,14 @@ void main() {
     vec3 unitCamera = normalize(toCameraRay);
     vec3 unitNormal = normalize(surfaceNormal);
 
-    vec3 diffuseSpecular = calcDirectionalLight(sun, unitCamera, unitNormal);
+    vec4 diffuseSpecular = calcDirectionalLight(textureColor, sun, unitCamera, unitNormal);
 
     for(int i = 0; i < MAX_POINT_LIGHTS; i++) {
         if(pointLights[i].intensity > 0) {
-            diffuseSpecular += calcPointLight(pointLights[i], unitCamera, unitNormal);
+            diffuseSpecular += calcPointLight(textureColor, pointLights[i], unitCamera, unitNormal);
         }
     }
 
-    fragColor = vec4(vec3(ambientValue) + diffuseSpecular, 1) * textureColor;
+    fragColor = vec4(vec3(ambientValue), 1) * textureColor + diffuseSpecular;
     fragColor = mix(vec4(fogColor, 1), fragColor, fogFactor);
 }

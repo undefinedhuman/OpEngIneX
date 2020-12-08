@@ -12,7 +12,7 @@ public class DirectionalLight extends Light {
     }
 
     public DirectionalLight setDirection(float x, float y, float z) {
-        this.direction.set(x, y, z);
+        this.direction.set(x, y, z).normalize();
         return this;
     }
 

@@ -1,9 +1,7 @@
 package de.undefinedhuman.core.opengl.fbos.attachments;
 
 import de.undefinedhuman.core.opengl.fbos.Attachment;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.*;
 
 import java.nio.ByteBuffer;
 

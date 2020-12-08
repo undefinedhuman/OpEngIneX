@@ -8,11 +8,14 @@ out vec4 positionInWorldSpace;
 out vec2 passTextureCoords;
 out vec3 surfaceNormal;
 out float fogFactor;
+out vec4 shadowCoords;
 
 uniform mat4 transformMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat3 normalMatrix;
+
+uniform mat4 shadowMapMatrix;
 
 uniform float fogDensity;
 uniform float fogPower;
@@ -23,6 +26,7 @@ const float TEXTURE_TILING = 40;
 
 void main() {
     positionInWorldSpace = transformMatrix * vec4(position, 1);
+    shadowCoords = toShadowMapSpace * positionInWorldSpace;
     vec4 positionInEyeSpace = viewMatrix * positionInWorldSpace;
 
     gl_ClipDistance[0] = dot(positionInWorldSpace, clipPlane);

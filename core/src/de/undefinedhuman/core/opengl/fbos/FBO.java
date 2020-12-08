@@ -10,6 +10,8 @@ public class FBO {
 
     private final int id, width, height, samples;
 
+    private boolean shadowFBO = false;
+
     private HashMap<Integer, Attachment> attachments = new HashMap<>();
     private Attachment depthAttachment = null;
 
@@ -41,12 +43,22 @@ public class FBO {
         return this;
     }
 
+    public FBO setShadowFBO(boolean shadowFBO) {
+        this.shadowFBO = shadowFBO;
+        return this;
+    }
+
     public FBO init() {
         bind();
         for(Integer id : attachments.keySet())
             attachments.get(id).init(GL30.GL_COLOR_ATTACHMENT0 + id, width, height, samples);
         if(depthAttachment != null)
             depthAttachment.init(GL30.GL_DEPTH_ATTACHMENT, width, height, samples);
+        if(shadowFBO) {
+            GL11.glDrawBuffer(GL11.GL_NONE);
+            GL11.glReadBuffer(GL11.GL_NONE);
+        }
+        unbind();
         return this;
     }
 
@@ -93,10 +105,22 @@ public class FBO {
         GL11.glViewport(0, 0, Window.instance.getWidth(), Window.instance.getHeight());
     }
 
+    public void startShadow() {
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, id);
+        GL11.glViewport(0, 0, width, height);
+    }
+
+    public void stopShadow() {
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+        GL11.glViewport(0, 0, Window.instance.getWidth(), Window.instance.getHeight());
+    }
+
     public void delete() {
         for (Attachment attachment : attachments.values())
             attachment.delete();
         if (depthAttachment != null) depthAttachment.delete();
+        GL30.glDeleteFramebuffers(id);
     }
 
     public boolean isComplete() {

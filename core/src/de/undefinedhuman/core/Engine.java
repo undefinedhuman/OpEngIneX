@@ -14,6 +14,7 @@ import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.manager.ManagerList;
 import de.undefinedhuman.core.opengl.OpenGLUtils;
 import de.undefinedhuman.core.resources.texture.TextureManager;
+import de.undefinedhuman.core.shadows.ShadowManager;
 import de.undefinedhuman.core.water.WaterManager;
 import de.undefinedhuman.core.window.Window;
 import de.undefinedhuman.core.world.TerrainManager;
@@ -32,7 +33,7 @@ public class Engine {
     public Engine() {
         if (instance == null) instance = this;
         managerList = new ManagerList().addManager(new Log(), new SettingsManager(), new ConfigManager(), new LanguageManager());
-        glManagerList = new ManagerList().addManager(new InputManager(), new Camera(), new TextureManager(), new LightManager(), new BlueprintManager(), new TerrainManager(), new EntityManager(), new WaterManager(), new GuiManager());
+        glManagerList = new ManagerList().addManager(new InputManager(), new Camera(), new TextureManager(), new LightManager(), new BlueprintManager(), new TerrainManager(), new EntityManager(), new ShadowManager(), new WaterManager(), new GuiManager());
         Window.instance = new Window();
     }
 

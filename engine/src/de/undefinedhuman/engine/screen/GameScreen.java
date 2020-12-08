@@ -6,11 +6,13 @@ import de.undefinedhuman.core.entity.EntityManager;
 import de.undefinedhuman.core.entity.ecs.blueprint.BlueprintManager;
 import de.undefinedhuman.core.gui.GuiManager;
 import de.undefinedhuman.core.gui.GuiShader;
+import de.undefinedhuman.core.gui.GuiTransform;
 import de.undefinedhuman.core.input.InputManager;
 import de.undefinedhuman.core.input.Keys;
 import de.undefinedhuman.core.light.LightManager;
 import de.undefinedhuman.core.light.PointLight;
 import de.undefinedhuman.core.opengl.OpenGLUtils;
+import de.undefinedhuman.core.resources.texture.TextureManager;
 import de.undefinedhuman.core.screen.Screen;
 import de.undefinedhuman.core.utils.Tools;
 import de.undefinedhuman.core.utils.Variables;
@@ -37,26 +39,27 @@ public class GameScreen implements Screen {
         WaterManager.instance.setShader(new WaterShader());
         GuiManager.instance.setShader(new GuiShader());
 
-        /*GuiManager.instance.addGuiTransform(new GuiTransform(0.5f, 0.5f, 0.25f, 0.25f) {
+        GuiManager.instance.addGuiTransform(new GuiTransform(0.5f, 0.5f, 0.25f, 0.25f) {
             @Override
             public void bindTexture() {
-                GL13.glActiveTexture(GL13.GL_TEXTURE0);
-                GL11.glBindTexture(GL11.GL_TEXTURE_2D, WaterManager.instance.refractionTexture.getDepthBuffer());
+                TextureManager.instance.getTexture("Unknown.png").bind();
             }
 
             @Override
             public void unbindTexture() {
+                TextureManager.instance.getTexture("Unknown.png").unbind();
             }
-        });*/
+        });
 
         int tempMaxTerrain = 2;
-        Camera.instance.setPosition(Variables.TERRAIN_SIZE * tempMaxTerrain * .5f, 35f, Variables.TERRAIN_SIZE * tempMaxTerrain * 0.5f);
+        float cameraPos = Variables.TERRAIN_SIZE * tempMaxTerrain * .5f;
+        Camera.instance.setPosition(cameraPos, 35f, cameraPos);
 
         for (int i = 0; i < tempMaxTerrain; i++)
             for (int j = 0; j < tempMaxTerrain; j++)
                 generateTerrain(i, j);
 
-        LightManager.instance.addPointLight(new PointLight(5f, new Vector3f(400f, TerrainManager.instance.getHeightAtPosition(400, 400) + 15, 400f), new Vector3f(0, 0, 1), new Vector3f(1f, 0.01f, 0.002f)));
+        LightManager.instance.addPointLight(new PointLight(5f, new Vector3f(cameraPos, TerrainManager.instance.getHeightAtPosition(cameraPos, cameraPos) + 15, cameraPos), new Vector3f(0, 0, 1), new Vector3f(1f, 0.01f, 0.002f)));
     }
 
     final Noise terrainNoise = new Noise(5, 1f, 0.1f),
