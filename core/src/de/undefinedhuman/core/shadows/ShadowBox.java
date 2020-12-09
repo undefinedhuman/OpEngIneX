@@ -95,9 +95,8 @@ public class ShadowBox {
 	}
 
 	private void calculateWidthsAndHeights() {
-		farWidth = (float) (SHADOW_DISTANCE * Math.tan(Math.toRadians(Camera.instance.getFOV())));
-		nearWidth = (float) (Variables.NEAR_PLANE
-				* Math.tan(Math.toRadians(Camera.instance.getFOV())));
+		farWidth = (float) (SHADOW_DISTANCE * Math.tan(Math.toRadians(Variables.FOV_ANGLE)));
+		nearWidth = (float) (Variables.NEAR_PLANE * Math.tan(Math.toRadians(Variables.FOV_ANGLE)));
 		farHeight = farWidth / Window.instance.getAspectRatio();
 		nearHeight = nearWidth / Window.instance.getAspectRatio();
 	}

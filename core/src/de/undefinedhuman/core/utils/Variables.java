@@ -36,7 +36,7 @@ public class Variables {
     // Camera
     public static final float FOV_ANGLE = 70f;
     public static final float NEAR_PLANE = 0.1f;
-    public static final float FAR_PLANE = 1000f;
+    public static final float FAR_PLANE = 1000;
     public static final float FRUSTUM_LENGTH = FAR_PLANE - NEAR_PLANE;
     public static final float MOUSE_SENSITIVITY = 10f;
     public static final float CAMERA_MOVE_SPEED = 10f;
@@ -74,6 +74,6 @@ public class Variables {
     public static final float WATER_SPECULAR_STRENGTH = 0.56f;
 
     // Shadow
-    public static final int SHADOW_MAP_SIZE = 2048;
+    public static final int SHADOW_MAP_SIZE = 8192;
 
 }

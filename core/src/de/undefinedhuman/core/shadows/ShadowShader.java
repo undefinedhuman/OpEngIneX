@@ -10,7 +10,7 @@ public class ShadowShader extends ShaderProgram {
             tvpMatrix = new UniformMatrix4("tvpMatrix");
 
 	protected ShadowShader() {
-		super("shadow", "position");
+		super("shadow", "position", "textureCoords");
         addVertexShader().addFragmentShader().compileShader();
         super.initUniforms(tvpMatrix);
 	}

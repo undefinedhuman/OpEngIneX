@@ -33,7 +33,7 @@ public class Engine {
     public Engine() {
         if (instance == null) instance = this;
         managerList = new ManagerList().addManager(new Log(), new SettingsManager(), new ConfigManager(), new LanguageManager());
-        glManagerList = new ManagerList().addManager(new InputManager(), new Camera(), new TextureManager(), new LightManager(), new BlueprintManager(), new TerrainManager(), new EntityManager(), new ShadowManager(), new WaterManager(), new GuiManager());
+        glManagerList = new ManagerList().addManager(new InputManager(), new Camera(), new TextureManager(), new LightManager(), new BlueprintManager(), new TerrainManager(), new EntityManager(), new WaterManager(), new GuiManager(), new ShadowManager());
         Window.instance = new Window();
     }
 

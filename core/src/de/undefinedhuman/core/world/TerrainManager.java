@@ -2,6 +2,8 @@ package de.undefinedhuman.core.world;
 
 import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.manager.Manager;
+import de.undefinedhuman.core.opengl.OpenGLUtils;
+import de.undefinedhuman.core.shadows.ShadowManager;
 import de.undefinedhuman.core.utils.Variables;
 import de.undefinedhuman.core.world.generation.HeightGenerator;
 import de.undefinedhuman.core.world.generation.TerrainGenerator;
@@ -48,6 +50,7 @@ public class TerrainManager implements Manager {
     public void render() {
         shader.bind();
         shader.loadUniforms();
+        OpenGLUtils.bindTexture(1, ShadowManager.instance.getShadowMap());
         terrains
                 .values()
                 .forEach(terrain -> terrain.render(shader));

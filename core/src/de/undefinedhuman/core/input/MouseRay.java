@@ -1,7 +1,6 @@
 package de.undefinedhuman.core.input;
 
 import de.undefinedhuman.core.camera.Camera;
-import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.window.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -22,7 +21,6 @@ public class MouseRay {
 
     public static Vector3f calculateMouseRay(float x, float y) {
         mousePositionInNormalizedDeviceCoords.set(x, y).mul(2).mul(1f / Window.instance.getWidth(), 1f / Window.instance.getHeight()).sub(1f, 1f);
-        Log.info(mousePositionInNormalizedDeviceCoords);
         mousePositionInClipCoords.set(mousePositionInNormalizedDeviceCoords, -1f, 1f);
         invertedProjectionMatrix.set(Camera.instance.getProjectionMatrix()).invert();
         mousePositionInCameraCoords

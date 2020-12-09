@@ -23,10 +23,12 @@ uniform float fogPower;
 uniform vec4 clipPlane;
 
 const float TEXTURE_TILING = 40;
+const float shadowDistance = 100;
+const float shadowTransition = 10;
 
 void main() {
     positionInWorldSpace = transformMatrix * vec4(position, 1);
-    shadowCoords = toShadowMapSpace * positionInWorldSpace;
+    shadowCoords = shadowMapMatrix * positionInWorldSpace;
     vec4 positionInEyeSpace = viewMatrix * positionInWorldSpace;
 
     gl_ClipDistance[0] = dot(positionInWorldSpace, clipPlane);
@@ -36,5 +38,10 @@ void main() {
 
     surfaceNormal = normalMatrix * normal;
 
-    fogFactor = clamp(exp(-pow((length(positionInEyeSpace.xyz) * fogDensity), fogPower)), 0, 1);
+    float distance = length(positionInEyeSpace.xyz);
+    fogFactor = clamp(exp(-pow(distance * fogDensity, fogPower)), 0, 1);
+
+    distance = distance - (shadowDistance - shadowTransition);
+    distance = distance / shadowTransition;
+    shadowCoords.w = clamp(1.0-distance, 0, 1.0);
 }

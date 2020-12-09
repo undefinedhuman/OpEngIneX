@@ -6,6 +6,7 @@ in vec4 positionInWorldSpace;
 in vec2 passTextureCoords;
 in vec3 surfaceNormal;
 in float fogFactor;
+in vec4 shadowCoords;
 
 out vec4 fragColor;
 
@@ -26,6 +27,8 @@ struct PointLight {
     vec3 attenuation;
 };
 
+uniform sampler2D shadowMapTexture;
+
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 
 uniform vec3 fogColor;
@@ -36,10 +39,13 @@ uniform float ambientValue;
 uniform float specularStrength;
 uniform float shineDamper;
 
-vec3 calcLightColor(float lightIntensity, vec3 lightColor, vec3 unitLight, vec3 unitCamera, vec3 unitNormal) {
+const int pixelSample = 3;
+const float totalSamples = (pixelSample * 2.0 + 1.0) * (pixelSample * 2.0 + 1.0);
+
+vec3 calcLightColor(float shadowFactor, float lightIntensity, vec3 lightColor, vec3 unitLight, vec3 unitCamera, vec3 unitNormal) {
     // Diffuse
     float brightness = max(dot(unitNormal, unitLight), 0.0);
-    vec3 diffuse = brightness * lightColor * lightIntensity;
+    vec3 diffuse = brightness * lightColor * lightIntensity * shadowFactor;
 
     // Specular
     vec3 reflectedLight = normalize(reflect(-unitLight, unitNormal));
@@ -49,28 +55,46 @@ vec3 calcLightColor(float lightIntensity, vec3 lightColor, vec3 unitLight, vec3 
     return (diffuse + specular);
 }
 
-vec3 calcPointLight(PointLight light, vec3 unitCamera, vec3 unitNormal) {
+vec3 calcPointLight(float shadowFactor, PointLight light, vec3 unitCamera, vec3 unitNormal) {
     vec3 lightDirection = light.position - positionInWorldSpace.xyz;
-    vec3 ligthColor = calcLightColor(light.intensity, light.color, normalize(lightDirection), unitCamera, unitNormal);
+    vec3 ligthColor = calcLightColor(shadowFactor, light.intensity, light.color, normalize(lightDirection), unitCamera, unitNormal);
 
     float distance = length(lightDirection);
     float attentuation = light.attenuation.x + light.attenuation.y * distance + light.attenuation.z * distance * distance;
     return ligthColor / attentuation;
 }
 
-vec3 calcDirectionalLight(DirectionalLight light, vec3 unitCamera, vec3 unitNormal) {
-    return calcLightColor(light.intensity, light.color, normalize(light.direction), unitCamera, unitNormal);
+vec3 calcDirectionalLight(float shadowFactor, DirectionalLight light, vec3 unitCamera, vec3 unitNormal) {
+    return calcLightColor(shadowFactor, light.intensity, light.color, normalize(light.direction), unitCamera, unitNormal);
 }
 
 void main() {
+
+    float total = 0.0;
+
+    float shadowMapSize = 8192;
+    float sampleSize = 1.0 / shadowMapSize;
+
+    for(int x = -pixelSample; x <= pixelSample; x++) {
+        for(int y = -pixelSample; y <= pixelSample; y++) {
+            if(shadowCoords.z > texture(shadowMapTexture, shadowCoords.xy + vec2(x, y) * sampleSize).r + 0.002) {
+                total += 1.0;
+            }
+        }
+    }
+
+    total /= totalSamples;
+
+    float shadowFactor = 1.0 - (total * shadowCoords.w);
+
     vec3 unitCamera = normalize(cameraPosition - positionInWorldSpace.xyz);
     vec3 unitNormal = normalize(surfaceNormal);
 
-    vec3 diffuseSpecular = calcDirectionalLight(sun, unitCamera, unitNormal);
+    vec3 diffuseSpecular = calcDirectionalLight(shadowFactor, sun, unitCamera, unitNormal);
 
     for(int i = 0; i < MAX_POINT_LIGHTS; i++) {
         if(pointLights[i].intensity > 0) {
-            diffuseSpecular += calcPointLight(pointLights[i], unitCamera, unitNormal);
+            diffuseSpecular += calcPointLight(shadowFactor, pointLights[i], unitCamera, unitNormal);
         }
     }
 

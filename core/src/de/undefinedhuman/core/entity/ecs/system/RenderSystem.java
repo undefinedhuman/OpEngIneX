@@ -46,7 +46,6 @@ public class RenderSystem implements System {
     @Override
     public void update(float delta) {
         frustumIntersection.set(projectionViewMatrix.set(Camera.instance.getProjectionMatrix()).mul(Camera.instance.getViewMatrix()));
-        // frustumIntersection.set(projectionViewMatrix.set(generateProjectionMatrix()).mul(Camera.instance.getViewMatrix()));
     }
 
     private Matrix4f generateProjectionMatrix() {

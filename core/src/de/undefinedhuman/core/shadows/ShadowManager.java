@@ -11,6 +11,8 @@ import de.undefinedhuman.core.manager.Manager;
 import de.undefinedhuman.core.opengl.OpenGLUtils;
 import de.undefinedhuman.core.opengl.fbos.FBO;
 import de.undefinedhuman.core.opengl.fbos.attachments.TextureAttachment;
+import de.undefinedhuman.core.resources.texture.Texture;
+import de.undefinedhuman.core.resources.texture.TextureManager;
 import de.undefinedhuman.core.settings.panels.PanelObject;
 import de.undefinedhuman.core.settings.types.mesh.Mesh;
 import de.undefinedhuman.core.utils.Variables;
@@ -35,7 +37,6 @@ public class ShadowManager implements Manager {
 	private Matrix4f projectionMatrix = new Matrix4f();
 	private Matrix4f lightViewMatrix = new Matrix4f();
 	private Matrix4f projectionViewMatrix = new Matrix4f();
-	private Matrix4f offset = new Matrix4f().translate(0.5f, 0.5f, 0.5f).scale(0.5f);
 
 	public ShadowManager() {
 	    if(instance == null) instance = this;
@@ -73,8 +74,11 @@ public class ShadowManager implements Manager {
                 for(PanelObject panelObject : meshComponent.getMeshes()) {
                     if(!(panelObject instanceof Mesh)) continue;
                     Mesh mesh = (Mesh) panelObject;
+                    Texture texture = TextureManager.instance.getTexture(mesh.texture.getString());
+                    texture.bind();
                     mesh.getVao().bind();
                     GL20.glEnableVertexAttribArray(0);
+                    GL20.glDisableVertexAttribArray(1);
                     for(Entity entity : entitiesWithID) {
                         if(entity.getPosition().distance(Camera.instance.getPosition()) > Variables.VIEW_DISTANCE)
                             continue;
@@ -83,7 +87,9 @@ public class ShadowManager implements Manager {
                         OpenGLUtils.renderVao(mesh.getVao().getVertexCount());
                     }
                     GL20.glDisableVertexAttribArray(0);
+                    GL20.glDisableVertexAttribArray(1);
                     mesh.getVao().unbind();
+                    texture.unbind();
                 }
             }
         }
@@ -119,8 +125,11 @@ public class ShadowManager implements Manager {
                 .m33(1);
 	}
 
-    public Matrix4f getToShadowMapSpaceMatrix() {
-        return new Matrix4f(offset).mul(projectionViewMatrix);
+    public Matrix4f getShadowMapMatrix() {
+        return new Matrix4f()
+                .translate(0.5f, 0.5f, 0.5f)
+                .scale(0.5f)
+                .mul(projectionViewMatrix);
     }
 
     public int getShadowMap() {
