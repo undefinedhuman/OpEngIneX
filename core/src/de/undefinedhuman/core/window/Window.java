@@ -65,6 +65,7 @@ public class Window {
     public void update() {
         GLFW.glfwSwapBuffers(id);
         GLFW.glfwPollEvents();
+        GLFW.glfwSwapInterval(1);
         if((updateTime += Time.delta) > 1)
             GLFW.glfwSetWindowTitle(id, Variables.NAME + " " + Variables.VERSION + " " + (int) (1f/Time.delta + (updateTime = 0)) + "FPS");
         sync.sync(SettingsManager.instance.fps.getInt());
