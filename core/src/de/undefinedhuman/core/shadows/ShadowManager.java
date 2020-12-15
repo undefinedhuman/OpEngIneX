@@ -23,6 +23,7 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,23 +48,29 @@ public class ShadowManager implements Manager {
         shader = new ShadowShader();
         shadowBox = new ShadowBox(lightViewMatrix);
         shadowFbo = new FBO(Variables.SHADOW_MAP_SIZE, Variables.SHADOW_MAP_SIZE, 0)
-                .addDepthAttachment(new TextureAttachment(GL14.GL_DEPTH_COMPONENT16))
+                .addDepthAttachment(new TextureAttachment(GL30.GL_DEPTH_COMPONENT24))
                 .setShadowFBO(true)
                 .init();
     }
 
+    private Matrix4f tempProjectionTransformation = new Matrix4f();
+
     @Override
 	public void update(float delta) {
+        shadowBox.update();
         updateOrthographicProjectionMatrix(shadowBox.getBounds());
         updateLightViewMatrix(LightManager.instance.getSun().getDirection(), shadowBox.getCenter());
         projectionViewMatrix
                 .set(projectionMatrix)
                 .mul(lightViewMatrix);
         shadowFbo.startShadow();
+        OpenGLUtils.clear();
+        OpenGLUtils.disableAlphaBlending();
+        OpenGLUtils.enableCulling();
+        OpenGLUtils.disableMSAA();
         GL11.glEnable(GL11.GL_DEPTH_TEST);
-        GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         shader.bind();
-        shadowBox.update();
         for(EntityType entityType : EntityManager.instance.getEntitiesByTypeAndID().keySet()) {
             HashMap<Integer, ArrayList<Entity>> entitiesByBlueprintID = EntityManager.instance.getEntitiesByTypeAndID().get(entityType);
             for(Integer blueprintID : entitiesByBlueprintID.keySet()) {
@@ -83,7 +90,7 @@ public class ShadowManager implements Manager {
                         if(entity.getPosition().distance(Camera.instance.getPosition()) > Variables.VIEW_DISTANCE)
                             continue;
                         entity.updateMatrices();
-                        shader.loadUniforms(new Matrix4f().set(projectionViewMatrix).mul(entity.getTransformationMatrix()));
+                        shader.loadUniforms(tempProjectionTransformation.set(projectionViewMatrix).mul(entity.getTransformationMatrix()));
                         OpenGLUtils.renderVao(mesh.getVao().getVertexCount());
                     }
                     GL20.glDisableVertexAttribArray(0);
@@ -104,7 +111,8 @@ public class ShadowManager implements Manager {
 	}
 
 	private void updateLightViewMatrix(Vector3f direction, Vector3f center) {
-		center.negate();
+        direction = direction.normalize();
+		center = center.negate();
 		lightViewMatrix
                 .identity();
 		float pitch = (float) Math.acos(new Vector2f(direction.x, direction.z).length());

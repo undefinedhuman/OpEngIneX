@@ -1,4 +1,4 @@
-#version 410 core
+#version 140
 
 in vec3 position;
 in vec2 textureCoords;
@@ -42,6 +42,6 @@ void main() {
     fogFactor = clamp(exp(-pow(distance * fogDensity, fogPower)), 0, 1);
 
     distance = distance - (shadowDistance - shadowTransition);
-    distance = distance / shadowTransition;
+    distance = distance / shadowDistance;
     shadowCoords.w = clamp(1.0-distance, 0, 1.0);
 }

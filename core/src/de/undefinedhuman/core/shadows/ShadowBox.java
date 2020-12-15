@@ -53,7 +53,7 @@ public class ShadowBox {
 		Vector4f centerLightInverted = new Matrix4f()
                 .set(lightViewMatrix)
                 .invert()
-                .transform(new Vector4f(new Vector3f(min).add(max).mul(0.5f), 1));
+                .transform(new Vector4f(new Vector3f(max).mul(0.5f).add(min), 1));
 		return new Vector3f(centerLightInverted.x, centerLightInverted.y, centerLightInverted.z);
 	}
 

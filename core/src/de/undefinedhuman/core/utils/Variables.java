@@ -74,6 +74,6 @@ public class Variables {
     public static final float WATER_SPECULAR_STRENGTH = 0.56f;
 
     // Shadow
-    public static final int SHADOW_MAP_SIZE = 8192;
+    public static final int SHADOW_MAP_SIZE = 4096;
 
 }

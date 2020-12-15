@@ -1,4 +1,4 @@
-#version 410 core
+#version 140
 
 const int MAX_POINT_LIGHTS = 5;
 
@@ -39,7 +39,7 @@ uniform float ambientValue;
 uniform float specularStrength;
 uniform float shineDamper;
 
-const int pixelSample = 3;
+const int pixelSample = 1;
 const float totalSamples = (pixelSample * 2.0 + 1.0) * (pixelSample * 2.0 + 1.0);
 
 vec3 calcLightColor(float shadowFactor, float lightIntensity, vec3 lightColor, vec3 unitLight, vec3 unitCamera, vec3 unitNormal) {
@@ -72,7 +72,7 @@ void main() {
 
     float total = 0.0;
 
-    float shadowMapSize = 8192;
+    float shadowMapSize = 4096;
     float sampleSize = 1.0 / shadowMapSize;
 
     for(int x = -pixelSample; x <= pixelSample; x++) {

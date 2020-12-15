@@ -6,12 +6,15 @@ import de.undefinedhuman.core.entity.EntityManager;
 import de.undefinedhuman.core.entity.ecs.blueprint.BlueprintManager;
 import de.undefinedhuman.core.gui.GuiManager;
 import de.undefinedhuman.core.gui.GuiShader;
+import de.undefinedhuman.core.gui.GuiTransform;
 import de.undefinedhuman.core.input.InputManager;
 import de.undefinedhuman.core.input.Keys;
 import de.undefinedhuman.core.light.LightManager;
 import de.undefinedhuman.core.light.PointLight;
 import de.undefinedhuman.core.opengl.OpenGLUtils;
+import de.undefinedhuman.core.resources.texture.TextureManager;
 import de.undefinedhuman.core.screen.Screen;
+import de.undefinedhuman.core.shadows.ShadowManager;
 import de.undefinedhuman.core.utils.Tools;
 import de.undefinedhuman.core.utils.Variables;
 import de.undefinedhuman.core.water.WaterManager;
@@ -21,6 +24,8 @@ import de.undefinedhuman.core.world.TerrainTexture;
 import de.undefinedhuman.core.world.generation.noise.Noise;
 import de.undefinedhuman.core.world.shader.TerrainShader;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 public class GameScreen implements Screen {
 
@@ -37,17 +42,16 @@ public class GameScreen implements Screen {
         WaterManager.instance.setShader(new WaterShader());
         GuiManager.instance.setShader(new GuiShader());
 
-        /*GuiManager.instance.addGuiTransform(new GuiTransform(0.5f, 0.5f, 0.25f, 0.25f) {
+        GuiManager.instance.addGuiTransform(new GuiTransform(0.5f, 0.5f, 0.25f, 0.25f) {
             @Override
             public void bindTexture() {
-                TextureManager.instance.getTexture("Unknown.png").bind();
+                OpenGLUtils.bindTexture(0, ShadowManager.instance.getShadowMap());
             }
 
             @Override
             public void unbindTexture() {
-                TextureManager.instance.getTexture("Unknown.png").unbind();
             }
-        });*/
+        });
 
         int tempMaxTerrain = 2;
         float cameraPos = Variables.TERRAIN_SIZE * tempMaxTerrain * .5f;

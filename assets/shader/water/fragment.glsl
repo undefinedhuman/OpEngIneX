@@ -1,4 +1,4 @@
-#version 410 core
+#version 140
 
 in vec2 textureCoords;
 in vec4 positionInCameraSpace;
@@ -64,12 +64,12 @@ void main() {
 
     vec4 normalColor = texture(normalTexture, distortedTextureCoords);
     vec3 normal = normalize(vec3(normalColor.r * 2.0 - 1.0, normalColor.b * 3.67f, normalColor.g * 2.0 - 1.0));
-    vec3 specular = calcSpecularLight(sun, unitCamera, normal) * clamp(waterDepth/5, 0, 1);
+    vec3 specular = calcSpecularLight(sun, unitCamera, normal) * clamp(waterDepth/5, 0.0, 1.0);
 
     float fogFactor = clamp(exp(-pow((length(positionInCameraSpace.xyz) * fogDensity), fogPower)), 0, 1);
 
-    fragColor = mix(reflectionColor, refractionColor, pow(dot(unitCamera, vec3(0, 1, 0)), 0.5));
+    fragColor = mix(reflectionColor, refractionColor, pow(dot(unitCamera, vec3(0.0, 1.0, 0.0)), 0.5));
     fragColor = mix(fragColor, WATER_COLOR, 0.2) + vec4(specular, 0.0);
-    fragColor.a = clamp(waterDepth/5, 0, 1);
+    fragColor.a = clamp(waterDepth/5, 0.0, 1.0);
     fragColor = mix(vec4(fogColor, 1), fragColor, fogFactor);
 }

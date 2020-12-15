@@ -1,4 +1,4 @@
-#version 400 core
+#version 140
 
 const int MAX_POINT_LIGHTS = 5;
 
