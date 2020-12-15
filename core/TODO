@@ -1,4 +1,4 @@
 TODO COLLISION VOXELASATION OF THE WORLD BASED ON QUAD TREES AND NOT SIMPLE CUBES https://www.youtube.com/watch?v=jxbDYxm-pXg
 TODO Implement proper language support where the Text has an update function that can be triggered when the language is changed
 
-TODO Server GUI mit Ram/CPU Usage Graphs, Player List, 
+TODO Server GUI mit Ram/CPU Usage Graphs, Player List Statistics with graphs
