@@ -9,8 +9,8 @@ import org.lwjgl.glfw.GLFW;
 public class Application {
 
     public Application(Game game) {
-        Engine.instance = new Engine();
-        Time.instance = new Time();
+        new Engine();
+        new Time();
         Engine.instance.init();
         if (!Engine.instance.isInitialized()) Log.instance.crash("Engine could not be initialized!");
         Engine.instance.setGame(game);

@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class FBO {
 
@@ -50,8 +51,8 @@ public class FBO {
 
     public FBO init() {
         bind();
-        for(Integer id : attachments.keySet())
-            attachments.get(id).init(GL30.GL_COLOR_ATTACHMENT0 + id, width, height, samples);
+        for(Map.Entry<Integer, Attachment> entry : attachments.entrySet())
+            entry.getValue().init(GL30.GL_COLOR_ATTACHMENT0 + entry.getKey(), width, height, samples);
         if(depthAttachment != null)
             depthAttachment.init(GL30.GL_DEPTH_ATTACHMENT, width, height, samples);
         if(shadowFBO) {

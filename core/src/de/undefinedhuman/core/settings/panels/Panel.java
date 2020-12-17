@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Panel extends Setting {
 
@@ -75,11 +76,10 @@ public abstract class Panel extends Setting {
         if(!(value instanceof SettingsObject)) return;
         SettingsObject settingsObject = (SettingsObject) value;
         HashMap<String, Object> settings = settingsObject.getSettings();
-        for(String key : settings.keySet()) {
-            Object panelObjectSettings = settings.get(key);
-            if(!(panelObjectSettings instanceof SettingsObject)) continue;
+        for(Map.Entry<String, Object> entry : settings.entrySet()) {
+            if(!(entry.getValue() instanceof SettingsObject)) continue;
             try {
-                objects.put(key, panelObject.getClass().newInstance().load(parentDir, (SettingsObject) panelObjectSettings).setKey(key));
+                objects.put(key, panelObject.getClass().newInstance().load(parentDir, (SettingsObject) entry.getValue()).setKey(key));
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }

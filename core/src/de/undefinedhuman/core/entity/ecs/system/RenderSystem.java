@@ -67,6 +67,8 @@ public class RenderSystem implements System {
             shader.loadUniforms();
             HashMap<Integer, ArrayList<Entity>> entitiesByBlueprintID = EntityManager.instance.getEntitiesByTypeAndID().get(entityType);
             for(Integer blueprintID : entitiesByBlueprintID.keySet()) {
+
+                // TODO Refactor Loop
                 ArrayList<Entity> entitiesWithID = entitiesByBlueprintID.get(blueprintID);
                 MeshComponent meshComponent;
                 Entity baseEntity = entitiesWithID.get(0);

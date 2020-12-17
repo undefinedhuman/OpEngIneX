@@ -3,7 +3,7 @@ package de.undefinedhuman.engine;
 import de.undefinedhuman.core.Application;
 import de.undefinedhuman.core.game.Game;
 import de.undefinedhuman.engine.input.EngineInput;
-import de.undefinedhuman.engine.screen.GameScreen;
+import de.undefinedhuman.engine.screen.TestScreen;
 
 public class Main extends Game {
 
@@ -15,7 +15,7 @@ public class Main extends Game {
     public void init() {
         super.init();
         setInput(new EngineInput());
-        setScreen(new GameScreen());
+        setScreen(new TestScreen());
     }
 
 }

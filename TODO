@@ -1,0 +1,8 @@
+TODO COLLISION VOXELASATION OF THE WORLD BASED ON QUAD TREES AND NOT SIMPLE CUBES https://www.youtube.com/watch?v=jxbDYxm-pXg
+TODO Implement proper language support where the Text has an update function that can be triggered when the language is changed
+
+TODO Server GUI mit Ram/CPU Usage Graphs, Player List Statistics with graphs
+
+TODO Tree Placement https://www.boristhebrave.com/2017/05/14/blue-noise-particles/
+
+TODO God rays on ray marching https://www.youtube.com/watch?v=Jpu7Kh1tQGY&list=PL4TI9_nFhDvD0VoYn73GkqLeLAax_RZcb&index=5
