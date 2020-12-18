@@ -116,6 +116,7 @@ public class Window {
             if (pixelSize.equals(width, height)) return;
             pixelSize.set(width, height);
             Engine.instance.resize(width, height);
+
         });
         glfwSetWindowSizeCallback(id, (window, width, height) -> {
             if (screenSize.equals(width, height)) return;

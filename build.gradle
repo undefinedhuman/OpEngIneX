@@ -44,24 +44,32 @@ allprojects {
 
 }
 
+ext.libraries = [
+        lwjgl: [
+                "org.lwjgl:lwjgl",
+                "org.lwjgl:lwjgl-assimp",
+                "org.lwjgl:lwjgl-bgfx",
+                "org.lwjgl:lwjgl-cuda",
+                "org.lwjgl:lwjgl-glfw",
+                "org.lwjgl:lwjgl-nanovg",
+                "org.lwjgl:lwjgl-nuklear",
+                "org.lwjgl:lwjgl-openal",
+                "org.lwjgl:lwjgl-opengl",
+                "org.lwjgl:lwjgl-par",
+                "org.lwjgl:lwjgl-stb",
+                "org.lwjgl:lwjgl-vulkan"
+        ]
+]
+
 project(":core") {
     apply plugin: "java"
 
     dependencies {
+
         implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
-        implementation "org.lwjgl:lwjgl"
-        implementation "org.lwjgl:lwjgl-assimp"
-        implementation "org.lwjgl:lwjgl-bgfx"
-        implementation "org.lwjgl:lwjgl-cuda"
-        implementation "org.lwjgl:lwjgl-glfw"
-        implementation "org.lwjgl:lwjgl-nanovg"
-        implementation "org.lwjgl:lwjgl-nuklear"
-        implementation "org.lwjgl:lwjgl-openal"
-        implementation "org.lwjgl:lwjgl-opengl"
-        implementation "org.lwjgl:lwjgl-par"
-        implementation "org.lwjgl:lwjgl-stb"
-        implementation "org.lwjgl:lwjgl-vulkan"
-        runtimeOnly "org.lwjgl:lwjgl::$lwjglNatives"
+        implementation libraries.lwjgl
+
+        runtimeOnly("org.lwjgl:lwjgl::$lwjglNatives")
         runtimeOnly "org.lwjgl:lwjgl-assimp::$lwjglNatives"
         runtimeOnly "org.lwjgl:lwjgl-bgfx::$lwjglNatives"
         runtimeOnly "org.lwjgl:lwjgl-glfw::$lwjglNatives"
@@ -74,9 +82,9 @@ project(":core") {
         if (lwjglNatives == "natives-macos") runtimeOnly "org.lwjgl:lwjgl-vulkan::$lwjglNatives"
         implementation "org.joml:joml:${jomlVersion}"
 
-        compile group: 'com.github.kerner1000', name: 'javapng', version: '2.1.2'
-        compile group: 'org.l33tlabs.twl', name: 'pngdecoder', version: '1.0'
-        compile group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
+        implementation group: 'com.github.kerner1000', name: 'javapng', version: '2.1.2'
+        implementation group: 'org.l33tlabs.twl', name: 'pngdecoder', version: '1.0'
+        implementation group: 'com.esotericsoftware', name: 'kryonet', version: '2.22.0-RC1'
     }
 
 }
@@ -85,7 +93,7 @@ project(":engine") {
     apply plugin: "java"
 
     dependencies {
-        compile project(":core")
+        implementation project(":core")
 
         implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
         implementation "org.lwjgl:lwjgl"
@@ -120,7 +128,7 @@ project(":editor") {
     apply plugin: "java"
 
     dependencies {
-        compile project(":core")
+        implementation project(":core")
 
         implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
         implementation "org.lwjgl:lwjgl"
@@ -148,6 +156,15 @@ project(":editor") {
         if (lwjglNatives == "natives-macos") runtimeOnly "org.lwjgl:lwjgl-vulkan::$lwjglNatives"
 
         implementation "org.joml:joml:${jomlVersion}"
+        implementation 'com.formdev:flatlaf:0.39'
+    }
+
+}
+
+project(":noise") {
+    apply plugin: "java"
+
+    dependencies {
         implementation 'com.formdev:flatlaf:0.39'
     }
 

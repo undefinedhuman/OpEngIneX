@@ -7,7 +7,6 @@ import de.undefinedhuman.core.utils.Maths;
 import de.undefinedhuman.core.utils.Variables;
 import de.undefinedhuman.core.utils.VectorUtils;
 import de.undefinedhuman.core.window.Window;
-import de.undefinedhuman.core.world.TerrainManager;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
@@ -48,7 +47,7 @@ public class Camera implements Manager {
         if (InputManager.instance.isKeyDown(Keys.KEY_S)) position.sub(cameraDirection.x * cameraSpeed, cameraDirection.y * cameraSpeed, cameraDirection.z * cameraSpeed);
         if (InputManager.instance.isKeyDown(Keys.KEY_A)) position.sub(cameraRight.x * cameraSpeed, cameraRight.y * cameraSpeed, cameraRight.z * cameraSpeed);
         if (InputManager.instance.isKeyDown(Keys.KEY_D)) position.add(cameraRight.x * cameraSpeed, cameraRight.y * cameraSpeed, cameraRight.z * cameraSpeed);
-        position.y = Math.max(position.y, TerrainManager.instance.getHeightAtPosition(position.x, position.z) + 0.5f);
+        // position.y = Math.max(position.y, TerrainManager.instance.getHeightAtPosition(position.x, position.z) + 0.5f);
         rotation.x = Maths.clamp(rotation.x, -89f, 89f);
         rotation.y %= 360f;
         float cosPitch = (float) Math.cos(Math.toRadians(rotation.x));
@@ -73,7 +72,7 @@ public class Camera implements Manager {
     }
 
     public Matrix4f updateProjectionMatrix() {
-        float yScale = (float) (1f / Math.tan(Math.toRadians(FOV_ANGLE / 2f))) * Window.instance.getAspectRatio(), xScale = yScale / Window.instance.getAspectRatio();
+        float yScale = (float) (1f / Math.tan(Math.toRadians(FOV_ANGLE / 2f))), xScale = yScale / Window.instance.getAspectRatio();
         return projectionMatrix
                 .m00(xScale)
                 .m11(yScale)

@@ -74,8 +74,7 @@ public class RenderSystem implements System {
                 Entity baseEntity = entitiesWithID.get(0);
                 if((meshComponent = (MeshComponent) baseEntity.getComponent(ComponentType.MESH)) == null) continue;
                 for(PanelObject panelObject : meshComponent.getMeshes()) {
-                    if(!(panelObject instanceof Mesh)) continue;
-                    Mesh mesh = (Mesh) panelObject;
+                    if(!(panelObject instanceof Mesh mesh)) continue;
                     Texture texture = TextureManager.instance.getTexture(mesh.texture.getString()).setCulling(mesh.culling.getBoolean());
                     mesh.getVao().start();
                     shader.loadUniforms(mesh);

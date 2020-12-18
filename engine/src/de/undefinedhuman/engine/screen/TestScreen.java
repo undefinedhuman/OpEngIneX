@@ -1,18 +1,16 @@
 package de.undefinedhuman.engine.screen;
 
-import de.undefinedhuman.core.file.LineSplitter;
-import de.undefinedhuman.core.gui.GuiManager;
-import de.undefinedhuman.core.gui.GuiShader;
 import de.undefinedhuman.core.input.InputManager;
 import de.undefinedhuman.core.input.Keys;
+import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.opengl.OpenGLUtils;
+import de.undefinedhuman.core.opengl.Vao;
 import de.undefinedhuman.core.screen.Screen;
-import de.undefinedhuman.core.water.WaterManager;
-import de.undefinedhuman.core.water.WaterShader;
-import de.undefinedhuman.core.world.TerrainManager;
-import de.undefinedhuman.core.world.shader.TerrainShader;
+import de.undefinedhuman.core.world.generation.noise.Noise;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,17 +19,15 @@ public class TestScreen implements Screen {
 
     public static TestScreen instance;
 
-    private final float[][][] terrainValues = new float[16][16][16];
-
-    Vector3f[] VERTICES = new Vector3f[] {
-            new Vector3f(0, 0, 0),
-            new Vector3f(1, 0, 0),
-            new Vector3f(1, 1, 0),
-            new Vector3f(0, 1, 0),
-            new Vector3f(0, 0, 1),
-            new Vector3f(1, 0, 1),
-            new Vector3f(1, 1, 1),
-            new Vector3f(0, 1, 1),
+    Vector3i[] VERTICES = new Vector3i[] {
+            new Vector3i(0, 0, 0),
+            new Vector3i(1, 0, 0),
+            new Vector3i(1, 1, 0),
+            new Vector3i(0, 1, 0),
+            new Vector3i(0, 0, 1),
+            new Vector3i(1, 0, 1),
+            new Vector3i(1, 1, 1),
+            new Vector3i(0, 1, 1),
     };
 
     Vector2f[] EDGES = new Vector2f[] {
@@ -49,303 +45,372 @@ public class TestScreen implements Screen {
             new Vector2f(3, 7),
     };
 
-    /*new Vector3f[] { new Vector3f() },
-    new Vector3f[] { new Vector3f(), new Vector3f() },
-    new Vector3f[] { new Vector3f(), new Vector3f(), new Vector3f() },
-    new Vector3f[] { new Vector3f(), new Vector3f(), new Vector3f(), new Vector3f() },*/
-
     ArrayList<Vector3f[]> cases = new ArrayList<>(Arrays.asList(
-            new Vector3f[] { new Vector3f(8, 0, 3) },
-            new Vector3f[] { new Vector3f(1, 0, 9) },
-            new Vector3f[] { new Vector3f(8, 1, 3), new Vector3f(8, 9, 1) },
-            new Vector3f[] { new Vector3f(10, 2, 1) },
-            new Vector3f[] { new Vector3f(8, 0, 3), new Vector3f(1, 10, 2) },
-            new Vector3f[] { new Vector3f(9, 2, 0), new Vector3f(9, 10, 2) },
-            new Vector3f[] { new Vector3f(3, 8, 2), new Vector3f(2, 8, 10), new Vector3f(10, 8, 9) },
-            new Vector3f[] { new Vector3f(3, 2, 11) },
-            new Vector3f[] { new Vector3f(0, 2, 8), new Vector3f(2, 11, 8) },
-            new Vector3f[] { new Vector3f(1, 0, 9), new Vector3f(2, 11, 3) },
-            new Vector3f[] { new Vector3f(2, 9, 1), new Vector3f(11, 9, 2), new Vector3f(8, 9, 11) },
-            new Vector3f[] { new Vector3f(3, 10, 11), new Vector3f(3, 1, 10) },
-            new Vector3f[] { new Vector3f(1, 10, 0), new Vector3f(0, 10, 8), new Vector3f(8, 10, 11) },
-            new Vector3f[] { new Vector3f(0, 11, 3), new Vector3f(9, 11, 0), new Vector3f(10, 11, 9) },
-            new Vector3f[] { new Vector3f(8, 9, 11), new Vector3f(11, 9, 10) },
-            new Vector3f[] { new Vector3f(7, 4, 8) },
-            new Vector3f[] { new Vector3f(3, 7, 0), new Vector3f(7, 4, 0) },
-            new Vector3f[] { new Vector3f(7, 4, 8), new Vector3f(9, 1, 0) },
-            new Vector3f[] { new Vector3f(9, 1, 4), new Vector3f(4, 1, 7), new Vector3f(7, 1, 3) },
-            new Vector3f[] { new Vector3f(7, 4, 8), new Vector3f(2, 1, 10) },
-            new Vector3f[] { new Vector3f(4, 3, 7), new Vector3f(4, 0, 3), new Vector3f(2, 1, 10) },
-            new Vector3f[] { new Vector3f(2, 0, 10), new Vector3f(0, 9, 10), new Vector3f(7, 4, 8) },
-            new Vector3f[] { new Vector3f(9, 10, 4), new Vector3f(4, 10, 3), new Vector3f(3, 10, 2), new Vector3f(4, 3, 7) },
-            new Vector3f[] { new Vector3f(4, 8, 7), new Vector3f(3, 2, 11) }
-            ));
+            new Vector3f[] {},
+            new Vector3f[] {new Vector3f(8, 0, 3)},
+            new Vector3f[] {new Vector3f(1, 0, 9)},
+            new Vector3f[] {new Vector3f(8, 1, 3), new Vector3f(8, 9, 1)},
+            new Vector3f[] {new Vector3f(10, 2, 1)},
+            new Vector3f[] {new Vector3f(8, 0, 3), new Vector3f(1, 10, 2)},
+            new Vector3f[] {new Vector3f(9, 2, 0), new Vector3f(9, 10, 2)},
+            new Vector3f[] {new Vector3f(3, 8, 2), new Vector3f(2, 8, 10), new Vector3f(10, 8, 9)},
+            new Vector3f[] {new Vector3f(3, 2, 11)},
+            new Vector3f[] {new Vector3f(0, 2, 8), new Vector3f(2, 11, 8)},
+            new Vector3f[] {new Vector3f(1, 0, 9), new Vector3f(2, 11, 3)},
+            new Vector3f[] {new Vector3f(2, 9, 1), new Vector3f(11, 9, 2), new Vector3f(8, 9, 11)},
+            new Vector3f[] {new Vector3f(3, 10, 11), new Vector3f(3, 1, 10)},
+            new Vector3f[] {new Vector3f(1, 10, 0), new Vector3f(0, 10, 8), new Vector3f(8, 10, 11)},
+            new Vector3f[] {new Vector3f(0, 11, 3), new Vector3f(9, 11, 0), new Vector3f(10, 11, 9)},
+            new Vector3f[] {new Vector3f(8, 9, 11), new Vector3f(11, 9, 10)},
+            new Vector3f[] {new Vector3f(7, 4, 8)},
+            new Vector3f[] {new Vector3f(3, 7, 0), new Vector3f(7, 4, 0)},
+            new Vector3f[] {new Vector3f(7, 4, 8), new Vector3f(9, 1, 0)},
+            new Vector3f[] {new Vector3f(9, 1, 4), new Vector3f(4, 1, 7), new Vector3f(7, 1, 3)},
+            new Vector3f[] {new Vector3f(7, 4, 8), new Vector3f(2, 1, 10)},
+            new Vector3f[] {new Vector3f(4, 3, 7), new Vector3f(4, 0, 3), new Vector3f(2, 1, 10)},
+            new Vector3f[] {new Vector3f(2, 0, 10), new Vector3f(0, 9, 10), new Vector3f(7, 4, 8)},
+            new Vector3f[] {new Vector3f(9, 10, 4), new Vector3f(4, 10, 3), new Vector3f(3, 10, 2), new Vector3f(4, 3, 7)},
+            new Vector3f[] {new Vector3f(4, 8, 7), new Vector3f(3, 2, 11)},
+            new Vector3f[] {new Vector3f(7, 4, 11), new Vector3f(11, 4, 2), new Vector3f(2, 4, 0)},
+            new Vector3f[] {new Vector3f(1, 0, 9), new Vector3f(2, 11, 3), new Vector3f(8, 7, 4)},
+            new Vector3f[] {new Vector3f(2, 11, 1), new Vector3f(1, 11, 9), new Vector3f(9, 11, 7), new Vector3f(9, 7, 4)},
+            new Vector3f[] {new Vector3f(10, 11, 1), new Vector3f(11, 3, 1), new Vector3f(4, 8, 7)},
+            new Vector3f[] {new Vector3f(4, 0, 7), new Vector3f(7, 0, 10), new Vector3f(0, 1, 10), new Vector3f(7, 10, 11)},
+            new Vector3f[] {new Vector3f(7, 4, 8), new Vector3f(0, 11, 3), new Vector3f(9, 11, 0), new Vector3f(10, 11, 9)},
+            new Vector3f[] {new Vector3f(4, 11, 7), new Vector3f(9, 11, 4), new Vector3f(10, 11, 9)},
+            new Vector3f[] {new Vector3f(9, 4, 5)},
+            new Vector3f[] {new Vector3f(9, 4, 5), new Vector3f(0, 3, 8)},
+            new Vector3f[] {new Vector3f(0, 5, 1), new Vector3f(0, 4, 5)},
+            new Vector3f[] {new Vector3f(4, 3, 8), new Vector3f(5, 3, 4), new Vector3f(1, 3, 5)},
+            new Vector3f[] {new Vector3f(5, 9, 4), new Vector3f(10, 2, 1)},
+            new Vector3f[] {new Vector3f(8, 0, 3), new Vector3f(1, 10, 2), new Vector3f(4, 5, 9)},
+            new Vector3f[] {new Vector3f(10, 4, 5), new Vector3f(2, 4, 10), new Vector3f(0, 4, 2)},
+            new Vector3f[] {new Vector3f(3, 10, 2), new Vector3f(8, 10, 3), new Vector3f(5, 10, 8), new Vector3f(4, 5, 8)},
+            new Vector3f[] {new Vector3f(9, 4, 5), new Vector3f(11, 3, 2)},
+            new Vector3f[] {new Vector3f(11, 0, 2), new Vector3f(11, 8, 0), new Vector3f(9, 4, 5)},
+            new Vector3f[] {new Vector3f(5, 1, 4), new Vector3f(1, 0, 4), new Vector3f(11, 3, 2)},
+            new Vector3f[] {new Vector3f(5, 1, 4), new Vector3f(4, 1, 11), new Vector3f(1, 2, 11), new Vector3f(4, 11, 8)},
+            new Vector3f[] {new Vector3f(3, 10, 11), new Vector3f(3, 1, 10), new Vector3f(5, 9, 4)},
+            new Vector3f[] {new Vector3f(9, 4, 5), new Vector3f(1, 10, 0), new Vector3f(0, 10, 8), new Vector3f(8, 10, 11)},
+            new Vector3f[] {new Vector3f(5, 0, 4), new Vector3f(11, 0, 5), new Vector3f(11, 3, 0), new Vector3f(10, 11, 5)},
+            new Vector3f[] {new Vector3f(5, 10, 4), new Vector3f(4, 10, 8), new Vector3f(8, 10, 11)},
+            new Vector3f[] {new Vector3f(9, 7, 5), new Vector3f(9, 8, 7)},
+            new Vector3f[] {new Vector3f(0, 5, 9), new Vector3f(3, 5, 0), new Vector3f(7, 5, 3)},
+            new Vector3f[] {new Vector3f(8, 7, 0), new Vector3f(0, 7, 1), new Vector3f(1, 7, 5)},
+            new Vector3f[] {new Vector3f(7, 5, 3), new Vector3f(3, 5, 1)},
+            new Vector3f[] {new Vector3f(7, 5, 8), new Vector3f(5, 9, 8), new Vector3f(2, 1, 10)},
+            new Vector3f[] {new Vector3f(10, 2, 1), new Vector3f(0, 5, 9), new Vector3f(3, 5, 0), new Vector3f(7, 5, 3)},
+            new Vector3f[] {new Vector3f(8, 2, 0), new Vector3f(5, 2, 8), new Vector3f(10, 2, 5), new Vector3f(7, 5, 8)},
+            new Vector3f[] {new Vector3f(2, 3, 10), new Vector3f(10, 3, 5), new Vector3f(5, 3, 7)},
+            new Vector3f[] {new Vector3f(9, 7, 5), new Vector3f(9, 8, 7), new Vector3f(11, 3, 2)},
+            new Vector3f[] {new Vector3f(0, 2, 9), new Vector3f(9, 2, 7), new Vector3f(7, 2, 11), new Vector3f(9, 7, 5)},
+            new Vector3f[] {new Vector3f(3, 2, 11), new Vector3f(8, 7, 0), new Vector3f(0, 7, 1), new Vector3f(1, 7, 5)},
+            new Vector3f[] {new Vector3f(11, 1, 2), new Vector3f(7, 1, 11), new Vector3f(5, 1, 7)},
+            new Vector3f[] {new Vector3f(3, 1, 11), new Vector3f(11, 1, 10), new Vector3f(8, 7, 9), new Vector3f(9, 7, 5)},
+            new Vector3f[] {new Vector3f(11, 7, 0), new Vector3f(7, 5, 0), new Vector3f(5, 9, 0), new Vector3f(10, 11, 0), new Vector3f(1, 10, 0)},
+            new Vector3f[] {new Vector3f(0, 5, 10), new Vector3f(0, 7, 5), new Vector3f(0, 8, 7), new Vector3f(0, 10, 11), new Vector3f(0, 11, 3)},
+            new Vector3f[] {new Vector3f(10, 11, 5), new Vector3f(11, 7, 5)},
+            new Vector3f[] {new Vector3f(5, 6, 10)},
+            new Vector3f[] {new Vector3f(8, 0, 3), new Vector3f(10, 5, 6)},
+            new Vector3f[] {new Vector3f(0, 9, 1), new Vector3f(5, 6, 10)},
+            new Vector3f[] {new Vector3f(8, 1, 3), new Vector3f(8, 9, 1), new Vector3f(10, 5, 6)},
+            new Vector3f[] {new Vector3f(1, 6, 2), new Vector3f(1, 5, 6)},
+            new Vector3f[] {new Vector3f(6, 2, 5), new Vector3f(2, 1, 5), new Vector3f(8, 0, 3)},
+            new Vector3f[] {new Vector3f(5, 6, 9), new Vector3f(9, 6, 0), new Vector3f(0, 6, 2)},
+            new Vector3f[] {new Vector3f(5, 8, 9), new Vector3f(2, 8, 5), new Vector3f(3, 8, 2), new Vector3f(6, 2, 5)},
+            new Vector3f[] {new Vector3f(3, 2, 11), new Vector3f(10, 5, 6)},
+            new Vector3f[] {new Vector3f(0, 2, 8), new Vector3f(2, 11, 8), new Vector3f(5, 6, 10)},
+            new Vector3f[] {new Vector3f(3, 2, 11), new Vector3f(0, 9, 1), new Vector3f(10, 5, 6)},
+            new Vector3f[] {new Vector3f(5, 6, 10), new Vector3f(2, 9, 1), new Vector3f(11, 9, 2), new Vector3f(8, 9, 11)},
+            new Vector3f[] {new Vector3f(11, 3, 6), new Vector3f(6, 3, 5), new Vector3f(5, 3, 1)},
+            new Vector3f[] {new Vector3f(11, 8, 6), new Vector3f(6, 8, 1), new Vector3f(1, 8, 0), new Vector3f(6, 1, 5)},
+            new Vector3f[] {new Vector3f(5, 0, 9), new Vector3f(6, 0, 5), new Vector3f(3, 0, 6), new Vector3f(11, 3, 6)},
+            new Vector3f[] {new Vector3f(6, 9, 5), new Vector3f(11, 9, 6), new Vector3f(8, 9, 11)},
+            new Vector3f[] {new Vector3f(7, 4, 8), new Vector3f(6, 10, 5)},
+            new Vector3f[] {new Vector3f(3, 7, 0), new Vector3f(7, 4, 0), new Vector3f(10, 5, 6)},
+            new Vector3f[] {new Vector3f(7, 4, 8), new Vector3f(6, 10, 5), new Vector3f(9, 1, 0)},
+            new Vector3f[] {new Vector3f(5, 6, 10), new Vector3f(9, 1, 4), new Vector3f(4, 1, 7), new Vector3f(7, 1, 3)},
+            new Vector3f[] {new Vector3f(1, 6, 2), new Vector3f(1, 5, 6), new Vector3f(7, 4, 8)},
+            new Vector3f[] {new Vector3f(6, 1, 5), new Vector3f(2, 1, 6), new Vector3f(0, 7, 4), new Vector3f(3, 7, 0)},
+            new Vector3f[] {new Vector3f(4, 8, 7), new Vector3f(5, 6, 9), new Vector3f(9, 6, 0), new Vector3f(0, 6, 2)},
+            new Vector3f[] {new Vector3f(2, 3, 9), new Vector3f(3, 7, 9), new Vector3f(7, 4, 9), new Vector3f(6, 2, 9), new Vector3f(5, 6, 9)},
+            new Vector3f[] {new Vector3f(2, 11, 3), new Vector3f(7, 4, 8), new Vector3f(10, 5, 6)},
+            new Vector3f[] {new Vector3f(6, 10, 5), new Vector3f(7, 4, 11), new Vector3f(11, 4, 2), new Vector3f(2, 4, 0)},
+            new Vector3f[] {new Vector3f(1, 0, 9), new Vector3f(8, 7, 4), new Vector3f(3, 2, 11), new Vector3f(5, 6, 10)},
+            new Vector3f[] {new Vector3f(1, 2, 9), new Vector3f(9, 2, 11), new Vector3f(9, 11, 4), new Vector3f(4, 11, 7), new Vector3f(5, 6, 10)},
+            new Vector3f[] {new Vector3f(7, 4, 8), new Vector3f(11, 3, 6), new Vector3f(6, 3, 5), new Vector3f(5, 3, 1)},
+            new Vector3f[] {new Vector3f(11, 0, 1), new Vector3f(11, 4, 0), new Vector3f(11, 7, 4), new Vector3f(11, 1, 5), new Vector3f(11, 5, 6)},
+            new Vector3f[] {new Vector3f(6, 9, 5), new Vector3f(0, 9, 6), new Vector3f(11, 0, 6), new Vector3f(3, 0, 11), new Vector3f(4, 8, 7)},
+            new Vector3f[] {new Vector3f(5, 6, 9), new Vector3f(9, 6, 11), new Vector3f(9, 11, 7), new Vector3f(9, 7, 4)},
+            new Vector3f[] {new Vector3f(4, 10, 9), new Vector3f(4, 6, 10)},
+            new Vector3f[] {new Vector3f(10, 4, 6), new Vector3f(10, 9, 4), new Vector3f(8, 0, 3)},
+            new Vector3f[] {new Vector3f(1, 0, 10), new Vector3f(10, 0, 6), new Vector3f(6, 0, 4)},
+            new Vector3f[] {new Vector3f(8, 1, 3), new Vector3f(6, 1, 8), new Vector3f(6, 10, 1), new Vector3f(4, 6, 8)},
+            new Vector3f[] {new Vector3f(9, 2, 1), new Vector3f(4, 2, 9), new Vector3f(6, 2, 4)},
+            new Vector3f[] {new Vector3f(3, 8, 0), new Vector3f(9, 2, 1), new Vector3f(4, 2, 9), new Vector3f(6, 2, 4)},
+            new Vector3f[] {new Vector3f(0, 4, 2), new Vector3f(2, 4, 6)},
+            new Vector3f[] {new Vector3f(8, 2, 3), new Vector3f(4, 2, 8), new Vector3f(6, 2, 4)},
+            new Vector3f[] {new Vector3f(4, 10, 9), new Vector3f(4, 6, 10), new Vector3f(2, 11, 3)},
+            new Vector3f[] {new Vector3f(11, 8, 2), new Vector3f(2, 8, 0), new Vector3f(6, 10, 4), new Vector3f(4, 10, 9)},
+            new Vector3f[] {new Vector3f(2, 11, 3), new Vector3f(1, 0, 10), new Vector3f(10, 0, 6), new Vector3f(6, 0, 4)},
+            new Vector3f[] {new Vector3f(8, 4, 1), new Vector3f(4, 6, 1), new Vector3f(6, 10, 1), new Vector3f(11, 8, 1), new Vector3f(2, 11, 1)},
+            new Vector3f[] {new Vector3f(3, 1, 11), new Vector3f(11, 1, 4), new Vector3f(1, 9, 4), new Vector3f(11, 4, 6)},
+            new Vector3f[] {new Vector3f(6, 11, 1), new Vector3f(11, 8, 1), new Vector3f(8, 0, 1), new Vector3f(4, 6, 1), new Vector3f(9, 4, 1)},
+            new Vector3f[] {new Vector3f(3, 0, 11), new Vector3f(11, 0, 6), new Vector3f(6, 0, 4)},
+            new Vector3f[] {new Vector3f(4, 11, 8), new Vector3f(4, 6, 11)},
+            new Vector3f[] {new Vector3f(6, 8, 7), new Vector3f(10, 8, 6), new Vector3f(9, 8, 10)},
+            new Vector3f[] {new Vector3f(3, 7, 0), new Vector3f(0, 7, 10), new Vector3f(7, 6, 10), new Vector3f(0, 10, 9)},
+            new Vector3f[] {new Vector3f(1, 6, 10), new Vector3f(0, 6, 1), new Vector3f(7, 6, 0), new Vector3f(8, 7, 0)},
+            new Vector3f[] {new Vector3f(10, 1, 6), new Vector3f(6, 1, 7), new Vector3f(7, 1, 3)},
+            new Vector3f[] {new Vector3f(9, 8, 1), new Vector3f(1, 8, 6), new Vector3f(6, 8, 7), new Vector3f(1, 6, 2)},
+            new Vector3f[] {new Vector3f(9, 7, 6), new Vector3f(9, 3, 7), new Vector3f(9, 0, 3), new Vector3f(9, 6, 2), new Vector3f(9, 2, 1)},
+            new Vector3f[] {new Vector3f(7, 6, 8), new Vector3f(8, 6, 0), new Vector3f(0, 6, 2)},
+            new Vector3f[] {new Vector3f(3, 6, 2), new Vector3f(3, 7, 6)},
+            new Vector3f[] {new Vector3f(3, 2, 11), new Vector3f(6, 8, 7), new Vector3f(10, 8, 6), new Vector3f(9, 8, 10)},
+            new Vector3f[] {new Vector3f(7, 9, 0), new Vector3f(7, 10, 9), new Vector3f(7, 6, 10), new Vector3f(7, 0, 2), new Vector3f(7, 2, 11)},
+            new Vector3f[] {new Vector3f(0, 10, 1), new Vector3f(6, 10, 0), new Vector3f(8, 6, 0), new Vector3f(7, 6, 8), new Vector3f(2, 11, 3)},
+            new Vector3f[] {new Vector3f(1, 6, 10), new Vector3f(7, 6, 1), new Vector3f(11, 7, 1), new Vector3f(2, 11, 1)},
+            new Vector3f[] {new Vector3f(1, 9, 6), new Vector3f(9, 8, 6), new Vector3f(8, 7, 6), new Vector3f(3, 1, 6), new Vector3f(11, 3, 6)},
+            new Vector3f[] {new Vector3f(9, 0, 1), new Vector3f(11, 7, 6)},
+            new Vector3f[] {new Vector3f(0, 11, 3), new Vector3f(6, 11, 0), new Vector3f(7, 6, 0), new Vector3f(8, 7, 0)},
+            new Vector3f[] {new Vector3f(7, 6, 11)},
+            new Vector3f[] {new Vector3f(11, 6, 7)},
+            new Vector3f[] {new Vector3f(3, 8, 0), new Vector3f(11, 6, 7)},
+            new Vector3f[] {new Vector3f(1, 0, 9), new Vector3f(6, 7, 11)},
+            new Vector3f[] {new Vector3f(1, 3, 9), new Vector3f(3, 8, 9), new Vector3f(6, 7, 11)},
+            new Vector3f[] {new Vector3f(10, 2, 1), new Vector3f(6, 7, 11)},
+            new Vector3f[] {new Vector3f(10, 2, 1), new Vector3f(3, 8, 0), new Vector3f(6, 7, 11)},
+            new Vector3f[] {new Vector3f(9, 2, 0), new Vector3f(9, 10, 2), new Vector3f(11, 6, 7)},
+            new Vector3f[] {new Vector3f(11, 6, 7), new Vector3f(3, 8, 2), new Vector3f(2, 8, 10), new Vector3f(10, 8, 9)},
+            new Vector3f[] {new Vector3f(2, 6, 3), new Vector3f(6, 7, 3)},
+            new Vector3f[] {new Vector3f(8, 6, 7), new Vector3f(0, 6, 8), new Vector3f(2, 6, 0)},
+            new Vector3f[] {new Vector3f(7, 2, 6), new Vector3f(7, 3, 2), new Vector3f(1, 0, 9)},
+            new Vector3f[] {new Vector3f(8, 9, 7), new Vector3f(7, 9, 2), new Vector3f(2, 9, 1), new Vector3f(7, 2, 6)},
+            new Vector3f[] {new Vector3f(6, 1, 10), new Vector3f(7, 1, 6), new Vector3f(3, 1, 7)},
+            new Vector3f[] {new Vector3f(8, 0, 7), new Vector3f(7, 0, 6), new Vector3f(6, 0, 1), new Vector3f(6, 1, 10)},
+            new Vector3f[] {new Vector3f(7, 3, 6), new Vector3f(6, 3, 9), new Vector3f(3, 0, 9), new Vector3f(6, 9, 10)},
+            new Vector3f[] {new Vector3f(7, 8, 6), new Vector3f(6, 8, 10), new Vector3f(10, 8, 9)},
+            new Vector3f[] {new Vector3f(8, 11, 4), new Vector3f(11, 6, 4)},
+            new Vector3f[] {new Vector3f(11, 0, 3), new Vector3f(6, 0, 11), new Vector3f(4, 0, 6)},
+            new Vector3f[] {new Vector3f(6, 4, 11), new Vector3f(4, 8, 11), new Vector3f(1, 0, 9)},
+            new Vector3f[] {new Vector3f(1, 3, 9), new Vector3f(9, 3, 6), new Vector3f(3, 11, 6), new Vector3f(9, 6, 4)},
+            new Vector3f[] {new Vector3f(8, 11, 4), new Vector3f(11, 6, 4), new Vector3f(1, 10, 2)},
+            new Vector3f[] {new Vector3f(1, 10, 2), new Vector3f(11, 0, 3), new Vector3f(6, 0, 11), new Vector3f(4, 0, 6)},
+            new Vector3f[] {new Vector3f(2, 9, 10), new Vector3f(0, 9, 2), new Vector3f(4, 11, 6), new Vector3f(8, 11, 4)},
+            new Vector3f[] {new Vector3f(3, 4, 9), new Vector3f(3, 6, 4), new Vector3f(3, 11, 6), new Vector3f(3, 9, 10), new Vector3f(3, 10, 2)},
+            new Vector3f[] {new Vector3f(3, 2, 8), new Vector3f(8, 2, 4), new Vector3f(4, 2, 6)},
+            new Vector3f[] {new Vector3f(2, 4, 0), new Vector3f(6, 4, 2)},
+            new Vector3f[] {new Vector3f(0, 9, 1), new Vector3f(3, 2, 8), new Vector3f(8, 2, 4), new Vector3f(4, 2, 6)},
+            new Vector3f[] {new Vector3f(1, 2, 9), new Vector3f(9, 2, 4), new Vector3f(4, 2, 6)},
+            new Vector3f[] {new Vector3f(10, 3, 1), new Vector3f(4, 3, 10), new Vector3f(4, 8, 3), new Vector3f(6, 4, 10)},
+            new Vector3f[] {new Vector3f(10, 0, 1), new Vector3f(6, 0, 10), new Vector3f(4, 0, 6)},
+            new Vector3f[] {new Vector3f(3, 10, 6), new Vector3f(3, 9, 10), new Vector3f(3, 0, 9), new Vector3f(3, 6, 4), new Vector3f(3, 4, 8)},
+            new Vector3f[] {new Vector3f(9, 10, 4), new Vector3f(10, 6, 4)},
+            new Vector3f[] {new Vector3f(9, 4, 5), new Vector3f(7, 11, 6)},
+            new Vector3f[] {new Vector3f(9, 4, 5), new Vector3f(7, 11, 6), new Vector3f(0, 3, 8)},
+            new Vector3f[] {new Vector3f(0, 5, 1), new Vector3f(0, 4, 5), new Vector3f(6, 7, 11)},
+            new Vector3f[] {new Vector3f(11, 6, 7), new Vector3f(4, 3, 8), new Vector3f(5, 3, 4), new Vector3f(1, 3, 5)},
+            new Vector3f[] {new Vector3f(1, 10, 2), new Vector3f(9, 4, 5), new Vector3f(6, 7, 11)},
+            new Vector3f[] {new Vector3f(8, 0, 3), new Vector3f(4, 5, 9), new Vector3f(10, 2, 1), new Vector3f(11, 6, 7)},
+            new Vector3f[] {new Vector3f(7, 11, 6), new Vector3f(10, 4, 5), new Vector3f(2, 4, 10), new Vector3f(0, 4, 2)},
+            new Vector3f[] {new Vector3f(8, 2, 3), new Vector3f(10, 2, 8), new Vector3f(4, 10, 8), new Vector3f(5, 10, 4), new Vector3f(11, 6, 7)},
+            new Vector3f[] {new Vector3f(2, 6, 3), new Vector3f(6, 7, 3), new Vector3f(9, 4, 5)},
+            new Vector3f[] {new Vector3f(5, 9, 4), new Vector3f(8, 6, 7), new Vector3f(0, 6, 8), new Vector3f(2, 6, 0)},
+            new Vector3f[] {new Vector3f(7, 3, 6), new Vector3f(6, 3, 2), new Vector3f(4, 5, 0), new Vector3f(0, 5, 1)},
+            new Vector3f[] {new Vector3f(8, 1, 2), new Vector3f(8, 5, 1), new Vector3f(8, 4, 5), new Vector3f(8, 2, 6), new Vector3f(8, 6, 7)},
+            new Vector3f[] {new Vector3f(9, 4, 5), new Vector3f(6, 1, 10), new Vector3f(7, 1, 6), new Vector3f(3, 1, 7)},
+            new Vector3f[] {new Vector3f(7, 8, 6), new Vector3f(6, 8, 0), new Vector3f(6, 0, 10), new Vector3f(10, 0, 1), new Vector3f(5, 9, 4)},
+            new Vector3f[] {new Vector3f(3, 0, 10), new Vector3f(0, 4, 10), new Vector3f(4, 5, 10), new Vector3f(7, 3, 10), new Vector3f(6, 7, 10)},
+            new Vector3f[] {new Vector3f(8, 6, 7), new Vector3f(10, 6, 8), new Vector3f(5, 10, 8), new Vector3f(4, 5, 8)},
+            new Vector3f[] {new Vector3f(5, 9, 6), new Vector3f(6, 9, 11), new Vector3f(11, 9, 8)},
+            new Vector3f[] {new Vector3f(11, 6, 3), new Vector3f(3, 6, 0), new Vector3f(0, 6, 5), new Vector3f(0, 5, 9)},
+            new Vector3f[] {new Vector3f(8, 11, 0), new Vector3f(0, 11, 5), new Vector3f(5, 11, 6), new Vector3f(0, 5, 1)},
+            new Vector3f[] {new Vector3f(6, 3, 11), new Vector3f(5, 3, 6), new Vector3f(1, 3, 5)},
+            new Vector3f[] {new Vector3f(10, 2, 1), new Vector3f(5, 9, 6), new Vector3f(6, 9, 11), new Vector3f(11, 9, 8)},
+            new Vector3f[] {new Vector3f(3, 11, 0), new Vector3f(0, 11, 6), new Vector3f(0, 6, 9), new Vector3f(9, 6, 5), new Vector3f(1, 10, 2)},
+            new Vector3f[] {new Vector3f(0, 8, 5), new Vector3f(8, 11, 5), new Vector3f(11, 6, 5), new Vector3f(2, 0, 5), new Vector3f(10, 2, 5)},
+            new Vector3f[] {new Vector3f(11, 6, 3), new Vector3f(3, 6, 5), new Vector3f(3, 5, 10), new Vector3f(3, 10, 2)},
+            new Vector3f[] {new Vector3f(3, 9, 8), new Vector3f(6, 9, 3), new Vector3f(5, 9, 6), new Vector3f(2, 6, 3)},
+            new Vector3f[] {new Vector3f(9, 6, 5), new Vector3f(0, 6, 9), new Vector3f(2, 6, 0)},
+            new Vector3f[] {new Vector3f(6, 5, 8), new Vector3f(5, 1, 8), new Vector3f(1, 0, 8), new Vector3f(2, 6, 8), new Vector3f(3, 2, 8)},
+            new Vector3f[] {new Vector3f(2, 6, 1), new Vector3f(6, 5, 1)},
+            new Vector3f[] {new Vector3f(6, 8, 3), new Vector3f(6, 9, 8), new Vector3f(6, 5, 9), new Vector3f(6, 3, 1), new Vector3f(6, 1, 10)},
+            new Vector3f[] {new Vector3f(1, 10, 0), new Vector3f(0, 10, 6), new Vector3f(0, 6, 5), new Vector3f(0, 5, 9)},
+            new Vector3f[] {new Vector3f(3, 0, 8), new Vector3f(6, 5, 10)},
+            new Vector3f[] {new Vector3f(10, 6, 5)},
+            new Vector3f[] {new Vector3f(5, 11, 10), new Vector3f(5, 7, 11)},
+            new Vector3f[] {new Vector3f(5, 11, 10), new Vector3f(5, 7, 11), new Vector3f(3, 8, 0)},
+            new Vector3f[] {new Vector3f(11, 10, 7), new Vector3f(10, 5, 7), new Vector3f(0, 9, 1)},
+            new Vector3f[] {new Vector3f(5, 7, 10), new Vector3f(10, 7, 11), new Vector3f(9, 1, 8), new Vector3f(8, 1, 3)},
+            new Vector3f[] {new Vector3f(2, 1, 11), new Vector3f(11, 1, 7), new Vector3f(7, 1, 5)},
+            new Vector3f[] {new Vector3f(3, 8, 0), new Vector3f(2, 1, 11), new Vector3f(11, 1, 7), new Vector3f(7, 1, 5)},
+            new Vector3f[] {new Vector3f(2, 0, 11), new Vector3f(11, 0, 5), new Vector3f(5, 0, 9), new Vector3f(11, 5, 7)},
+            new Vector3f[] {new Vector3f(2, 9, 5), new Vector3f(2, 8, 9), new Vector3f(2, 3, 8), new Vector3f(2, 5, 7), new Vector3f(2, 7, 11)},
+            new Vector3f[] {new Vector3f(10, 3, 2), new Vector3f(5, 3, 10), new Vector3f(7, 3, 5)},
+            new Vector3f[] {new Vector3f(10, 0, 2), new Vector3f(7, 0, 10), new Vector3f(8, 0, 7), new Vector3f(5, 7, 10)},
+            new Vector3f[] {new Vector3f(0, 9, 1), new Vector3f(10, 3, 2), new Vector3f(5, 3, 10), new Vector3f(7, 3, 5)},
+            new Vector3f[] {new Vector3f(7, 8, 2), new Vector3f(8, 9, 2), new Vector3f(9, 1, 2), new Vector3f(5, 7, 2), new Vector3f(10, 5, 2)},
+            new Vector3f[] {new Vector3f(3, 1, 7), new Vector3f(7, 1, 5)},
+            new Vector3f[] {new Vector3f(0, 7, 8), new Vector3f(1, 7, 0), new Vector3f(5, 7, 1)},
+            new Vector3f[] {new Vector3f(9, 5, 0), new Vector3f(0, 5, 3), new Vector3f(3, 5, 7)},
+            new Vector3f[] {new Vector3f(5, 7, 9), new Vector3f(7, 8, 9)},
+            new Vector3f[] {new Vector3f(4, 10, 5), new Vector3f(8, 10, 4), new Vector3f(11, 10, 8)},
+            new Vector3f[] {new Vector3f(3, 4, 0), new Vector3f(10, 4, 3), new Vector3f(10, 5, 4), new Vector3f(11, 10, 3)},
+            new Vector3f[] {new Vector3f(1, 0, 9), new Vector3f(4, 10, 5), new Vector3f(8, 10, 4), new Vector3f(11, 10, 8)},
+            new Vector3f[] {new Vector3f(4, 3, 11), new Vector3f(4, 1, 3), new Vector3f(4, 9, 1), new Vector3f(4, 11, 10), new Vector3f(4, 10, 5)},
+            new Vector3f[] {new Vector3f(1, 5, 2), new Vector3f(2, 5, 8), new Vector3f(5, 4, 8), new Vector3f(2, 8, 11)},
+            new Vector3f[] {new Vector3f(5, 4, 11), new Vector3f(4, 0, 11), new Vector3f(0, 3, 11), new Vector3f(1, 5, 11), new Vector3f(2, 1, 11)},
+            new Vector3f[] {new Vector3f(5, 11, 2), new Vector3f(5, 8, 11), new Vector3f(5, 4, 8), new Vector3f(5, 2, 0), new Vector3f(5, 0, 9)},
+            new Vector3f[] {new Vector3f(5, 4, 9), new Vector3f(2, 3, 11)},
+            new Vector3f[] {new Vector3f(3, 4, 8), new Vector3f(2, 4, 3), new Vector3f(5, 4, 2), new Vector3f(10, 5, 2)},
+            new Vector3f[] {new Vector3f(5, 4, 10), new Vector3f(10, 4, 2), new Vector3f(2, 4, 0)},
+            new Vector3f[] {new Vector3f(2, 8, 3), new Vector3f(4, 8, 2), new Vector3f(10, 4, 2), new Vector3f(5, 4, 10), new Vector3f(0, 9, 1)},
+            new Vector3f[] {new Vector3f(4, 10, 5), new Vector3f(2, 10, 4), new Vector3f(1, 2, 4), new Vector3f(9, 1, 4)},
+            new Vector3f[] {new Vector3f(8, 3, 4), new Vector3f(4, 3, 5), new Vector3f(5, 3, 1)},
+            new Vector3f[] {new Vector3f(1, 5, 0), new Vector3f(5, 4, 0)},
+            new Vector3f[] {new Vector3f(5, 0, 9), new Vector3f(3, 0, 5), new Vector3f(8, 3, 5), new Vector3f(4, 8, 5)},
+            new Vector3f[] {new Vector3f(5, 4, 9)},
+            new Vector3f[] {new Vector3f(7, 11, 4), new Vector3f(4, 11, 9), new Vector3f(9, 11, 10)},
+            new Vector3f[] {new Vector3f(8, 0, 3), new Vector3f(7, 11, 4), new Vector3f(4, 11, 9), new Vector3f(9, 11, 10)},
+            new Vector3f[] {new Vector3f(0, 4, 1), new Vector3f(1, 4, 11), new Vector3f(4, 7, 11), new Vector3f(1, 11, 10)},
+            new Vector3f[] {new Vector3f(10, 1, 4), new Vector3f(1, 3, 4), new Vector3f(3, 8, 4), new Vector3f(11, 10, 4), new Vector3f(7, 11, 4)},
+            new Vector3f[] {new Vector3f(9, 4, 1), new Vector3f(1, 4, 2), new Vector3f(2, 4, 7), new Vector3f(2, 7, 11)},
+            new Vector3f[] {new Vector3f(1, 9, 2), new Vector3f(2, 9, 4), new Vector3f(2, 4, 11), new Vector3f(11, 4, 7), new Vector3f(3, 8, 0)},
+            new Vector3f[] {new Vector3f(11, 4, 7), new Vector3f(2, 4, 11), new Vector3f(0, 4, 2)},
+            new Vector3f[] {new Vector3f(7, 11, 4), new Vector3f(4, 11, 2), new Vector3f(4, 2, 3), new Vector3f(4, 3, 8)},
+            new Vector3f[] {new Vector3f(10, 9, 2), new Vector3f(2, 9, 7), new Vector3f(7, 9, 4), new Vector3f(2, 7, 3)},
+            new Vector3f[] {new Vector3f(2, 10, 7), new Vector3f(10, 9, 7), new Vector3f(9, 4, 7), new Vector3f(0, 2, 7), new Vector3f(8, 0, 7)},
+            new Vector3f[] {new Vector3f(10, 4, 7), new Vector3f(10, 0, 4), new Vector3f(10, 1, 0), new Vector3f(10, 7, 3), new Vector3f(10, 3, 2)},
+            new Vector3f[] {new Vector3f(8, 4, 7), new Vector3f(10, 1, 2)},
+            new Vector3f[] {new Vector3f(4, 1, 9), new Vector3f(7, 1, 4), new Vector3f(3, 1, 7)},
+            new Vector3f[] {new Vector3f(8, 0, 7), new Vector3f(7, 0, 1), new Vector3f(7, 1, 9), new Vector3f(7, 9, 4)},
+            new Vector3f[] {new Vector3f(0, 7, 3), new Vector3f(0, 4, 7)},
+            new Vector3f[] {new Vector3f(8, 4, 7)},
+            new Vector3f[] {new Vector3f(9, 8, 10), new Vector3f(10, 8, 11)},
+            new Vector3f[] {new Vector3f(3, 11, 0), new Vector3f(0, 11, 9), new Vector3f(9, 11, 10)},
+            new Vector3f[] {new Vector3f(0, 10, 1), new Vector3f(8, 10, 0), new Vector3f(11, 10, 8)},
+            new Vector3f[] {new Vector3f(11, 10, 3), new Vector3f(10, 1, 3)},
+            new Vector3f[] {new Vector3f(1, 9, 2), new Vector3f(2, 9, 11), new Vector3f(11, 9, 8)},
+            new Vector3f[] {new Vector3f(9, 2, 1), new Vector3f(11, 2, 9), new Vector3f(3, 11, 9), new Vector3f(0, 3, 9)},
+            new Vector3f[] {new Vector3f(8, 2, 0), new Vector3f(8, 11, 2)},
+            new Vector3f[] {new Vector3f(11, 2, 3)},
+            new Vector3f[] {new Vector3f(2, 8, 3), new Vector3f(10, 8, 2), new Vector3f(9, 8, 10)},
+            new Vector3f[] {new Vector3f(0, 2, 9), new Vector3f(2, 10, 9)},
+            new Vector3f[] {new Vector3f(3, 2, 8), new Vector3f(8, 2, 10), new Vector3f(8, 10, 1), new Vector3f(8, 1, 0)},
+            new Vector3f[] {new Vector3f(1, 2, 10)},
+            new Vector3f[] {new Vector3f(3, 1, 8), new Vector3f(1, 9, 8)},
+            new Vector3f[] {new Vector3f(9, 0, 1)},
+            new Vector3f[] {new Vector3f(3, 0, 8)},
+            new Vector3f[] {}
+    ));
 
-    static String s = "            [[7, 4, 11], [11, 4, 2], [2, 4, 0]],\n" +
-            "            [[1, 0, 9], [2, 11, 3], [8, 7, 4]],\n" +
-            "            [[2, 11, 1], [1, 11, 9], [9, 11, 7], [9, 7, 4]],\n" +
-            "            [[10, 11, 1], [11, 3, 1], [4, 8, 7]],\n" +
-            "            [[4, 0, 7], [7, 0, 10], [0, 1, 10], [7, 10, 11]],\n" +
-            "            [[7, 4, 8], [0, 11, 3], [9, 11, 0], [10, 11, 9]],\n" +
-            "            [[4, 11, 7], [9, 11, 4], [10, 11, 9]],\n" +
-            "            [[9, 4, 5]],\n" +
-            "            [[9, 4, 5], [0, 3, 8]],\n" +
-            "            [[0, 5, 1], [0, 4, 5]],\n" +
-            "            [[4, 3, 8], [5, 3, 4], [1, 3, 5]],\n" +
-            "            [[5, 9, 4], [10, 2, 1]],\n" +
-            "            [[8, 0, 3], [1, 10, 2], [4, 5, 9]],\n" +
-            "            [[10, 4, 5], [2, 4, 10], [0, 4, 2]],\n" +
-            "            [[3, 10, 2], [8, 10, 3], [5, 10, 8], [4, 5, 8]],\n" +
-            "            [[9, 4, 5], [11, 3, 2]],\n" +
-            "            [[11, 0, 2], [11, 8, 0], [9, 4, 5]],\n" +
-            "            [[5, 1, 4], [1, 0, 4], [11, 3, 2]],\n" +
-            "            [[5, 1, 4], [4, 1, 11], [1, 2, 11], [4, 11, 8]],\n" +
-            "            [[3, 10, 11], [3, 1, 10], [5, 9, 4]],\n" +
-            "            [[9, 4, 5], [1, 10, 0], [0, 10, 8], [8, 10, 11]],\n" +
-            "            [[5, 0, 4], [11, 0, 5], [11, 3, 0], [10, 11, 5]],\n" +
-            "            [[5, 10, 4], [4, 10, 8], [8, 10, 11]],\n" +
-            "            [[9, 7, 5], [9, 8, 7]],\n" +
-            "            [[0, 5, 9], [3, 5, 0], [7, 5, 3]],\n" +
-            "            [[8, 7, 0], [0, 7, 1], [1, 7, 5]],\n" +
-            "            [[7, 5, 3], [3, 5, 1]],\n" +
-            "            [[7, 5, 8], [5, 9, 8], [2, 1, 10]],\n" +
-            "            [[10, 2, 1], [0, 5, 9], [3, 5, 0], [7, 5, 3]],\n" +
-            "            [[8, 2, 0], [5, 2, 8], [10, 2, 5], [7, 5, 8]],\n" +
-            "            [[2, 3, 10], [10, 3, 5], [5, 3, 7]],\n" +
-            "            [[9, 7, 5], [9, 8, 7], [11, 3, 2]],\n" +
-            "            [[0, 2, 9], [9, 2, 7], [7, 2, 11], [9, 7, 5]],\n" +
-            "            [[3, 2, 11], [8, 7, 0], [0, 7, 1], [1, 7, 5]],\n" +
-            "            [[11, 1, 2], [7, 1, 11], [5, 1, 7]],\n" +
-            "            [[3, 1, 11], [11, 1, 10], [8, 7, 9], [9, 7, 5]],\n" +
-            "            [[11, 7, 0], [7, 5, 0], [5, 9, 0], [10, 11, 0], [1, 10, 0]],\n" +
-            "            [[0, 5, 10], [0, 7, 5], [0, 8, 7], [0, 10, 11], [0, 11, 3]],\n" +
-            "            [[10, 11, 5], [11, 7, 5]],\n" +
-            "            [[5, 6, 10]],\n" +
-            "            [[8, 0, 3], [10, 5, 6]],\n" +
-            "            [[0, 9, 1], [5, 6, 10]],\n" +
-            "            [[8, 1, 3], [8, 9, 1], [10, 5, 6]],\n" +
-            "            [[1, 6, 2], [1, 5, 6]],\n" +
-            "            [[6, 2, 5], [2, 1, 5], [8, 0, 3]],\n" +
-            "            [[5, 6, 9], [9, 6, 0], [0, 6, 2]],\n" +
-            "            [[5, 8, 9], [2, 8, 5], [3, 8, 2], [6, 2, 5]],\n" +
-            "            [[3, 2, 11], [10, 5, 6]],\n" +
-            "            [[0, 2, 8], [2, 11, 8], [5, 6, 10]],\n" +
-            "            [[3, 2, 11], [0, 9, 1], [10, 5, 6]],\n" +
-            "            [[5, 6, 10], [2, 9, 1], [11, 9, 2], [8, 9, 11]],\n" +
-            "            [[11, 3, 6], [6, 3, 5], [5, 3, 1]],\n" +
-            "            [[11, 8, 6], [6, 8, 1], [1, 8, 0], [6, 1, 5]],\n" +
-            "            [[5, 0, 9], [6, 0, 5], [3, 0, 6], [11, 3, 6]],\n" +
-            "            [[6, 9, 5], [11, 9, 6], [8, 9, 11]],\n" +
-            "            [[7, 4, 8], [6, 10, 5]],\n" +
-            "            [[3, 7, 0], [7, 4, 0], [10, 5, 6]],\n" +
-            "            [[7, 4, 8], [6, 10, 5], [9, 1, 0]],\n" +
-            "            [[5, 6, 10], [9, 1, 4], [4, 1, 7], [7, 1, 3]],\n" +
-            "            [[1, 6, 2], [1, 5, 6], [7, 4, 8]],\n" +
-            "            [[6, 1, 5], [2, 1, 6], [0, 7, 4], [3, 7, 0]],\n" +
-            "            [[4, 8, 7], [5, 6, 9], [9, 6, 0], [0, 6, 2]],\n" +
-            "            [[2, 3, 9], [3, 7, 9], [7, 4, 9], [6, 2, 9], [5, 6, 9]],\n" +
-            "            [[2, 11, 3], [7, 4, 8], [10, 5, 6]],\n" +
-            "            [[6, 10, 5], [7, 4, 11], [11, 4, 2], [2, 4, 0]],\n" +
-            "            [[1, 0, 9], [8, 7, 4], [3, 2, 11], [5, 6, 10]],\n" +
-            "            [[1, 2, 9], [9, 2, 11], [9, 11, 4], [4, 11, 7], [5, 6, 10]],\n" +
-            "            [[7, 4, 8], [11, 3, 6], [6, 3, 5], [5, 3, 1]],\n" +
-            "            [[11, 0, 1], [11, 4, 0], [11, 7, 4], [11, 1, 5], [11, 5, 6]],\n" +
-            "            [[6, 9, 5], [0, 9, 6], [11, 0, 6], [3, 0, 11], [4, 8, 7]],\n" +
-            "            [[5, 6, 9], [9, 6, 11], [9, 11, 7], [9, 7, 4]],\n" +
-            "            [[4, 10, 9], [4, 6, 10]],\n" +
-            "            [[10, 4, 6], [10, 9, 4], [8, 0, 3]],\n" +
-            "            [[1, 0, 10], [10, 0, 6], [6, 0, 4]],\n" +
-            "            [[8, 1, 3], [6, 1, 8], [6, 10, 1], [4, 6, 8]],\n" +
-            "            [[9, 2, 1], [4, 2, 9], [6, 2, 4]],\n" +
-            "            [[3, 8, 0], [9, 2, 1], [4, 2, 9], [6, 2, 4]],\n" +
-            "            [[0, 4, 2], [2, 4, 6]],\n" +
-            "            [[8, 2, 3], [4, 2, 8], [6, 2, 4]],\n" +
-            "            [[4, 10, 9], [4, 6, 10], [2, 11, 3]],\n" +
-            "            [[11, 8, 2], [2, 8, 0], [6, 10, 4], [4, 10, 9]],\n" +
-            "            [[2, 11, 3], [1, 0, 10], [10, 0, 6], [6, 0, 4]],\n" +
-            "            [[8, 4, 1], [4, 6, 1], [6, 10, 1], [11, 8, 1], [2, 11, 1]],\n" +
-            "            [[3, 1, 11], [11, 1, 4], [1, 9, 4], [11, 4, 6]],\n" +
-            "            [[6, 11, 1], [11, 8, 1], [8, 0, 1], [4, 6, 1], [9, 4, 1]],\n" +
-            "            [[3, 0, 11], [11, 0, 6], [6, 0, 4]],\n" +
-            "            [[4, 11, 8], [4, 6, 11]],\n" +
-            "            [[6, 8, 7], [10, 8, 6], [9, 8, 10]],\n" +
-            "            [[3, 7, 0], [0, 7, 10], [7, 6, 10], [0, 10, 9]],\n" +
-            "            [[1, 6, 10], [0, 6, 1], [7, 6, 0], [8, 7, 0]],\n" +
-            "            [[10, 1, 6], [6, 1, 7], [7, 1, 3]],\n" +
-            "            [[9, 8, 1], [1, 8, 6], [6, 8, 7], [1, 6, 2]],\n" +
-            "            [[9, 7, 6], [9, 3, 7], [9, 0, 3], [9, 6, 2], [9, 2, 1]],\n" +
-            "            [[7, 6, 8], [8, 6, 0], [0, 6, 2]],\n" +
-            "            [[3, 6, 2], [3, 7, 6]],\n" +
-            "            [[3, 2, 11], [6, 8, 7], [10, 8, 6], [9, 8, 10]],\n" +
-            "            [[7, 9, 0], [7, 10, 9], [7, 6, 10], [7, 0, 2], [7, 2, 11]],\n" +
-            "            [[0, 10, 1], [6, 10, 0], [8, 6, 0], [7, 6, 8], [2, 11, 3]],\n" +
-            "            [[1, 6, 10], [7, 6, 1], [11, 7, 1], [2, 11, 1]],\n" +
-            "            [[1, 9, 6], [9, 8, 6], [8, 7, 6], [3, 1, 6], [11, 3, 6]],\n" +
-            "            [[9, 0, 1], [11, 7, 6]],\n" +
-            "            [[0, 11, 3], [6, 11, 0], [7, 6, 0], [8, 7, 0]],\n" +
-            "            [[7, 6, 11]],\n" +
-            "            [[11, 6, 7]],\n" +
-            "            [[3, 8, 0], [11, 6, 7]],\n" +
-            "            [[1, 0, 9], [6, 7, 11]],\n" +
-            "            [[1, 3, 9], [3, 8, 9], [6, 7, 11]],\n" +
-            "            [[10, 2, 1], [6, 7, 11]],\n" +
-            "            [[10, 2, 1], [3, 8, 0], [6, 7, 11]],\n" +
-            "            [[9, 2, 0], [9, 10, 2], [11, 6, 7]],\n" +
-            "            [[11, 6, 7], [3, 8, 2], [2, 8, 10], [10, 8, 9]],\n" +
-            "            [[2, 6, 3], [6, 7, 3]],\n" +
-            "            [[8, 6, 7], [0, 6, 8], [2, 6, 0]],\n" +
-            "            [[7, 2, 6], [7, 3, 2], [1, 0, 9]],\n" +
-            "            [[8, 9, 7], [7, 9, 2], [2, 9, 1], [7, 2, 6]],\n" +
-            "            [[6, 1, 10], [7, 1, 6], [3, 1, 7]],\n" +
-            "            [[8, 0, 7], [7, 0, 6], [6, 0, 1], [6, 1, 10]],\n" +
-            "            [[7, 3, 6], [6, 3, 9], [3, 0, 9], [6, 9, 10]],\n" +
-            "            [[7, 8, 6], [6, 8, 10], [10, 8, 9]],\n" +
-            "            [[8, 11, 4], [11, 6, 4]],\n" +
-            "            [[11, 0, 3], [6, 0, 11], [4, 0, 6]],\n" +
-            "            [[6, 4, 11], [4, 8, 11], [1, 0, 9]],\n" +
-            "            [[1, 3, 9], [9, 3, 6], [3, 11, 6], [9, 6, 4]],\n" +
-            "            [[8, 11, 4], [11, 6, 4], [1, 10, 2]],\n" +
-            "            [[1, 10, 2], [11, 0, 3], [6, 0, 11], [4, 0, 6]],\n" +
-            "            [[2, 9, 10], [0, 9, 2], [4, 11, 6], [8, 11, 4]],\n" +
-            "            [[3, 4, 9], [3, 6, 4], [3, 11, 6], [3, 9, 10], [3, 10, 2]],\n" +
-            "            [[3, 2, 8], [8, 2, 4], [4, 2, 6]],\n" +
-            "            [[2, 4, 0], [6, 4, 2]],\n" +
-            "            [[0, 9, 1], [3, 2, 8], [8, 2, 4], [4, 2, 6]],\n" +
-            "            [[1, 2, 9], [9, 2, 4], [4, 2, 6]],\n" +
-            "            [[10, 3, 1], [4, 3, 10], [4, 8, 3], [6, 4, 10]],\n" +
-            "            [[10, 0, 1], [6, 0, 10], [4, 0, 6]],\n" +
-            "            [[3, 10, 6], [3, 9, 10], [3, 0, 9], [3, 6, 4], [3, 4, 8]],\n" +
-            "            [[9, 10, 4], [10, 6, 4]],\n" +
-            "            [[9, 4, 5], [7, 11, 6]],\n" +
-            "            [[9, 4, 5], [7, 11, 6], [0, 3, 8]],\n" +
-            "            [[0, 5, 1], [0, 4, 5], [6, 7, 11]],\n" +
-            "            [[11, 6, 7], [4, 3, 8], [5, 3, 4], [1, 3, 5]],\n" +
-            "            [[1, 10, 2], [9, 4, 5], [6, 7, 11]],\n" +
-            "            [[8, 0, 3], [4, 5, 9], [10, 2, 1], [11, 6, 7]],\n" +
-            "            [[7, 11, 6], [10, 4, 5], [2, 4, 10], [0, 4, 2]],\n" +
-            "            [[8, 2, 3], [10, 2, 8], [4, 10, 8], [5, 10, 4], [11, 6, 7]],\n" +
-            "            [[2, 6, 3], [6, 7, 3], [9, 4, 5]],\n" +
-            "            [[5, 9, 4], [8, 6, 7], [0, 6, 8], [2, 6, 0]],\n" +
-            "            [[7, 3, 6], [6, 3, 2], [4, 5, 0], [0, 5, 1]],\n" +
-            "            [[8, 1, 2], [8, 5, 1], [8, 4, 5], [8, 2, 6], [8, 6, 7]],\n" +
-            "            [[9, 4, 5], [6, 1, 10], [7, 1, 6], [3, 1, 7]],\n" +
-            "            [[7, 8, 6], [6, 8, 0], [6, 0, 10], [10, 0, 1], [5, 9, 4]],\n" +
-            "            [[3, 0, 10], [0, 4, 10], [4, 5, 10], [7, 3, 10], [6, 7, 10]],\n" +
-            "            [[8, 6, 7], [10, 6, 8], [5, 10, 8], [4, 5, 8]],\n" +
-            "            [[5, 9, 6], [6, 9, 11], [11, 9, 8]],\n" +
-            "            [[11, 6, 3], [3, 6, 0], [0, 6, 5], [0, 5, 9]],\n" +
-            "            [[8, 11, 0], [0, 11, 5], [5, 11, 6], [0, 5, 1]],\n" +
-            "            [[6, 3, 11], [5, 3, 6], [1, 3, 5]],\n" +
-            "            [[10, 2, 1], [5, 9, 6], [6, 9, 11], [11, 9, 8]],\n" +
-            "            [[3, 11, 0], [0, 11, 6], [0, 6, 9], [9, 6, 5], [1, 10, 2]],\n" +
-            "            [[0, 8, 5], [8, 11, 5], [11, 6, 5], [2, 0, 5], [10, 2, 5]],\n" +
-            "            [[11, 6, 3], [3, 6, 5], [3, 5, 10], [3, 10, 2]],\n" +
-            "            [[3, 9, 8], [6, 9, 3], [5, 9, 6], [2, 6, 3]],\n" +
-            "            [[9, 6, 5], [0, 6, 9], [2, 6, 0]],\n" +
-            "            [[6, 5, 8], [5, 1, 8], [1, 0, 8], [2, 6, 8], [3, 2, 8]],\n" +
-            "            [[2, 6, 1], [6, 5, 1]],\n" +
-            "            [[6, 8, 3], [6, 9, 8], [6, 5, 9], [6, 3, 1], [6, 1, 10]],\n" +
-            "            [[1, 10, 0], [0, 10, 6], [0, 6, 5], [0, 5, 9]],\n" +
-            "            [[3, 0, 8], [6, 5, 10]],\n" +
-            "            [[10, 6, 5]],\n" +
-            "            [[5, 11, 10], [5, 7, 11]],\n" +
-            "            [[5, 11, 10], [5, 7, 11], [3, 8, 0]],\n" +
-            "            [[11, 10, 7], [10, 5, 7], [0, 9, 1]],\n" +
-            "            [[5, 7, 10], [10, 7, 11], [9, 1, 8], [8, 1, 3]],\n" +
-            "            [[2, 1, 11], [11, 1, 7], [7, 1, 5]],\n" +
-            "            [[3, 8, 0], [2, 1, 11], [11, 1, 7], [7, 1, 5]],\n" +
-            "            [[2, 0, 11], [11, 0, 5], [5, 0, 9], [11, 5, 7]],\n" +
-            "            [[2, 9, 5], [2, 8, 9], [2, 3, 8], [2, 5, 7], [2, 7, 11]],\n" +
-            "            [[10, 3, 2], [5, 3, 10], [7, 3, 5]],\n" +
-            "            [[10, 0, 2], [7, 0, 10], [8, 0, 7], [5, 7, 10]],\n" +
-            "            [[0, 9, 1], [10, 3, 2], [5, 3, 10], [7, 3, 5]],\n" +
-            "            [[7, 8, 2], [8, 9, 2], [9, 1, 2], [5, 7, 2], [10, 5, 2]],\n" +
-            "            [[3, 1, 7], [7, 1, 5]],\n" +
-            "            [[0, 7, 8], [1, 7, 0], [5, 7, 1]],\n" +
-            "            [[9, 5, 0], [0, 5, 3], [3, 5, 7]],\n" +
-            "            [[5, 7, 9], [7, 8, 9]],\n" +
-            "            [[4, 10, 5], [8, 10, 4], [11, 10, 8]],\n" +
-            "            [[3, 4, 0], [10, 4, 3], [10, 5, 4], [11, 10, 3]],\n" +
-            "            [[1, 0, 9], [4, 10, 5], [8, 10, 4], [11, 10, 8]],\n" +
-            "            [[4, 3, 11], [4, 1, 3], [4, 9, 1], [4, 11, 10], [4, 10, 5]],\n" +
-            "            [[1, 5, 2], [2, 5, 8], [5, 4, 8], [2, 8, 11]],\n" +
-            "            [[5, 4, 11], [4, 0, 11], [0, 3, 11], [1, 5, 11], [2, 1, 11]],\n" +
-            "            [[5, 11, 2], [5, 8, 11], [5, 4, 8], [5, 2, 0], [5, 0, 9]],\n" +
-            "            [[5, 4, 9], [2, 3, 11]],\n" +
-            "            [[3, 4, 8], [2, 4, 3], [5, 4, 2], [10, 5, 2]],\n" +
-            "            [[5, 4, 10], [10, 4, 2], [2, 4, 0]],\n" +
-            "            [[2, 8, 3], [4, 8, 2], [10, 4, 2], [5, 4, 10], [0, 9, 1]],\n" +
-            "            [[4, 10, 5], [2, 10, 4], [1, 2, 4], [9, 1, 4]],\n" +
-            "            [[8, 3, 4], [4, 3, 5], [5, 3, 1]],\n" +
-            "            [[1, 5, 0], [5, 4, 0]],\n" +
-            "            [[5, 0, 9], [3, 0, 5], [8, 3, 5], [4, 8, 5]],\n" +
-            "            [[5, 4, 9]],\n" +
-            "            [[7, 11, 4], [4, 11, 9], [9, 11, 10]],\n" +
-            "            [[8, 0, 3], [7, 11, 4], [4, 11, 9], [9, 11, 10]],\n" +
-            "            [[0, 4, 1], [1, 4, 11], [4, 7, 11], [1, 11, 10]],\n" +
-            "            [[10, 1, 4], [1, 3, 4], [3, 8, 4], [11, 10, 4], [7, 11, 4]],\n" +
-            "            [[9, 4, 1], [1, 4, 2], [2, 4, 7], [2, 7, 11]],\n" +
-            "            [[1, 9, 2], [2, 9, 4], [2, 4, 11], [11, 4, 7], [3, 8, 0]],\n" +
-            "            [[11, 4, 7], [2, 4, 11], [0, 4, 2]],\n" +
-            "            [[7, 11, 4], [4, 11, 2], [4, 2, 3], [4, 3, 8]],\n" +
-            "            [[10, 9, 2], [2, 9, 7], [7, 9, 4], [2, 7, 3]],\n" +
-            "            [[2, 10, 7], [10, 9, 7], [9, 4, 7], [0, 2, 7], [8, 0, 7]],\n" +
-            "            [[10, 4, 7], [10, 0, 4], [10, 1, 0], [10, 7, 3], [10, 3, 2]],\n" +
-            "            [[8, 4, 7], [10, 1, 2]],\n" +
-            "            [[4, 1, 9], [7, 1, 4], [3, 1, 7]],\n" +
-            "            [[8, 0, 7], [7, 0, 1], [7, 1, 9], [7, 9, 4]],\n" +
-            "            [[0, 7, 3], [0, 4, 7]],\n" +
-            "            [[8, 4, 7]],\n" +
-            "            [[9, 8, 10], [10, 8, 11]],\n" +
-            "            [[3, 11, 0], [0, 11, 9], [9, 11, 10]],\n" +
-            "            [[0, 10, 1], [8, 10, 0], [11, 10, 8]],\n" +
-            "            [[11, 10, 3], [10, 1, 3]],\n" +
-            "            [[1, 9, 2], [2, 9, 11], [11, 9, 8]],\n" +
-            "            [[9, 2, 1], [11, 2, 9], [3, 11, 9], [0, 3, 9]],\n" +
-            "            [[8, 2, 0], [8, 11, 2]],\n" +
-            "            [[11, 2, 3]],\n" +
-            "            [[2, 8, 3], [10, 8, 2], [9, 8, 10]],\n" +
-            "            [[0, 2, 9], [2, 10, 9]],\n" +
-            "            [[3, 2, 8], [8, 2, 10], [8, 10, 1], [8, 1, 0]],\n" +
-            "            [[1, 2, 10]],\n" +
-            "            [[3, 1, 8], [1, 9, 8]],\n" +
-            "            [[9, 0, 1]],\n" +
-            "            [[3, 0, 8]],";
+    private TestShader shader;
 
-    public static void main(String[] args) {
-        String[] stringArray = s.split("\n");
-        StringBuilder result = new StringBuilder();
-        for(String s : stringArray) {
-            result.append("new Vector3f[] { ");
-            String kreg = s.substring(13, s.length() - 2) + ", ";
-            String[] t = kreg.split("], ");
-            for(int i = 0; i < t.length; i++) {
-                LineSplitter splitter = new LineSplitter(t[i].substring(1), false, ", ");
-                result.append("new Vector3f(");
-                result.append(splitter.getNextFloat()).append(", ").append(splitter.getNextFloat()).append(", ").append(splitter.getNextFloat());
-                result.append(")").append(i != t.length-1 ? ", " : "");
-            }
-            result.append(" },\n");
-        }
-        System.out.println(result.toString());
-    }
+    private Vao vao;
 
     public TestScreen() {
-        if(instance == null) instance = this;
+        if (instance == null)
+            instance = this;
     }
+
+    private final int CHUNK_SIZE = 32;
+    private final float[][][] terrainValues = new float[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 
     @Override
     public void init() {
-        TerrainManager.instance.setShader(new TerrainShader());
-        WaterManager.instance.setShader(new WaterShader());
-        GuiManager.instance.setShader(new GuiShader());
-        for(int x = 0; x < 16; x++) {
-            for(int y = 0; y < 16; y++) {
-                for(int z = 0; z < 16; z++) {
-                    terrainValues[x][y][z] = 1f - new Vector3f(x, y, z).distance(8, 8, 8) / 8f;
-                }
+        shader = new TestShader();
+
+        Noise noise = new Noise(7, 1, 1f);
+        for (int x = 0; x < 1000; x++)
+            for (int y = 0; y < 1000; y++) {
+                float value = noise.calculateFractalNoise(x, y);
+                if (value > 1f || value < -1)
+                    Log.info(value);
             }
+
+        ArrayList<Vector3f> vertices = new ArrayList<>();
+        ArrayList<Integer> indices = new ArrayList<>();
+
+        for (int x = 0; x < CHUNK_SIZE; x++)
+            for (int y = 0; y < CHUNK_SIZE; y++)
+                for (int z = 0; z < CHUNK_SIZE; z++)
+                    terrainValues[x][y][z] = 1f - Math.abs((new Vector3f(CHUNK_SIZE / 2f, CHUNK_SIZE / 2f, CHUNK_SIZE / 2f).distance(x, y, z)) / (CHUNK_SIZE / 2f));
+
+        for (int x = 0; x < CHUNK_SIZE; x++)
+            for (int y = 0; y < CHUNK_SIZE; y++)
+                for (int z = 0; z < CHUNK_SIZE; z++)
+                    marchingCubesSingleCell(x, y, z, vertices, indices);
+
+        float[] vertex = new float[vertices.size() * 3];
+        for (int i = 0; i < vertices.size(); i++) {
+            Vector3f vertice = vertices.get(i);
+            for (int j = 0; j < 3; j++)
+                vertex[i * 3 + j] = vertice.get(j);
         }
+
+        vao = new Vao()
+                .bind()
+                .setVertexCount(vertices.size())
+                .storeData(0, vertex, 3)
+                .unbind();
+    }
+
+    private void generateBenchmark() {
+        Noise noise = new Noise(7, 1, 1f);
+        for (int x = 0; x < 1000; x++)
+            for (int y = 0; y < 1000; y++) {
+                float value = noise.calculateFractalNoise(x, y);
+                // if (value > 1f || value < -1)
+                    // Log.info(value);
+            }
+    }
+
+    public void marchingCubesSingleCell(int x, int y, int z, ArrayList<Vector3f> vertices, ArrayList<Integer> indices) {
+        float[] f_eval = new float[8];
+        int cubeCase = 0;
+        for (int i = 0; i < 8; i++) {
+            Vector3i vertexPos = VERTICES[i];
+            Vector3i position = new Vector3i(x + vertexPos.x, y + vertexPos.y, z + vertexPos.z);
+            if (position.x < CHUNK_SIZE && position.y < CHUNK_SIZE && position.z < CHUNK_SIZE)
+                f_eval[i] = terrainValues[position.x][position.y][position.z];
+            else
+                f_eval[i] = 0;
+            if (f_eval[i] < 0.5f)
+                cubeCase += (int) Math.pow(2, i);
+        }
+
+        Vector3f[] faces = cases.get(cubeCase);
+
+        for (Vector3f face : faces) {
+            for (int i = 0; i < 3; i++)
+                vertices.add(edgeToBoundary(x, y, z, f_eval, (int) face.get(i)));
+
+        }
+
+    }
+
+    private Vector3f edgeToBoundary(int x, int y, int z, float[] f_eval, int edgeID) {
+
+        Vector2f edge = EDGES[edgeID];
+        Vector3f vert_pos0 = new Vector3f(VERTICES[(int) edge.x]);
+        Vector3f vert_pos1 = new Vector3f(VERTICES[(int) edge.y]);
+        float f0 = f_eval[(int) edge.x];
+        float f1 = f_eval[(int) edge.y];
+        float t0 = 1 - adapt(f0, f1);
+        float t1 = 1 - t0;
+        //return new Vector3f(x, y, z).add(new Vector3f(vert_pos0).mul(t0)).add(new Vector3f(vert_pos1).mul(t1));
+        return new Vector3f(x + vert_pos0.x * t0 + vert_pos1.x * t1,
+                y + vert_pos0.y * t0 + vert_pos1.y * t1,
+                z + vert_pos0.z * t0 + vert_pos1.z * t1);
+
+    }
+
+    private float adapt(float v0, float v1) {
+        //assert v1 > 0 != v0 > 0;
+        if (v1 > 0.5f == v0 > 0.5f)
+            return 0.5f;
+        return (0.5f - v0) / (v1 - v0);
+        //return 0.5f;
     }
 
     @Override
@@ -355,12 +420,20 @@ public class TestScreen implements Screen {
 
     @Override
     public void update(float delta) {
-        if(InputManager.instance.isKeyJustPressed(Keys.KEY_J))
+        if (InputManager.instance.isKeyJustPressed(Keys.KEY_J))
             OpenGLUtils.wireframe(wireframe = !wireframe);
     }
 
     @Override
     public void render() {
+        OpenGLUtils.disableCulling();
+        shader.bind();
+        shader.loadUniforms();
+        vao.start();
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, vao.getVertexCount());
+        vao.stop();
+        shader.unbind();
+        OpenGLUtils.enableCulling();
     }
 
     @Override

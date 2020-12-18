@@ -39,7 +39,7 @@ public class Noise {
     }
 
     private float calculateCosInterpolation(float a, float b, float blend) {
-        float c = (float) ((1f - Math.cos((blend * Math.PI))) * 0.5f);
+        float c = (float) ((1f - Math.cos(blend * Math.PI)) * 0.5f);
         return a * (1 - c) + b * c;
     }
 
@@ -67,7 +67,7 @@ public class Noise {
         return value * scale + offset;
     }
     private float cosInterpolation(float a, float b, float blend) {
-        float c = (float) ((1f - Math.cos((blend * Math.PI))) * 0.5f);
+        float c = (float) ((1f - Math.cos(blend * Math.PI)) * 0.5f);
         return a * (1 - c) + b * c;
     }
     public float linInterpolation(float a, float b, float v) {

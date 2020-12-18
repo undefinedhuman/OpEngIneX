@@ -1,19 +1,27 @@
-apply plugin: "java"
+apply plugin: 'java'
 
-sourceCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_15
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 sourceSets.main.java.srcDirs = ["src/"]
 
 project.ext.mainClassName = "de.undefinedhuman.engine.Main"
 project.ext.assetsDir = new File("../assets/")
 
+tasks.withType(JavaCompile) {
+    options.warnings = false
+    options.deprecation = false
+    options.compilerArgs += ["-Xlint"]
+    options.compilerArgs += ["-Xdoclint:none", "-Xlint:none", "-nowarn"]
+    options.compilerArgs += ["--enable-preview"]
+}
+
 task run(dependsOn: classes, type: JavaExec) {
     main = project.mainClassName
-    jvmArgs = ['-Djava.awt.headless=true']
+    jvmArgs = ["--enable-preview", "-Djava.awt.headless=true", "-XX:+UseZGC"]
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
-    ignoreExitValue = true
+    setIgnoreExitValue(true)
 }
 
 task debug(dependsOn: classes, type: JavaExec) {
@@ -21,7 +29,7 @@ task debug(dependsOn: classes, type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = project.assetsDir
-    ignoreExitValue = true
+    setIgnoreExitValue(true)
     debug = true
 }
 

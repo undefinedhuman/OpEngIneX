@@ -3,10 +3,7 @@ package de.undefinedhuman.core;
 import de.undefinedhuman.core.camera.Camera;
 import de.undefinedhuman.core.config.ConfigManager;
 import de.undefinedhuman.core.config.SettingsManager;
-import de.undefinedhuman.core.entity.EntityManager;
-import de.undefinedhuman.core.entity.ecs.blueprint.BlueprintManager;
 import de.undefinedhuman.core.game.Game;
-import de.undefinedhuman.core.gui.GuiManager;
 import de.undefinedhuman.core.input.InputManager;
 import de.undefinedhuman.core.language.LanguageManager;
 import de.undefinedhuman.core.light.LightManager;
@@ -14,12 +11,10 @@ import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.manager.ManagerList;
 import de.undefinedhuman.core.opengl.OpenGLUtils;
 import de.undefinedhuman.core.resources.texture.TextureManager;
-import de.undefinedhuman.core.shadows.ShadowManager;
-import de.undefinedhuman.core.water.WaterManager;
 import de.undefinedhuman.core.window.Window;
-import de.undefinedhuman.core.world.TerrainManager;
 import org.lwjgl.Version;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL32C;
 
 public class Engine {
 
@@ -33,7 +28,7 @@ public class Engine {
     public Engine() {
         if (instance == null) instance = this;
         managerList = new ManagerList().addManager(new Log(), new SettingsManager(), new ConfigManager(), new LanguageManager());
-        glManagerList = new ManagerList().addManager(new InputManager(), new Camera(), new TextureManager(), new LightManager(), new BlueprintManager(), new TerrainManager(), new EntityManager(), new WaterManager(), new GuiManager(), new ShadowManager());
+        glManagerList = new ManagerList().addManager(new InputManager(), new Camera(), new TextureManager(), new LightManager());
         Window.instance = new Window();
     }
 
@@ -47,6 +42,7 @@ public class Engine {
     }
 
     public void resize(int width, int height) {
+        GL32C.glViewport(0, 0, width, height);
         managerList.resize(width, height);
         glManagerList.resize(width, height);
         game.resize(width, height);
