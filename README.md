@@ -1,4 +1,4 @@
-<h1 align="center">OpEngIneX</h1>
+![logo](Logo.svg)
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-0.0.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/undefinedhuman/Eternity/wiki" target="_blank">
@@ -39,5 +39,5 @@ gradle :editor:run
 
 ## License
 
-Copyright © 2020 [Alexander Padberg](https://github.com/undefinedhuman).<br />
+Copyright © 2020 [Alexander Padberg](https://github.com/undefinedhuman).
 This project is [MIT](https://github.com/undefinedhuman/OpEngIneX/blob/master/LICENSE) licensed.

@@ -2,7 +2,6 @@ package de.undefinedhuman.engine.screen;
 
 import de.undefinedhuman.core.input.InputManager;
 import de.undefinedhuman.core.input.Keys;
-import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.opengl.OpenGLUtils;
 import de.undefinedhuman.core.opengl.Vao;
 import de.undefinedhuman.core.screen.Screen;
@@ -308,6 +307,8 @@ public class TestScreen implements Screen {
 
     private Vao vao;
 
+    private float surfaceLevel = 0.5f;
+
     public TestScreen() {
         if (instance == null)
             instance = this;
@@ -323,9 +324,9 @@ public class TestScreen implements Screen {
         Noise noise = new Noise(7, 1, 1f);
         for (int x = 0; x < 1000; x++)
             for (int y = 0; y < 1000; y++) {
-                float value = noise.calculateFractalNoise(x, y);
-                if (value > 1f || value < -1)
-                    Log.info(value);
+                //float value = noise.calculateFractalNoise(x, y);
+                // if (value > 1f || value < -1)
+                   // Log.info(value);
             }
 
         ArrayList<Vector3f> vertices = new ArrayList<>();
@@ -355,16 +356,6 @@ public class TestScreen implements Screen {
                 .unbind();
     }
 
-    private void generateBenchmark() {
-        Noise noise = new Noise(7, 1, 1f);
-        for (int x = 0; x < 1000; x++)
-            for (int y = 0; y < 1000; y++) {
-                float value = noise.calculateFractalNoise(x, y);
-                // if (value > 1f || value < -1)
-                    // Log.info(value);
-            }
-    }
-
     public void marchingCubesSingleCell(int x, int y, int z, ArrayList<Vector3f> vertices, ArrayList<Integer> indices) {
         float[] f_eval = new float[8];
         int cubeCase = 0;
@@ -375,7 +366,7 @@ public class TestScreen implements Screen {
                 f_eval[i] = terrainValues[position.x][position.y][position.z];
             else
                 f_eval[i] = 0;
-            if (f_eval[i] < 0.5f)
+            if (f_eval[i] < surfaceLevel)
                 cubeCase += (int) Math.pow(2, i);
         }
 
@@ -407,9 +398,9 @@ public class TestScreen implements Screen {
 
     private float adapt(float v0, float v1) {
         //assert v1 > 0 != v0 > 0;
-        if (v1 > 0.5f == v0 > 0.5f)
+        if (v1 > surfaceLevel == v0 > surfaceLevel)
             return 0.5f;
-        return (0.5f - v0) / (v1 - v0);
+        return (surfaceLevel - v0) / (v1 - v0);
         //return 0.5f;
     }
 

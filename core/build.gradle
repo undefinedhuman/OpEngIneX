@@ -3,11 +3,3 @@ apply plugin: 'java'
 sourceCompatibility = JavaVersion.VERSION_15
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 sourceSets.main.java.srcDirs = ["src/"]
-
-tasks.withType(JavaCompile) {
-    options.warnings = false
-    options.deprecation = false
-    options.compilerArgs += ["-Xlint"]
-    options.compilerArgs += ["-Xdoclint:none", "-Xlint:none", "-nowarn"]
-    options.compilerArgs += ["--enable-preview"]
-}
