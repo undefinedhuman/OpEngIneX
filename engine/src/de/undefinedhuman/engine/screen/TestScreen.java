@@ -2,6 +2,7 @@ package de.undefinedhuman.engine.screen;
 
 import de.undefinedhuman.core.input.InputManager;
 import de.undefinedhuman.core.input.Keys;
+import de.undefinedhuman.core.log.Log;
 import de.undefinedhuman.core.opengl.OpenGLUtils;
 import de.undefinedhuman.core.opengl.Vao;
 import de.undefinedhuman.core.screen.Screen;
@@ -324,9 +325,9 @@ public class TestScreen implements Screen {
         Noise noise = new Noise(7, 1, 1f);
         for (int x = 0; x < 1000; x++)
             for (int y = 0; y < 1000; y++) {
-                //float value = noise.calculateFractalNoise(x, y);
-                // if (value > 1f || value < -1)
-                   // Log.info(value);
+                float value = noise.calculateFractalNoise(x, y);
+                if (value > 1f || value < -1)
+                   Log.info(value);
             }
 
         ArrayList<Vector3f> vertices = new ArrayList<>();
