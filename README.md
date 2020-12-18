@@ -11,7 +11,7 @@
 ### [Homepage](https://github.com/undefinedhuman/OpEngIneX)
 
 ## Requirements
-Gradle + Java 1.8
+Gradle + Java 15
 
 ## Installation
 
