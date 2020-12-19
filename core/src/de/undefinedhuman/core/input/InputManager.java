@@ -72,18 +72,18 @@ public class InputManager implements Manager {
 
     private void inputText(char c) {
         textInput.append(c);
-        if (input != null) input.textInput(c);
+        if (input != null)
+            input.textInput(c);
     }
 
     private void keyEvent(long window, int key, int scancode, int action, int mods) {
         switch (action) {
-            case GLFW.GLFW_PRESS:
-                pressKey(key);
-                break;
-            case GLFW_RELEASE:
+            case GLFW.GLFW_PRESS -> pressKey(key);
+            case GLFW_RELEASE -> {
                 releaseKey(key);
-                if (key == SettingsManager.instance.closeKey.getInt()) glfwSetWindowShouldClose(window, true);
-                break;
+                if (key == SettingsManager.instance.closeKey.getInt())
+                    glfwSetWindowShouldClose(window, true);
+            }
         }
     }
 

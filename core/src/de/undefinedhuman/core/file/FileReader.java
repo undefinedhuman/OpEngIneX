@@ -38,24 +38,31 @@ public class FileReader {
     public String getNextString() {
         return splitter.getNextString();
     }
+
     public int getNextInt() {
         return splitter.getNextInt();
     }
+
     public float getNextFloat() {
         return splitter.getNextFloat();
     }
+
     public long getNextLong() {
         return splitter.getNextLong();
     }
+
     public Vector2f getNextVector2() {
         return splitter.getNextVector2();
     }
+
     public Vector3f getNextVector3() {
         return splitter.getNextVector3();
     }
+
     public double getNextDouble() {
         return splitter.getNextDouble();
     }
+
     public boolean getNextBoolean() {
         return splitter.getNextBoolean();
     }

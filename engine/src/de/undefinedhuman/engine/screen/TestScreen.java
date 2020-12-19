@@ -322,13 +322,18 @@ public class TestScreen implements Screen {
     public void init() {
         shader = new TestShader();
 
-        Noise noise = new Noise(7, 1, 1f);
+        Log.info("Hello3");
+
+        Noise noise = new Noise(3, 70, 0.5f);
+        float value = 0;
         for (int x = 0; x < 1000; x++)
             for (int y = 0; y < 1000; y++) {
-                float value = noise.calculateFractalNoise(x, y);
-                if (value > 1f || value < -1)
+                value = noise.calculateFractalNoise(x, y);
+                if (value > 70 || value < -70)
                    Log.info(value);
             }
+
+        Log.info("Hello2");
 
         ArrayList<Vector3f> vertices = new ArrayList<>();
         ArrayList<Integer> indices = new ArrayList<>();

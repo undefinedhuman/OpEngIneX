@@ -14,7 +14,7 @@ public class FileUtils {
 
     public static BufferedReader getBufferedReader(FsFile file) {
         try {
-            return new BufferedReader(new FileReader(new File(file.getPath())));
+            return new BufferedReader(new FileReader(file.getPath()));
         } catch (Exception ex) {
             Log.instance.crash("Can't create file reader \n" + ex.getMessage());
         }
@@ -23,7 +23,7 @@ public class FileUtils {
 
     public static BufferedWriter getBufferedWriter(FsFile file) {
         try {
-            return new BufferedWriter(new FileWriter(new File(file.getPath())));
+            return new BufferedWriter(new FileWriter(file.getPath()));
         } catch (Exception ex) {
             Log.instance.crash("Can't create file writer \n" + ex.getMessage());
         }
@@ -61,7 +61,7 @@ public class FileUtils {
             ArrayList<String> deletedFileNames = new ArrayList<>();
             deleteFile(deletedFileNames, file.getFile());
             Collections.reverse(deletedFileNames);
-            Log.info("File" + Tools.appendSToString(deletedFileNames.size()) + " deleted succesfully: " + Arrays.toString(deletedFileNames.toArray()));
+            Log.info("File" + Tools.appendSToString(deletedFileNames.size()) + " deleted successfully: " + Arrays.toString(deletedFileNames.toArray()));
         }
     }
 
