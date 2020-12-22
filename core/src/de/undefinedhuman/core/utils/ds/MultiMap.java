@@ -7,7 +7,11 @@ import java.util.Set;
 
 public class MultiMap<K, V> {
 
-    private HashMap<K, ArrayList<V>> map = new HashMap<>();
+    private HashMap<K, ArrayList<V>> map;
+
+    public MultiMap() {
+        map = new HashMap<>();
+    }
 
     @SafeVarargs
     public final void addValuesWithKey(K key, V... values) {

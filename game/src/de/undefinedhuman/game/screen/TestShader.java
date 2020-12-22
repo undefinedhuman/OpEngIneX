@@ -1,8 +1,8 @@
 package de.undefinedhuman.game.screen;
 
-import de.undefinedhuman.core.camera.Camera;
-import de.undefinedhuman.core.opengl.shader.ShaderProgram;
-import de.undefinedhuman.core.opengl.shader.uniforms.UniformMatrix4;
+import de.undefinedhuman.engine.camera.Camera;
+import de.undefinedhuman.engine.opengl.shader.ShaderProgram;
+import de.undefinedhuman.engine.opengl.shader.uniforms.UniformMatrix4;
 
 public class TestShader extends ShaderProgram {
 

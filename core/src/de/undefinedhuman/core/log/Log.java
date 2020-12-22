@@ -1,12 +1,10 @@
 package de.undefinedhuman.core.log;
 
-import de.undefinedhuman.core.Engine;
 import de.undefinedhuman.core.file.FileWriter;
 import de.undefinedhuman.core.file.FsFile;
 import de.undefinedhuman.core.file.Paths;
 import de.undefinedhuman.core.manager.Manager;
 import de.undefinedhuman.core.utils.Variables;
-import de.undefinedhuman.core.window.Window;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -15,8 +13,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class Log implements Manager {
 
@@ -59,8 +55,7 @@ public class Log implements Manager {
     }
 
     public void crash() {
-        if (Window.instance != null && Engine.instance.isInitialized())
-            glfwSetWindowShouldClose(Window.instance.getID(), true);
+        close();
         save();
         System.exit(0);
     }
@@ -114,5 +109,7 @@ public class Log implements Manager {
     }
 
     public void displayMessage(String msg) {}
+
+    public void close() {}
 
 }

@@ -1,7 +1,7 @@
 package de.undefinedhuman.editor;
 
 import de.undefinedhuman.core.utils.Maths;
-import de.undefinedhuman.core.world.generation.noise.Noise;
+import de.undefinedhuman.engine.world.generation.noise.Noise;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

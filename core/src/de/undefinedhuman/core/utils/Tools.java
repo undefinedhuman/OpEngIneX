@@ -3,8 +3,8 @@ package de.undefinedhuman.core.utils;
 import de.undefinedhuman.core.file.FileReader;
 import de.undefinedhuman.core.file.FileWriter;
 import de.undefinedhuman.core.log.Log;
-import de.undefinedhuman.core.settings.Setting;
-import de.undefinedhuman.core.settings.SettingsObject;
+import de.undefinedhuman.engine.settings.Setting;
+import de.undefinedhuman.engine.settings.SettingsObject;
 import org.joml.Vector2f;
 
 import javax.swing.*;

@@ -1,7 +1,7 @@
 package de.undefinedhuman.game;
 
-import de.undefinedhuman.core.Application;
-import de.undefinedhuman.core.game.Game;
+import de.undefinedhuman.engine.Application;
+import de.undefinedhuman.engine.game.Game;
 import de.undefinedhuman.game.input.EngineInput;
 import de.undefinedhuman.game.screen.TestScreen;
 

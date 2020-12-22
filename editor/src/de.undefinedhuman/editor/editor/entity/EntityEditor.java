@@ -1,14 +1,14 @@
 package de.undefinedhuman.editor.editor.entity;
 
-import de.undefinedhuman.core.entity.EntityType;
-import de.undefinedhuman.core.entity.ecs.component.ComponentBlueprint;
-import de.undefinedhuman.core.entity.ecs.component.ComponentType;
+import de.undefinedhuman.engine.entity.EntityType;
+import de.undefinedhuman.engine.entity.ecs.component.ComponentBlueprint;
+import de.undefinedhuman.engine.entity.ecs.component.ComponentType;
 import de.undefinedhuman.core.file.*;
-import de.undefinedhuman.core.settings.Setting;
-import de.undefinedhuman.core.settings.SettingType;
-import de.undefinedhuman.core.settings.SettingsList;
-import de.undefinedhuman.core.settings.SettingsObject;
-import de.undefinedhuman.core.settings.types.SelectionSetting;
+import de.undefinedhuman.engine.settings.Setting;
+import de.undefinedhuman.engine.settings.SettingType;
+import de.undefinedhuman.engine.settings.SettingsList;
+import de.undefinedhuman.engine.settings.SettingsObject;
+import de.undefinedhuman.engine.settings.types.SelectionSetting;
 import de.undefinedhuman.core.utils.Tools;
 import de.undefinedhuman.core.utils.Variables;
 import de.undefinedhuman.editor.editor.Editor;

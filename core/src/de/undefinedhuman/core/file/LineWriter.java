@@ -26,39 +26,42 @@ public class LineWriter {
         writeData(s);
     }
 
-    private void writeData(Object o) {
+    private LineWriter writeData(Object o) {
         data.append(base ? Base64Coder.encodeString(String.valueOf(o)) : o).append(separator);
+        return this;
     }
 
-    public void writeInt(int i) {
-        writeData(i);
+    public LineWriter writeInt(int i) {
+        return writeData(i);
     }
 
-    public void writeFloat(float f) {
-        writeData(f);
+    public LineWriter writeFloat(float f) {
+        return writeData(f);
     }
 
-    public void writeLong(long l) {
-        writeData(l);
+    public LineWriter writeLong(long l) {
+        return writeData(l);
     }
 
-    public void writeString(double d) {
-        writeData(d);
+    public LineWriter writeString(double d) {
+        return writeData(d);
     }
 
-    public void writeBoolean(boolean b) {
-        writeData(b ? 1 : 0);
+    public LineWriter writeBoolean(boolean b) {
+        return writeData(FileUtils.booleanToInt(b));
     }
 
-    public void writeVector2(Vector2f vector) {
+    public LineWriter writeVector2(Vector2f vector) {
         writeData(vector.x);
         writeData(vector.y);
+        return this;
     }
 
-    public void writeVector3(Vector3f vector) {
+    public LineWriter writeVector3(Vector3f vector) {
         writeData(vector.x);
         writeData(vector.y);
         writeData(vector.z);
+        return this;
     }
 
     public String getData() {

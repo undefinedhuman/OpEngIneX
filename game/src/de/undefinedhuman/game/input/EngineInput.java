@@ -1,14 +1,14 @@
 package de.undefinedhuman.game.input;
 
-import de.undefinedhuman.core.camera.Camera;
-import de.undefinedhuman.core.entity.Entity;
-import de.undefinedhuman.core.entity.EntityManager;
-import de.undefinedhuman.core.entity.ecs.blueprint.BlueprintManager;
-import de.undefinedhuman.core.input.*;
+import de.undefinedhuman.engine.camera.Camera;
+import de.undefinedhuman.engine.entity.Entity;
+import de.undefinedhuman.engine.entity.EntityManager;
+import de.undefinedhuman.engine.entity.ecs.blueprint.BlueprintManager;
+import de.undefinedhuman.engine.input.*;
 import de.undefinedhuman.core.utils.Maths;
 import de.undefinedhuman.core.utils.Variables;
-import de.undefinedhuman.core.window.Time;
-import de.undefinedhuman.core.world.TerrainManager;
+import de.undefinedhuman.engine.window.Time;
+import de.undefinedhuman.engine.world.TerrainManager;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFW;
 

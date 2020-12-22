@@ -1,12 +1,12 @@
 package de.undefinedhuman.game.screen;
 
-import de.undefinedhuman.core.input.InputManager;
-import de.undefinedhuman.core.input.Keys;
+import de.undefinedhuman.engine.input.InputManager;
+import de.undefinedhuman.engine.input.Keys;
 import de.undefinedhuman.core.log.Log;
-import de.undefinedhuman.core.opengl.OpenGLUtils;
-import de.undefinedhuman.core.opengl.Vao;
+import de.undefinedhuman.engine.opengl.OpenGLUtils;
+import de.undefinedhuman.engine.opengl.Vao;
 import de.undefinedhuman.core.screen.Screen;
-import de.undefinedhuman.core.world.generation.noise.Noise;
+import de.undefinedhuman.engine.world.generation.noise.Noise;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;

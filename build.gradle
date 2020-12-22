@@ -125,6 +125,7 @@ project(":editor") {
 
     dependencies {
         implementation project(":core")
+        implementation project(":engine")
 
         implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
         implementation libraries.lwjgl
@@ -141,6 +142,8 @@ project(":noise") {
     apply plugin: "java"
 
     dependencies {
+        implementation project(":core")
+
         implementation 'com.formdev:flatlaf:0.39'
     }
 

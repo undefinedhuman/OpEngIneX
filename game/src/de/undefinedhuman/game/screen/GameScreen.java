@@ -1,27 +1,27 @@
 package de.undefinedhuman.game.screen;
 
-import de.undefinedhuman.core.camera.Camera;
-import de.undefinedhuman.core.entity.Entity;
-import de.undefinedhuman.core.entity.EntityManager;
-import de.undefinedhuman.core.entity.ecs.blueprint.BlueprintManager;
-import de.undefinedhuman.core.gui.GuiManager;
-import de.undefinedhuman.core.gui.GuiShader;
-import de.undefinedhuman.core.gui.GuiTransform;
-import de.undefinedhuman.core.input.InputManager;
-import de.undefinedhuman.core.input.Keys;
-import de.undefinedhuman.core.light.LightManager;
-import de.undefinedhuman.core.light.PointLight;
-import de.undefinedhuman.core.opengl.OpenGLUtils;
+import de.undefinedhuman.engine.camera.Camera;
+import de.undefinedhuman.engine.entity.Entity;
+import de.undefinedhuman.engine.entity.EntityManager;
+import de.undefinedhuman.engine.entity.ecs.blueprint.BlueprintManager;
+import de.undefinedhuman.engine.gui.GuiManager;
+import de.undefinedhuman.engine.gui.GuiShader;
+import de.undefinedhuman.engine.gui.GuiTransform;
+import de.undefinedhuman.engine.input.InputManager;
+import de.undefinedhuman.engine.input.Keys;
+import de.undefinedhuman.engine.light.LightManager;
+import de.undefinedhuman.engine.light.PointLight;
+import de.undefinedhuman.engine.opengl.OpenGLUtils;
 import de.undefinedhuman.core.screen.Screen;
-import de.undefinedhuman.core.shadows.ShadowManager;
+import de.undefinedhuman.engine.shadows.ShadowManager;
 import de.undefinedhuman.core.utils.Tools;
 import de.undefinedhuman.core.utils.Variables;
-import de.undefinedhuman.core.water.WaterManager;
-import de.undefinedhuman.core.water.WaterShader;
-import de.undefinedhuman.core.world.TerrainManager;
-import de.undefinedhuman.core.world.TerrainTexture;
-import de.undefinedhuman.core.world.generation.noise.Noise;
-import de.undefinedhuman.core.world.shader.TerrainShader;
+import de.undefinedhuman.engine.water.WaterManager;
+import de.undefinedhuman.engine.water.WaterShader;
+import de.undefinedhuman.engine.world.TerrainManager;
+import de.undefinedhuman.engine.world.TerrainTexture;
+import de.undefinedhuman.engine.world.generation.noise.Noise;
+import de.undefinedhuman.engine.world.shader.TerrainShader;
 import org.joml.Vector3f;
 
 public class GameScreen implements Screen {

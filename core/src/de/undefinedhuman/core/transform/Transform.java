@@ -66,15 +66,23 @@ public class Transform implements Serializable, NetworkComponent {
         return scale;
     }
 
-    public void updateMatrices() {
-        transformationMatrix
+    public void update() {
+        updateTransformationMatrix();
+        updateNormalMatrix();
+    }
+
+    public Matrix4f updateTransformationMatrix() {
+        return transformationMatrix
                 .identity()
                 .translate(position)
                 .rotate((float) Math.toRadians(rotation.x), VectorUtils.X_AXIS)
                 .rotate((float) Math.toRadians(rotation.y), VectorUtils.Y_AXIS)
                 .rotate((float) Math.toRadians(rotation.z), VectorUtils.Z_AXIS)
                 .scale(scale);
-        normalMatrix
+    }
+
+    public Matrix3f updateNormalMatrix() {
+        return normalMatrix
                 .set(transformationMatrix)
                 .invert()
                 .transpose();
@@ -90,24 +98,19 @@ public class Transform implements Serializable, NetworkComponent {
 
     @Override
     public void load(FileReader reader) {
-        this.position = reader.getNextVector3();
-        this.rotation = reader.getNextVector3();
-        this.scale = reader.getNextFloat();
+        position = reader.getNextVector3();
+        rotation = reader.getNextVector3();
+        scale = reader.getNextFloat();
     }
 
     @Override
     public void save(FileWriter writer) {
-        writer
-                .writeVector3(position)
-                .writeVector3(rotation)
-                .writeFloat(scale);
+        writer.writeVector3(position).writeVector3(rotation).writeFloat(scale);
     }
 
     @Override
     public void send(LineWriter writer) {
-        writer.writeVector3(position);
-        writer.writeVector3(rotation);
-        writer.writeFloat(scale);
+        writer.writeVector3(position).writeVector3(rotation).writeFloat(scale);
     }
 
     @Override
