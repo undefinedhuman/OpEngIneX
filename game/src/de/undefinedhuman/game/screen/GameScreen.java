@@ -1,4 +1,4 @@
-package de.undefinedhuman.engine.screen;
+package de.undefinedhuman.game.screen;
 
 import de.undefinedhuman.core.camera.Camera;
 import de.undefinedhuman.core.entity.Entity;
@@ -12,7 +12,6 @@ import de.undefinedhuman.core.input.Keys;
 import de.undefinedhuman.core.light.LightManager;
 import de.undefinedhuman.core.light.PointLight;
 import de.undefinedhuman.core.opengl.OpenGLUtils;
-import de.undefinedhuman.core.resources.texture.TextureManager;
 import de.undefinedhuman.core.screen.Screen;
 import de.undefinedhuman.core.shadows.ShadowManager;
 import de.undefinedhuman.core.utils.Tools;
@@ -24,8 +23,6 @@ import de.undefinedhuman.core.world.TerrainTexture;
 import de.undefinedhuman.core.world.generation.noise.Noise;
 import de.undefinedhuman.core.world.shader.TerrainShader;
 import org.joml.Vector3f;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 
 public class GameScreen implements Screen {
 

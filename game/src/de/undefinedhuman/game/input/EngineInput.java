@@ -1,4 +1,4 @@
-package de.undefinedhuman.engine.input;
+package de.undefinedhuman.game.input;
 
 import de.undefinedhuman.core.camera.Camera;
 import de.undefinedhuman.core.entity.Entity;

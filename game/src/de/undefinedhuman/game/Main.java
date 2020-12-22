@@ -1,9 +1,9 @@
-package de.undefinedhuman.engine;
+package de.undefinedhuman.game;
 
 import de.undefinedhuman.core.Application;
 import de.undefinedhuman.core.game.Game;
-import de.undefinedhuman.engine.input.EngineInput;
-import de.undefinedhuman.engine.screen.TestScreen;
+import de.undefinedhuman.game.input.EngineInput;
+import de.undefinedhuman.game.screen.TestScreen;
 
 public class Main extends Game {
 

@@ -104,6 +104,22 @@ project(":engine") {
 
 }
 
+project(":game") {
+    apply plugin: "java"
+
+    dependencies {
+        implementation project(":core")
+        implementation project(":engine")
+
+        implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+        implementation libraries.lwjgl
+        runtimeOnly libraries.lwjglRuntime
+
+        implementation "org.joml:joml:${jomlVersion}"
+    }
+
+}
+
 project(":editor") {
     apply plugin: "java"
 

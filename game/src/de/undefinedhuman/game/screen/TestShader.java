@@ -1,4 +1,4 @@
-package de.undefinedhuman.engine.screen;
+package de.undefinedhuman.game.screen;
 
 import de.undefinedhuman.core.camera.Camera;
 import de.undefinedhuman.core.opengl.shader.ShaderProgram;

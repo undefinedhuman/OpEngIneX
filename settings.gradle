@@ -1,3 +1,3 @@
-include "core", "engine", "editor", "noise"
+include 'core', 'engine', 'editor', 'game', 'noise'
 rootProject.name = 'OpEngIneX'
 

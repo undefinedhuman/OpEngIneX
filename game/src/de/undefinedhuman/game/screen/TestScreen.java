@@ -1,4 +1,4 @@
-package de.undefinedhuman.engine.screen;
+package de.undefinedhuman.game.screen;
 
 import de.undefinedhuman.core.input.InputManager;
 import de.undefinedhuman.core.input.Keys;
